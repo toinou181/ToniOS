@@ -1,0 +1,1741 @@
+/* Variables CSS pour ToniOS */
+:root {
+    --tonios-primary: #2c3e50;
+    --tonios-secondary: #3498db;
+    --tonios-accent: #e74c3c;
+    --tonios-bg: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    --tonios-taskbar: #2c3e50;
+    --tonios-window: #ecf0f1;
+    --tonios-shadow: rgba(0, 0, 0, 0.2);
+    --tonios-border: #bdc3c7;
+    --tonios-text: #2c3e50;
+    --tonios-text-light: #ffffff;
+}
+
+/* Reset global */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+html, body {
+    height: 100%;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    overflow: hidden;
+    user-select: none;
+}
+
+/* Bureau principal */
+.tonios-desktop {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: var(--tonios-bg);
+    background-attachment: fixed;
+    display: flex;
+    flex-direction: column;
+    z-index: 1;
+}
+
+.tonios-desktop-area {
+    flex: 1;
+    position: relative;
+    user-select: none;
+    overflow: hidden;
+}
+
+/* Barre des tâches */
+.tonios-taskbar {
+    height: 50px;
+    background: var(--tonios-taskbar);
+    border-top: 1px solid #34495e;
+    display: flex;
+    align-items: center;
+    padding: 0 10px;
+    box-shadow: 0 -2px 10px var(--tonios-shadow);
+    z-index: 1000;
+}
+
+.tonios-start-button {
+    background: var(--tonios-secondary);
+    color: var(--tonios-text-light);
+    border: none;
+    padding: 8px 16px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: all 0.3s ease;
+    margin-right: 10px;
+}
+
+.tonios-start-button:hover {
+    background: #2980b9;
+    transform: translateY(-1px);
+}
+
+.tonios-taskbar-center {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+}
+
+.tonios-taskbar-app {
+    background: rgba(255, 255, 255, 0.1);
+    color: var(--tonios-text-light);
+    border: none;
+    padding: 6px 12px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-size: 12px;
+}
+
+.tonios-taskbar-app:hover {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+.tonios-taskbar-app.active {
+    background: var(--tonios-secondary);
+    color: white;
+}
+
+.tonios-clock {
+    color: var(--tonios-text-light);
+    font-size: 14px;
+    font-weight: 500;
+    min-width: 70px;
+    text-align: center;
+}
+
+/* Menu Démarrer */
+.tonios-start-menu {
+    position: absolute;
+    bottom: 60px;
+    left: 10px;
+    width: 350px;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 8px 25px var(--tonios-shadow);
+    z-index: 1001;
+    overflow: hidden;
+    transform: translateY(20px);
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
+}
+
+.tonios-start-menu.show {
+    transform: translateY(0);
+    opacity: 1;
+    visibility: visible;
+}
+
+.tonios-start-menu-header {
+    padding: 20px;
+    background: var(--tonios-primary);
+    color: white;
+    font-size: 18px;
+    text-align: center;
+}
+
+.tonios-start-menu-apps {
+    padding: 10px;
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+.tonios-start-menu-app {
+    display: flex;
+    align-items: center;
+    padding: 12px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background 0.2s;
+    margin-bottom: 5px;
+}
+
+.tonios-start-menu-app:hover {
+    background: #f8f9fa;
+}
+
+.tonios-start-menu-app-icon {
+    font-size: 24px;
+    margin-right: 15px;
+    width: 40px;
+    text-align: center;
+}
+
+.tonios-start-menu-app-info h4 {
+    margin: 0;
+    color: var(--tonios-text);
+    font-size: 14px;
+}
+
+.tonios-start-menu-app-info p {
+    margin: 2px 0 0 0;
+    color: #7f8c8d;
+    font-size: 12px;
+}
+
+/* Fenêtres */
+.tonios-window {
+    position: absolute;
+    background: var(--tonios-window);
+    border-radius: 8px;
+    box-shadow: 0 4px 20px var(--tonios-shadow);
+    overflow: hidden;
+    min-width: 300px;
+    min-height: 200px;
+    display: flex;
+    flex-direction: column;
+    resize: both;
+}
+
+.tonios-window.maximized {
+    top: 0 !important;
+    left: 0 !important;
+    width: 100vw !important;
+    height: calc(100vh - 50px) !important;
+    border-radius: 0;
+    resize: none;
+}
+
+.tonios-window-header {
+    background: var(--tonios-primary);
+    color: white;
+    padding: 10px 15px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: move;
+    user-select: none;
+}
+
+.tonios-window-title {
+    font-weight: 600;
+    font-size: 14px;
+}
+
+.tonios-window-controls {
+    display: flex;
+    gap: 5px;
+}
+
+.tonios-window-control {
+    background: rgba(255, 255, 255, 0.2);
+    color: white;
+    border: none;
+    width: 24px;
+    height: 24px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.2s;
+}
+
+.tonios-window-control:hover {
+    background: rgba(255, 255, 255, 0.3);
+}
+
+.tonios-window-control.close:hover {
+    background: #e74c3c;
+}
+
+.tonios-window-content {
+    flex: 1;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Icônes du bureau */
+.tonios-desktop-icons {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    z-index: 10;
+}
+
+.tonios-desktop-icon {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    cursor: pointer;
+    padding: 10px;
+    border-radius: 8px;
+    transition: all 0.2s ease;
+    width: 80px;
+    text-align: center;
+}
+
+.tonios-desktop-icon:hover {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+}
+
+.tonios-desktop-icon-img {
+    width: 48px;
+    height: 48px;
+    background: var(--tonios-secondary);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 20px;
+    margin-bottom: 5px;
+}
+
+.tonios-desktop-icon-label {
+    color: white;
+    font-size: 12px;
+    font-weight: 500;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+}
+
+/* Calculatrice */
+.tonios-calculator {
+    width: 280px !important;
+    height: 380px !important;
+}
+
+.tonios-calculator-display {
+    background: #2c3e50;
+    color: white;
+    padding: 20px;
+    font-size: 24px;
+    text-align: right;
+    font-family: 'Courier New', monospace;
+    border-bottom: 1px solid #34495e;
+    min-height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+}
+
+.tonios-calculator-buttons {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1px;
+    background: #34495e;
+    flex: 1;
+}
+
+.tonios-calculator-button {
+    background: #ecf0f1;
+    border: none;
+    padding: 20px;
+    font-size: 18px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.tonios-calculator-button:hover {
+    background: #d5dbdb;
+}
+
+.tonios-calculator-button.operator {
+    background: var(--tonios-secondary);
+    color: white;
+}
+
+.tonios-calculator-button.operator:hover {
+    background: #2980b9;
+}
+
+.tonios-calculator-button.equals {
+    background: var(--tonios-accent);
+    color: white;
+}
+
+.tonios-calculator-button.equals:hover {
+    background: #c0392b;
+}
+
+.tonios-calculator-button.zero {
+    grid-column: span 2;
+}
+
+/* Bloc-notes */
+.tonios-notepad {
+    width: 600px !important;
+    height: 450px !important;
+}
+
+.tonios-notepad-menu {
+    background: #f8f9fa;
+    padding: 5px 10px;
+    border-bottom: 1px solid var(--tonios-border);
+    display: flex;
+    gap: 15px;
+}
+
+.tonios-notepad-menu span {
+    cursor: pointer;
+    padding: 5px 10px;
+    border-radius: 4px;
+    transition: background 0.2s;
+}
+
+.tonios-notepad-menu span:hover {
+    background: #e9ecef;
+}
+
+.tonios-notepad-textarea {
+    width: 100%;
+    height: calc(100% - 40px);
+    border: none;
+    outline: none;
+    padding: 15px;
+    font-family: 'Courier New', monospace;
+    font-size: 14px;
+    resize: none;
+    background: white;
+}
+
+/* Propriétés système */
+.tonios-systemprops {
+    width: 500px !important;
+    height: 400px !important;
+}
+
+.tonios-system-info {
+    padding: 20px;
+    text-align: center;
+}
+
+.tonios-system-logo {
+    font-size: 48px;
+    margin-bottom: 15px;
+}
+
+.tonios-system-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+.tonios-system-table td {
+    padding: 8px;
+    border-bottom: 1px solid #eee;
+}
+
+.tonios-system-table td:first-child {
+    font-weight: bold;
+    width: 40%;
+}
+
+/* Gestionnaire de fichiers */
+.tonios-file-manager {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+.tonios-file-toolbar {
+    padding: 10px;
+    background: #f8f9fa;
+    border-bottom: 1px solid var(--tonios-border);
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+.tonios-file-toolbar button {
+    padding: 6px 12px;
+    border: 1px solid var(--tonios-border);
+    background: white;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 12px;
+}
+
+.tonios-file-toolbar button:hover {
+    background: #e9ecef;
+}
+
+.tonios-file-list {
+    flex: 1;
+    padding: 10px;
+    overflow: auto;
+}
+
+.tonios-file-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-bottom: 4px;
+}
+
+.tonios-file-item:hover {
+    background: #f8f9fa;
+}
+
+.tonios-file-item.selected {
+    background: var(--tonios-secondary);
+    color: white;
+}
+
+.tonios-file-icon {
+    font-size: 18px;
+}
+
+/* Paramètres de fond d'écran */
+.tonios-wallpaper-settings {
+    padding: 20px;
+}
+
+.tonios-wallpaper-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+    gap: 10px;
+    margin-top: 15px;
+}
+
+.tonios-wallpaper-option {
+    width: 100px;
+    height: 60px;
+    border: 2px solid transparent;
+    border-radius: 6px;
+    cursor: pointer;
+    background-size: cover;
+    background-position: center;
+    transition: all 0.2s ease;
+}
+
+.tonios-wallpaper-option:hover {
+    transform: scale(1.05);
+    border-color: var(--tonios-secondary);
+}
+
+.tonios-wallpaper-option.selected {
+    border-color: var(--tonios-secondary);
+    box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.3);
+}
+
+/* Chat */
+.tonios-chat {
+    display: flex;
+    height: 100%;
+    background: white;
+}
+
+.tonios-chat-sidebar {
+    width: 200px;
+    background: #f8f9fa;
+    border-right: 1px solid var(--tonios-border);
+    display: flex;
+    flex-direction: column;
+}
+
+.tonios-chat-sidebar-header {
+    padding: 15px;
+    background: var(--tonios-primary);
+    color: white;
+    font-weight: 600;
+    border-bottom: 1px solid var(--tonios-border);
+}
+
+.tonios-chat-channels {
+    flex: 1;
+    overflow-y: auto;
+}
+
+.tonios-chat-channel-section {
+    padding: 10px;
+    border-bottom: 1px solid #e9ecef;
+}
+
+.tonios-chat-channel-title {
+    font-size: 12px;
+    font-weight: 600;
+    color: #6c757d;
+    margin-bottom: 8px;
+    text-transform: uppercase;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.tonios-chat-channel {
+    padding: 6px 10px;
+    cursor: pointer;
+    border-radius: 4px;
+    margin-bottom: 2px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 14px;
+    transition: all 0.2s ease;
+}
+
+.tonios-chat-channel:hover {
+    background: #e9ecef;
+}
+
+.tonios-chat-channel.active {
+    background: var(--tonios-secondary);
+    color: white;
+}
+
+.tonios-chat-channel-icon {
+    font-size: 16px;
+}
+
+.tonios-chat-user {
+    padding: 4px 10px;
+    cursor: pointer;
+    border-radius: 4px;
+    margin-bottom: 2px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13px;
+    transition: all 0.2s ease;
+}
+
+.tonios-chat-user:hover {
+    background: #e9ecef;
+}
+
+.tonios-chat-user.online::before {
+    content: '●';
+    color: #28a745;
+    font-size: 8px;
+}
+
+.tonios-chat-user.offline::before {
+    content: '●';
+    color: #6c757d;
+    font-size: 8px;
+}
+
+.tonios-chat-main {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.tonios-chat-header {
+    padding: 15px;
+    background: var(--tonios-primary);
+    color: white;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.tonios-chat-header-info {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.tonios-chat-header-controls {
+    display: flex;
+    gap: 10px;
+}
+
+.tonios-chat-voice-btn {
+    padding: 6px 12px;
+    background: rgba(255, 255, 255, 0.2);
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 12px;
+    transition: all 0.2s ease;
+}
+
+.tonios-chat-voice-btn:hover {
+    background: rgba(255, 255, 255, 0.3);
+}
+
+.tonios-chat-voice-btn.active {
+    background: #e74c3c;
+}
+
+.tonios-chat-messages {
+    flex: 1;
+    overflow-y: auto;
+    padding: 10px;
+    background: #f8f9fa;
+}
+
+.tonios-chat-message {
+    margin-bottom: 10px;
+    padding: 8px 12px;
+    border-radius: 12px;
+    max-width: 70%;
+}
+
+.tonios-chat-message.own {
+    background: var(--tonios-secondary);
+    color: white;
+    margin-left: auto;
+}
+
+.tonios-chat-message.other {
+    background: white;
+    border: 1px solid #dee2e6;
+}
+
+.tonios-chat-message.system {
+    background: #fff3cd;
+    border: 1px solid #ffeeba;
+    color: #856404;
+    text-align: center;
+    margin: 5px auto;
+    max-width: 90%;
+    font-style: italic;
+}
+
+.tonios-chat-input-area {
+    padding: 10px;
+    background: white;
+    border-top: 1px solid var(--tonios-border);
+    display: flex;
+    gap: 10px;
+}
+
+.tonios-chat-input {
+    flex: 1;
+    padding: 8px 12px;
+    border: 1px solid var(--tonios-border);
+    border-radius: 20px;
+    outline: none;
+}
+
+.tonios-chat-send {
+    padding: 8px 16px;
+    background: var(--tonios-secondary);
+    color: white;
+    border: none;
+    border-radius: 20px;
+    cursor: pointer;
+}
+
+.tonios-chat-send:hover {
+    opacity: 0.9;
+}
+
+.tonios-chat-voice-indicator {
+    position: fixed;
+    bottom: 80px;
+    right: 20px;
+    background: #e74c3c;
+    color: white;
+    padding: 10px 15px;
+    border-radius: 20px;
+    font-size: 12px;
+    z-index: 1000;
+    display: none;
+    align-items: center;
+    gap: 8px;
+    animation: pulse-voice 2s infinite;
+}
+
+@keyframes pulse-voice {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+    100% { transform: scale(1); }
+}
+
+.tonios-voice-visualization {
+    width: 30px;
+    height: 20px;
+    display: flex;
+    align-items: end;
+    gap: 2px;
+}
+
+.tonios-voice-bar {
+    width: 3px;
+    background: white;
+    border-radius: 1px;
+    animation: voice-wave 1s infinite ease-in-out;
+}
+
+.tonios-voice-bar:nth-child(1) { animation-delay: 0s; }
+.tonios-voice-bar:nth-child(2) { animation-delay: 0.1s; }
+.tonios-voice-bar:nth-child(3) { animation-delay: 0.2s; }
+.tonios-voice-bar:nth-child(4) { animation-delay: 0.3s; }
+.tonios-voice-bar:nth-child(5) { animation-delay: 0.4s; }
+
+@keyframes voice-wave {
+    0%, 100% { height: 4px; }
+    50% { height: 16px; }
+}
+
+/* Écran de connexion */
+.tonios-login-screen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: var(--tonios-bg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10000;
+    flex-direction: column;
+}
+
+.tonios-login-container {
+    background: rgba(255, 255, 255, 0.95);
+    border-radius: 15px;
+    padding: 40px;
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    max-width: 400px;
+    width: 90%;
+    text-align: center;
+}
+
+.tonios-login-logo {
+    font-size: 64px;
+    margin-bottom: 20px;
+    animation: float 3s ease-in-out infinite;
+}
+
+@keyframes float {
+    0%, 100% { transform: translateY(0px); }
+    50% { transform: translateY(-10px); }
+}
+
+.tonios-login-title {
+    color: var(--tonios-primary);
+    font-size: 28px;
+    font-weight: 600;
+    margin-bottom: 10px;
+}
+
+.tonios-login-subtitle {
+    color: #7f8c8d;
+    margin-bottom: 30px;
+    font-size: 14px;
+}
+
+.tonios-login-form {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.tonios-login-input {
+    padding: 15px;
+    border: 2px solid #e9ecef;
+    border-radius: 10px;
+    font-size: 16px;
+    outline: none;
+    transition: all 0.3s ease;
+    background: rgba(255, 255, 255, 0.8);
+}
+
+.tonios-login-input:focus {
+    border-color: var(--tonios-secondary);
+    box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
+}
+
+.tonios-login-btn {
+    padding: 15px;
+    background: var(--tonios-secondary);
+    color: white;
+    border: none;
+    border-radius: 10px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.tonios-login-btn:hover {
+    background: #2980b9;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(52, 152, 219, 0.3);
+}
+
+.tonios-login-options {
+    display: flex;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+.tonios-login-option {
+    flex: 1;
+    padding: 10px;
+    background: #f8f9fa;
+    border: 1px solid #dee2e6;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: all 0.2s ease;
+}
+
+.tonios-login-option:hover {
+    background: #e9ecef;
+    border-color: var(--tonios-secondary);
+}
+
+.tonios-login-checkbox {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 14px;
+    color: var(--tonios-text);
+}
+
+.tonios-login-checkbox input[type="checkbox"] {
+    width: 16px;
+    height: 16px;
+    accent-color: var(--tonios-secondary);
+}
+
+.tonios-login-toggle {
+    margin-top: 15px;
+    text-align: center;
+}
+
+.tonios-login-toggle span {
+    color: var(--tonios-secondary);
+    cursor: pointer;
+    font-size: 14px;
+    text-decoration: underline;
+    transition: color 0.2s ease;
+}
+
+.tonios-login-toggle span:hover {
+    color: #2980b9;
+}
+
+.tonios-auto-login-info {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: rgba(44, 62, 80, 0.95);
+    color: white;
+    padding: 20px 30px;
+    border-radius: 10px;
+    text-align: center;
+    z-index: 10001;
+    backdrop-filter: blur(10px);
+}
+
+.tonios-auto-login-info h3 {
+    margin-bottom: 10px;
+    color: var(--tonios-secondary);
+}
+
+.tonios-auto-login-info p {
+    margin-bottom: 15px;
+    opacity: 0.9;
+}
+
+.tonios-auto-login-buttons {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+}
+
+.tonios-auto-login-buttons button {
+    padding: 8px 16px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: all 0.2s ease;
+}
+
+.tonios-auto-login-buttons .btn-primary {
+    background: var(--tonios-secondary);
+    color: white;
+}
+
+.tonios-auto-login-buttons .btn-secondary {
+    background: #6c757d;
+    color: white;
+}
+
+.tonios-auto-login-buttons button:hover {
+    opacity: 0.9;
+    transform: translateY(-1px);
+}
+
+/* Panneau de modération */
+.tonios-moderation-panel {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    z-index: 10000;
+    min-width: 600px;
+    max-height: 80vh;
+    overflow-y: auto;
+    display: none;
+}
+
+.tonios-moderation-header {
+    background: var(--tonios-primary);
+    color: white;
+    padding: 15px 20px;
+    border-radius: 10px 10px 0 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.tonios-moderation-content {
+    padding: 20px;
+}
+
+.tonios-moderation-tabs {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+    border-bottom: 1px solid #e9ecef;
+}
+
+.tonios-moderation-tab {
+    padding: 10px 15px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    transition: all 0.2s ease;
+}
+
+.tonios-moderation-tab.active {
+    border-bottom-color: var(--tonios-secondary);
+    color: var(--tonios-secondary);
+}
+
+/* Styles pour les utilisateurs dans le panneau de modération */
+.tonios-moderation-user {
+    display: flex;
+    align-items: center;
+    padding: 12px;
+    border: 1px solid #e9ecef;
+    border-radius: 8px;
+    margin-bottom: 8px;
+    background: rgba(255, 255, 255, 0.1);
+    justify-content: space-between;
+}
+
+.tonios-moderation-user-avatar {
+    font-size: 24px;
+    margin-right: 12px;
+}
+
+.tonios-moderation-user-info {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.tonios-moderation-user-info strong {
+    color: white;
+    margin-bottom: 2px;
+}
+
+.tonios-moderation-user-role {
+    background: var(--tonios-secondary);
+    color: white;
+    padding: 2px 8px;
+    border-radius: 12px;
+    font-size: 12px;
+    display: inline-block;
+    margin-bottom: 2px;
+    width: fit-content;
+}
+
+.tonios-moderation-user-info small {
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 11px;
+}
+
+.tonios-moderation-user-actions {
+    display: flex;
+    gap: 5px;
+}
+
+.tonios-btn-warn, .tonios-btn-kick, .tonios-btn-ban {
+    background: none;
+    border: 1px solid;
+    padding: 5px 8px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: all 0.2s ease;
+}
+
+.tonios-btn-warn {
+    border-color: #f39c12;
+    color: #f39c12;
+}
+
+.tonios-btn-warn:hover {
+    background: #f39c12;
+    color: white;
+}
+
+.tonios-btn-kick {
+    border-color: #e67e22;
+    color: #e67e22;
+}
+
+.tonios-btn-kick:hover {
+    background: #e67e22;
+    color: white;
+}
+
+.tonios-btn-ban {
+    border-color: #e74c3c;
+    color: #e74c3c;
+}
+
+.tonios-btn-ban:hover {
+    background: #e74c3c;
+    color: white;
+}
+
+/* Notifications */
+.tonios-notification {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background: white;
+    border: 1px solid var(--tonios-border);
+    border-radius: 8px;
+    padding: 15px 20px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    z-index: 10000;
+    max-width: 300px;
+    opacity: 0;
+    transform: translateX(100%);
+    transition: all 0.3s ease;
+}
+
+.tonios-notification.show {
+    opacity: 1;
+    transform: translateX(0);
+}
+
+.tonios-notification.error {
+    border-left: 4px solid #e74c3c;
+    background: #fdf2f2;
+}
+
+.tonios-notification.success {
+    border-left: 4px solid #27ae60;
+    background: #f0f9f4;
+}
+
+.tonios-notification.info {
+    border-left: 4px solid #3498db;
+    background: #f0f8ff;
+}
+
+/* Sélection d'éléments */
+.tonios-selection-box {
+    position: absolute;
+    border: 2px dashed var(--tonios-secondary);
+    background: rgba(52, 152, 219, 0.1);
+    z-index: 999;
+    pointer-events: none;
+}
+
+.tonios-desktop-icon.selected {
+    background: rgba(52, 152, 219, 0.3);
+    border: 2px solid var(--tonios-secondary);
+}
+
+/* Menu contextuel */
+.tonios-context-menu {
+    position: fixed;
+    background: white;
+    border: 1px solid var(--tonios-border);
+    border-radius: 6px;
+    box-shadow: 0 4px 12px var(--tonios-shadow);
+    z-index: 1000;
+    min-width: 180px;
+    display: none;
+}
+
+.tonios-context-menu-item {
+    padding: 10px 15px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 14px;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.tonios-context-menu-item:last-child {
+    border-bottom: none;
+}
+
+.tonios-context-menu-item:hover {
+    background: #f8f9fa;
+}
+
+.tonios-context-menu-item.disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* Import de fichiers */
+.tonios-file-drop-zone {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(52, 152, 219, 0.1);
+    border: 3px dashed var(--tonios-secondary);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    font-size: 24px;
+    color: var(--tonios-secondary);
+    z-index: 999;
+}
+
+.tonios-file-drop-zone.active {
+    display: flex;
+}
+
+/* Utilitaires */
+.hidden {
+    display: none !important;
+}
+
+.btn {
+    padding: 8px 16px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    background: var(--tonios-secondary);
+    color: white;
+}
+
+.btn:hover {
+    background: #2980b9;
+}
+
+/* Informations de session */
+.tonios-session-info {
+    position: fixed;
+    top: 10px;
+    right: 10px;
+    background: rgba(0, 0, 0, 0.8);
+    color: white;
+    padding: 8px 12px;
+    border-radius: 20px;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    z-index: 1000;
+    backdrop-filter: blur(5px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.tonios-session-avatar {
+    font-size: 16px;
+}
+
+.tonios-session-logout {
+    background: var(--tonios-accent);
+    color: white;
+    border: none;
+    padding: 4px 8px;
+    border-radius: 12px;
+    cursor: pointer;
+    font-size: 12px;
+    margin-left: 8px;
+    transition: all 0.2s ease;
+}
+
+.tonios-session-logout:hover {
+    background: #c0392b;
+    transform: scale(1.05);
+}
+
+/* ===============================================
+   STYLES DES APPLICATIONS
+   =============================================== */
+
+/* Calculatrice */
+.tonios-calculator {
+    padding: 20px;
+    background: #f8f9fa;
+    border-radius: 8px;
+    max-width: 300px;
+    margin: 0 auto;
+}
+
+.tonios-calculator-display {
+    margin-bottom: 15px;
+}
+
+.tonios-calculator-display input {
+    width: 100%;
+    padding: 15px;
+    font-size: 24px;
+    text-align: right;
+    border: 2px solid #dee2e6;
+    border-radius: 6px;
+    background: white;
+    font-family: 'Courier New', monospace;
+}
+
+.tonios-calculator-buttons {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 8px;
+}
+
+.tonios-calculator-buttons button {
+    padding: 15px;
+    font-size: 18px;
+    border: 1px solid #dee2e6;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    background: white;
+}
+
+.tonios-calculator-buttons button:hover {
+    background: #e9ecef;
+    transform: translateY(-1px);
+}
+
+.tonios-calculator-buttons .calc-operator {
+    background: var(--tonios-secondary);
+    color: white;
+}
+
+.tonios-calculator-buttons .calc-equals {
+    background: var(--tonios-accent);
+    color: white;
+}
+
+.tonios-calculator-buttons .calc-zero {
+    grid-column: span 2;
+}
+
+/* Bloc-notes */
+.tonios-notepad {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+.tonios-notepad-toolbar {
+    padding: 10px;
+    background: #f8f9fa;
+    border-bottom: 1px solid #dee2e6;
+    display: flex;
+    gap: 5px;
+    align-items: center;
+}
+
+.tonios-notepad-toolbar button {
+    padding: 6px 12px;
+    border: 1px solid #dee2e6;
+    background: white;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 12px;
+    transition: all 0.2s ease;
+}
+
+.tonios-notepad-toolbar button:hover {
+    background: #e9ecef;
+}
+
+.tonios-notepad-textarea {
+    flex: 1;
+    padding: 15px;
+    border: none;
+    outline: none;
+    font-family: 'Courier New', monospace;
+    font-size: 14px;
+    line-height: 1.5;
+    resize: none;
+}
+
+/* Gestionnaire de fichiers */
+.tonios-filemanager {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+.tonios-filemanager-toolbar {
+    padding: 10px;
+    background: #f8f9fa;
+    border-bottom: 1px solid #dee2e6;
+    display: flex;
+    gap: 10px;
+}
+
+.tonios-filemanager-toolbar button {
+    padding: 8px 12px;
+    border: 1px solid #dee2e6;
+    background: white;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 12px;
+    transition: all 0.2s ease;
+}
+
+.tonios-filemanager-toolbar button:hover {
+    background: #e9ecef;
+}
+
+.tonios-filemanager-content {
+    flex: 1;
+    padding: 15px;
+}
+
+.tonios-filemanager-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.tonios-file-item {
+    display: flex;
+    align-items: center;
+    padding: 10px;
+    border: 1px solid #e9ecef;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.tonios-file-item:hover {
+    background: #f8f9fa;
+    border-color: var(--tonios-secondary);
+}
+
+.tonios-file-icon {
+    font-size: 20px;
+    margin-right: 10px;
+}
+
+.tonios-file-name {
+    font-size: 14px;
+    color: var(--tonios-text);
+}
+
+/* Propriétés système */
+.tonios-systemprops {
+    padding: 20px;
+}
+
+.tonios-systemprops h3 {
+    margin-bottom: 20px;
+    color: var(--tonios-text);
+}
+
+.tonios-system-info {
+    background: #f8f9fa;
+    border: 1px solid #dee2e6;
+    border-radius: 8px;
+    padding: 15px;
+    margin-bottom: 20px;
+}
+
+.tonios-info-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 8px 0;
+    border-bottom: 1px solid #e9ecef;
+}
+
+.tonios-info-row:last-child {
+    border-bottom: none;
+}
+
+.tonios-info-label {
+    font-weight: 600;
+    color: var(--tonios-text);
+}
+
+.tonios-info-value {
+    color: #6c757d;
+}
+
+.tonios-system-actions {
+    display: flex;
+    gap: 10px;
+}
+
+.tonios-system-actions button {
+    padding: 10px 15px;
+    border: 1px solid #dee2e6;
+    background: var(--tonios-secondary);
+    color: white;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: all 0.2s ease;
+}
+
+.tonios-system-actions button:hover {
+    opacity: 0.9;
+    transform: translateY(-1px);
+}
+
+/* Sélecteur de fond d'écran */
+.tonios-wallpaper {
+    padding: 20px;
+}
+
+.tonios-wallpaper h3 {
+    margin-bottom: 20px;
+    color: var(--tonios-text);
+}
+
+.tonios-wallpaper-options {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+}
+
+.tonios-wallpaper-preset {
+    height: 80px;
+    border-radius: 8px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-weight: 600;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+    border: 2px solid transparent;
+    transition: all 0.2s ease;
+}
+
+.tonios-wallpaper-preset:hover {
+    border-color: white;
+    transform: scale(1.05);
+}
+
+/* Chat */
+.tonios-chat-window {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+.tonios-chat-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 15px;
+    background: #f8f9fa;
+    border-bottom: 1px solid #dee2e6;
+}
+
+.tonios-chat-tabs {
+    display: flex;
+    gap: 5px;
+}
+
+.tonios-chat-tab {
+    padding: 8px 15px;
+    background: #e9ecef;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 12px;
+    transition: all 0.2s ease;
+}
+
+.tonios-chat-tab.active {
+    background: var(--tonios-secondary);
+    color: white;
+}
+
+.tonios-chat-tab:hover:not(.active) {
+    background: #dee2e6;
+}
+
+.tonios-chat-users {
+    font-size: 12px;
+    color: #6c757d;
+}
+
+.tonios-chat-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.tonios-chat-messages {
+    flex: 1;
+    padding: 15px;
+    overflow-y: auto;
+    background: #fafafa;
+}
+
+.tonios-chat-voice {
+    flex: 1;
+    padding: 20px;
+    background: #fafafa;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.tonios-voice-controls {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.tonios-voice-btn {
+    padding: 10px 15px;
+    border: 1px solid #dee2e6;
+    background: white;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: all 0.2s ease;
+}
+
+.tonios-voice-btn:hover:not(:disabled) {
+    background: #e9ecef;
+}
+
+.tonios-voice-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.tonios-voice-transcription {
+    background: white;
+    border: 1px solid #dee2e6;
+    border-radius: 6px;
+    padding: 15px;
+    min-height: 100px;
+    width: 100%;
+    font-style: italic;
+    color: #6c757d;
+}
+
+.tonios-chat-message {
+    margin-bottom: 15px;
+    padding: 10px;
+    border-radius: 8px;
+    background: white;
+    border: 1px solid #e9ecef;
+}
+
+.tonios-chat-message-user {
+    margin-left: 50px;
+    background: #e3f2fd;
+    border-color: #bbdefb;
+}
+
+.tonios-chat-message-system {
+    margin-right: 50px;
+    background: #f1f8e9;
+    border-color: #c8e6c9;
+}
+
+.tonios-chat-system-message {
+    text-align: center;
+    font-style: italic;
+    color: #6c757d;
+    background: #fff3cd;
+    border: 1px solid #ffeaa7;
+    border-radius: 6px;
+    padding: 10px;
+    margin-bottom: 15px;
+}
+
+.tonios-chat-message-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 5px;
+}
+
+.tonios-chat-username {
+    font-weight: 600;
+    color: var(--tonios-secondary);
+    font-size: 12px;
+}
+
+.tonios-chat-time {
+    font-size: 11px;
+    color: #6c757d;
+}
+
+.tonios-chat-message-content {
+    color: var(--tonios-text);
+    line-height: 1.4;
+}
+
+.tonios-chat-input {
+    display: flex;
+    padding: 15px;
+    background: white;
+    border-top: 1px solid #dee2e6;
+    gap: 10px;
+}
+
+.tonios-chat-input input {
+    flex: 1;
+    padding: 10px;
+    border: 1px solid #dee2e6;
+    border-radius: 6px;
+    outline: none;
+    font-size: 14px;
+}
+
+.tonios-chat-input input:focus {
+    border-color: var(--tonios-secondary);
+}
+
+.tonios-chat-send-btn {
+    padding: 10px 15px;
+    background: var(--tonios-secondary);
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 12px;
+    transition: all 0.2s ease;
+}
+
+.tonios-chat-send-btn:hover {
+    background: #2980b9;
+}
