@@ -301,3 +301,77 @@ function setupVoiceShortcuts() {
     // Cette fonction sera implémentée si le système vocal existe
     console.log('Raccourcis vocaux initialisés');
 }
+
+// ===============================================
+// MENU UTILISATEUR
+// ===============================================
+
+function toggleUserMenu() {
+    const dropdown = document.getElementById('userMenuDropdown');
+    if (dropdown) {
+        const isVisible = dropdown.style.display === 'block';
+        dropdown.style.display = isVisible ? 'none' : 'block';
+        
+        // Fermer le menu si on clique ailleurs
+        if (!isVisible) {
+            setTimeout(() => {
+                document.addEventListener('click', closeUserMenuOnClickOutside, { once: true });
+            }, 100);
+        }
+    }
+}
+
+function closeUserMenuOnClickOutside(event) {
+    const userMenu = document.getElementById('userMenu');
+    const dropdown = document.getElementById('userMenuDropdown');
+    
+    if (userMenu && dropdown && !userMenu.contains(event.target)) {
+        dropdown.style.display = 'none';
+    }
+}
+
+function updateUserMenu() {
+    const userMenuText = document.getElementById('userMenuText');
+    const userMenu = document.getElementById('userMenu');
+    const adminItem = document.getElementById('adminDashboardItem');
+    
+    if (currentSession) {
+        // Afficher le menu utilisateur
+        if (userMenu) userMenu.style.display = 'block';
+        if (userMenuText) userMenuText.textContent = `👤 ${currentSession.username}`;
+        
+        // Afficher le bouton admin seulement pour les admins
+        if (adminItem) {
+            adminItem.style.display = currentSession.role === 'admin' ? 'block' : 'none';
+        }
+    } else {
+        // Cacher le menu utilisateur
+        if (userMenu) userMenu.style.display = 'none';
+    }
+}
+
+function showUserProfile() {
+    closeUserMenu();
+    if (currentSession) {
+        showNotification(`Profil de ${currentSession.username}`, `Rôle: ${currentSession.role}\nCréé le: ${new Date(currentSession.createdAt).toLocaleDateString()}`, 'info');
+    }
+}
+
+function showPreferences() {
+    closeUserMenu();
+    showNotification('Préférences', 'Fonctionnalité en développement', 'info');
+}
+
+function closeUserMenu() {
+    const dropdown = document.getElementById('userMenuDropdown');
+    if (dropdown) dropdown.style.display = 'none';
+}
+
+function logout() {
+    closeUserMenu();
+    if (typeof logoutUser === 'function') {
+        logoutUser();
+    } else {
+        location.reload();
+    }
+}

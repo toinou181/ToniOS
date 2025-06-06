@@ -103,6 +103,59 @@ html, body {
     color: white;
 }
 
+.tonios-taskbar-right {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.tonios-user-menu {
+    position: relative;
+    color: var(--tonios-text-light);
+    cursor: pointer;
+    padding: 8px 12px;
+    border-radius: 4px;
+    transition: all 0.3s ease;
+}
+
+.tonios-user-menu:hover {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.tonios-user-menu-dropdown {
+    position: absolute;
+    bottom: 50px;
+    right: 0;
+    min-width: 200px;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 5px 20px var(--tonios-shadow);
+    padding: 8px 0;
+    z-index: 1001;
+}
+
+.tonios-user-menu-item {
+    padding: 10px 16px;
+    cursor: pointer;
+    transition: background 0.3s ease;
+    color: var(--tonios-text);
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.tonios-user-menu-item:hover {
+    background: #f8f9fa;
+}
+
+.tonios-user-menu-item:last-child {
+    border-bottom: none;
+}
+
+.tonios-user-menu-separator {
+    height: 1px;
+    background: #e9ecef;
+    margin: 5px 0;
+}
+
 .tonios-clock {
     color: var(--tonios-text-light);
     font-size: 14px;

@@ -431,9 +431,179 @@ function clearSavedSession() {
     sessionStorage.removeItem(SESSION_STORAGE_KEY);
 }
 
-// ===============================================
-// FONCTIONS D'INTERFACE
-// ===============================================
+// Fonction d'enregistrement d'un nouvel utilisateur
+function registerUser(username, password, rememberSession = false) {
+    // Validation
+    if (!username || username.length < 3 || username.length > 20) {
+        throw new Error('Le nom d\'utilisateur doit contenir entre 3 et 20 caractères');
+    }
+    
+    if (!/^[a-zA-Z0-9_-]+$/.test(username)) {
+        throw new Error('Le nom d\'utilisateur ne peut contenir que des lettres, chiffres, tirets et underscores');
+    }
+    
+    if (allUsers[username]) {
+        throw new Error('Ce nom d\'utilisateur existe déjà');
+    }
+    
+    if (password && password.length < 4) {
+        throw new Error('Le mot de passe doit contenir au moins 4 caractères');
+    }
+    
+    // Créer le nouvel utilisateur
+    const newUser = new UserSession(username, password, 'user');
+    newUser.preferences.rememberSession = rememberSession;
+    
+    // Sauvegarder
+    allUsers[username] = newUser;
+    saveUsersToStorage();
+    
+    return newUser;
+}
+
+// Fonction de connexion améliorée
+function loginUser(username, password, rememberSession = false) {
+    const user = allUsers[username];
+    
+    if (!user) {
+        throw new Error('Utilisateur introuvable');
+    }
+    
+    // Vérifier le mot de passe (si défini)
+    if (user.password && user.password !== new UserSession('temp', password).hashPassword(password)) {
+        throw new Error('Mot de passe incorrect');
+    }
+    
+    // Connexion réussie
+    user.lastLogin = new Date().toISOString();
+    user.loginCount++;
+    user.preferences.rememberSession = rememberSession;
+    user.sessionToken = user.generateSessionToken();
+    
+    currentSession = user;
+    saveUsersToStorage();
+    saveCurrentSession(rememberSession);
+    
+    return user;
+}
+
+// Fonction de déconnexion
+function logoutUser() {
+    if (currentSession) {
+        currentSession.lastLogin = new Date().toISOString();
+        saveUsersToStorage();
+        clearSavedSession();
+        currentSession = null;
+    }
+}
+
+// Fonctions de gestion du bureau personnalisé
+function saveDesktopLayout() {
+    if (!currentSession) return;
+    
+    // Sauvegarder les positions des icônes
+    const icons = document.querySelectorAll('.tonios-desktop-icon');
+    currentSession.desktop.icons = Array.from(icons).map(icon => ({
+        id: icon.dataset.app || icon.onclick?.toString().match(/openApplication\('([^']+)'\)/)?.[1],
+        x: parseInt(icon.style.left) || 20,
+        y: parseInt(icon.style.top) || 20,
+        visible: !icon.classList.contains('hidden')
+    }));
+    
+    saveUsersToStorage();
+}
+
+function loadDesktopLayout() {
+    if (!currentSession || !currentSession.desktop) return;
+    
+    // Charger le fond d'écran personnalisé
+    if (currentSession.desktop.wallpaper) {
+        document.querySelector('.tonios-desktop').style.background = currentSession.desktop.wallpaper;
+    }
+    
+    // Charger les positions des icônes
+    setTimeout(() => {
+        const icons = document.querySelectorAll('.tonios-desktop-icon');
+        icons.forEach(icon => {
+            const iconId = icon.dataset.app || icon.onclick?.toString().match(/openApplication\('([^']+)'\)/)?.[1];
+            const savedIcon = currentSession.desktop.icons.find(saved => saved.id === iconId);
+            
+            if (savedIcon) {
+                icon.style.left = savedIcon.x + 'px';
+                icon.style.top = savedIcon.y + 'px';
+                icon.style.position = 'absolute';
+                
+                if (!savedIcon.visible) {
+                    icon.classList.add('hidden');
+                }
+            }
+        });
+    }, 100);
+}
+
+// Fonctions d'interface utilisateur pour l'authentification
+function showRegisterForm() {
+    const loginForm = document.getElementById('loginForm');
+    const registerForm = document.getElementById('registerForm');
+    const toggleToRegister = document.getElementById('toggleToRegister');
+    const toggleToLogin = document.getElementById('toggleToLogin');
+    const subtitle = document.getElementById('loginSubtitle');
+    
+    if (loginForm && registerForm && toggleToRegister && toggleToLogin && subtitle) {
+        loginForm.classList.add('hidden');
+        registerForm.classList.remove('hidden');
+        toggleToRegister.classList.add('hidden');
+        toggleToLogin.classList.remove('hidden');
+        subtitle.textContent = 'Système d\'exploitation virtuel - Inscription';
+    }
+}
+
+function showLoginForm() {
+    const loginForm = document.getElementById('loginForm');
+    const registerForm = document.getElementById('registerForm');
+    const toggleToRegister = document.getElementById('toggleToRegister');
+    const toggleToLogin = document.getElementById('toggleToLogin');
+    const subtitle = document.getElementById('loginSubtitle');
+    
+    if (loginForm && registerForm && toggleToRegister && toggleToLogin && subtitle) {
+        loginForm.classList.remove('hidden');
+        registerForm.classList.add('hidden');
+        toggleToRegister.classList.remove('hidden');
+        toggleToLogin.classList.add('hidden');
+        subtitle.textContent = 'Système d\'exploitation virtuel - Connexion';
+    }
+}
+
+// Fonction pour les connexions rapides
+function quickLogin(type) {
+    let username, role;
+    
+    switch(type) {
+        case 'demo':
+            username = 'demo';
+            role = 'moderator';
+            break;
+        case 'guest':
+            username = 'guest';
+            role = 'user';
+            break;
+        default:
+            showNotification('Type de connexion invalide', 'error');
+            return;
+    }
+    
+    // Créer ou récupérer l'utilisateur
+    let user = allUsers[username];
+    if (!user) {
+        user = createUser(username, '', type);
+    }
+    
+    // Connecter l'utilisateur
+    currentSession = user;
+    updateSessionUI();
+    showDesktop();
+    showNotification(`Bienvenue ${username} !`, 'success');
+}
 
 // Fonction de gestion des formulaires
 function handleLogin(event) {
@@ -444,7 +614,7 @@ function handleLogin(event) {
     const rememberSession = document.getElementById('rememberSession').checked;
     
     if (!username) {
-        showNotification('Veuillez entrer un nom d\'utilisateur', 'error');
+        showNotification('Veuillez saisir un nom d\'utilisateur', 'error');
         return;
     }
     
@@ -462,18 +632,19 @@ function handleRegister(event) {
     const confirmPassword = document.getElementById('regConfirmPasswordInput').value;
     const rememberSession = document.getElementById('regRememberSession').checked;
     
+    if (!username || !password) {
+        showNotification('Veuillez remplir tous les champs', 'error');
+        return;
+    }
+    
     if (password !== confirmPassword) {
         showNotification('Les mots de passe ne correspondent pas', 'error');
         return;
     }
     
-    try {
-        const result = registerUser(username, password, rememberSession);
-        if (result.success) {
-            showDesktop();
-        }
-    } catch (error) {
-        showNotification(error.message, 'error');
+    const result = registerUser(username, password, rememberSession);
+    if (result.success) {
+        showDesktop();
     }
 }
 
@@ -487,67 +658,216 @@ function showDesktop() {
         desktop.style.display = 'flex';
         
         // Démarrer l'horloge
-        if (typeof startClock === 'function') {
-            startClock();
-        }
+        startClock();
         
         // Charger le bureau personnalisé
         if (currentSession) {
             loadDesktopLayout();
         }
-        
-        // Mettre à jour le menu utilisateur
-        if (typeof updateUserMenu === 'function') {
-            updateUserMenu();
-        }
     }
 }
 
-// Basculer vers le formulaire d'inscription
+// Fonction pour fermer le panneau de modération
+function closeModerationPanel() {
+    const panel = document.getElementById('moderationPanel');
+    if (panel) {
+        panel.style.display = 'none';
+    }
+}
+
+// Fonction pour ouvrir le panneau de modération (pour les modérateurs/admins)
+function openModerationPanel() {
+    if (!currentSession || !hasPermission('kick')) {
+        showNotification('Accès refusé - Permissions insuffisantes', 'error');
+        return;
+    }
+    
+    const panel = document.getElementById('moderationPanel');
+    if (!panel) return;
+    
+    // Actualiser la liste des utilisateurs dans le panneau
+    updateModerationUsersList();
+    panel.style.display = 'block';
+}
+
+// Fonction pour mettre à jour la liste des utilisateurs dans le panneau de modération
+function updateModerationUsersList() {
+    const usersList = document.getElementById('moderationUsersList');
+    if (!usersList) return;
+    
+    loadUsersFromStorage();
+    const users = Object.values(allUsers);
+    
+    usersList.innerHTML = users.map(user => `
+        <div class="tonios-moderation-user">
+            <span class="tonios-moderation-user-avatar">${user.avatar}</span>
+            <div class="tonios-moderation-user-info">
+                <strong>${user.username}</strong>
+                <span class="tonios-moderation-user-role">${user.role}</span>
+                <small>Connecté ${user.loginCount} fois</small>
+            </div>
+            <div class="tonios-moderation-user-actions">
+                ${user.username !== currentSession?.username ? `
+                    <button onclick="moderateUser('${user.username}', 'warn')" class="tonios-btn-warn">⚠️</button>
+                    <button onclick="moderateUser('${user.username}', 'kick')" class="tonios-btn-kick">👢</button>
+                    ${hasPermission('ban') ? `<button onclick="moderateUser('${user.username}', 'ban')" class="tonios-btn-ban">🚫</button>` : ''}
+                ` : '<span style="opacity: 0.5;">Vous</span>'}
+            </div>
+        </div>
+    `).join('');
+}
+
+// Fonction de modération des utilisateurs
+function moderateUser(username, action) {
+    if (!currentSession || !hasPermission(action)) {
+        showNotification('Permissions insuffisantes', 'error');
+        return;
+    }
+    
+    const user = allUsers[username];
+    if (!user) {
+        showNotification('Utilisateur introuvable', 'error');
+        return;
+    }
+    
+    switch(action) {
+        case 'warn':
+            showNotification(`Avertissement envoyé à ${username}`, 'warning');
+            break;
+        case 'kick':
+            showNotification(`${username} a été expulsé`, 'info');
+            break;
+        case 'ban':
+            delete allUsers[username];
+            saveUsersToStorage();
+            showNotification(`${username} a été banni`, 'error');
+            updateModerationUsersList();
+            break;
+    }
+}
+
+// Fonctions d'interface utilisateur pour l'authentification
 function showRegisterForm() {
     const loginForm = document.getElementById('loginForm');
     const registerForm = document.getElementById('registerForm');
+    const toggleToRegister = document.getElementById('toggleToRegister');
+    const toggleToLogin = document.getElementById('toggleToLogin');
     const subtitle = document.getElementById('loginSubtitle');
     
-    if (loginForm && registerForm && subtitle) {
+    if (loginForm && registerForm && toggleToRegister && toggleToLogin && subtitle) {
         loginForm.classList.add('hidden');
         registerForm.classList.remove('hidden');
-        subtitle.textContent = 'Créer un nouveau compte';
+        toggleToRegister.classList.add('hidden');
+        toggleToLogin.classList.remove('hidden');
+        subtitle.textContent = 'Système d\'exploitation virtuel - Inscription';
     }
 }
 
-// Basculer vers le formulaire de connexion
 function showLoginForm() {
     const loginForm = document.getElementById('loginForm');
     const registerForm = document.getElementById('registerForm');
+    const toggleToRegister = document.getElementById('toggleToRegister');
+    const toggleToLogin = document.getElementById('toggleToLogin');
     const subtitle = document.getElementById('loginSubtitle');
     
-    if (loginForm && registerForm && subtitle) {
-        registerForm.classList.add('hidden');
+    if (loginForm && registerForm && toggleToRegister && toggleToLogin && subtitle) {
         loginForm.classList.remove('hidden');
+        registerForm.classList.add('hidden');
+        toggleToRegister.classList.remove('hidden');
+        toggleToLogin.classList.add('hidden');
         subtitle.textContent = 'Système d\'exploitation virtuel - Connexion';
     }
 }
 
-// Fonction de déconnexion
-function logoutUser() {
-    if (currentSession) {
-        showNotification(`Au revoir ${currentSession.username} !`, 'info');
-        currentSession = null;
-        clearSavedSession();
+// Fonction pour les connexions rapides
+function quickLogin(type) {
+    let username, role;
+    
+    switch(type) {
+        case 'demo':
+            username = 'demo';
+            role = 'moderator';
+            break;
+        case 'guest':
+            username = 'guest';
+            role = 'user';
+            break;
+        default:
+            showNotification('Type de connexion invalide', 'error');
+            return;
+    }
+    
+    // Créer ou récupérer l'utilisateur
+    let user = allUsers[username];
+    if (!user) {
+        user = createUser(username, '', type);
+    }
+    
+    // Connecter l'utilisateur
+    currentSession = user;
+    updateSessionUI();
+    showDesktop();
+    showNotification(`Bienvenue ${username} !`, 'success');
+}
+
+// Fonction de gestion des formulaires
+function handleLogin(event) {
+    event.preventDefault();
+    
+    const username = document.getElementById('usernameInput').value.trim();
+    const password = document.getElementById('passwordInput').value;
+    const rememberSession = document.getElementById('rememberSession').checked;
+    
+    if (!username) {
+        showNotification('Veuillez saisir un nom d\'utilisateur', 'error');
+        return;
+    }
+    
+    const result = loginUser(username, password, rememberSession);
+    if (result.success) {
+        showDesktop();
+    }
+}
+
+function handleRegister(event) {
+    event.preventDefault();
+    
+    const username = document.getElementById('regUsernameInput').value.trim();
+    const password = document.getElementById('regPasswordInput').value;
+    const confirmPassword = document.getElementById('regConfirmPasswordInput').value;
+    const rememberSession = document.getElementById('regRememberSession').checked;
+    
+    if (!username || !password) {
+        showNotification('Veuillez remplir tous les champs', 'error');
+        return;
+    }
+    
+    if (password !== confirmPassword) {
+        showNotification('Les mots de passe ne correspondent pas', 'error');
+        return;
+    }
+    
+    const result = registerUser(username, password, rememberSession);
+    if (result.success) {
+        showDesktop();
+    }
+}
+
+// Afficher le bureau après connexion
+function showDesktop() {
+    const loginScreen = document.getElementById('loginScreen');
+    const desktop = document.querySelector('.tonios-desktop');
+    
+    if (loginScreen && desktop) {
+        loginScreen.style.display = 'none';
+        desktop.style.display = 'flex';
         
-        // Retourner à l'écran de connexion
-        const loginScreen = document.getElementById('loginScreen');
-        const desktop = document.querySelector('.tonios-desktop');
+        // Démarrer l'horloge
+        startClock();
         
-        if (loginScreen && desktop) {
-            desktop.style.display = 'none';
-            loginScreen.style.display = 'block';
-        }
-        
-        // Réinitialiser l'interface
-        if (typeof updateUserMenu === 'function') {
-            updateUserMenu();
+        // Charger le bureau personnalisé
+        if (currentSession) {
+            loadDesktopLayout();
         }
     }
 }
