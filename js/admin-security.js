@@ -244,19 +244,6 @@ class AdminSecuritySystem {
         }
     }
 
-        // Vérification des patterns suspects
-        if (this.detectSuspiciousPatterns(username)) {
-            return false;
-        }
-
-        // Vérification de la géolocalisation (simulée)
-        if (!this.validateGeolocation()) {
-            return false;
-        }
-
-        return true;
-    }
-
     validateBrowserFingerprint(fingerprint) {
         // Créer une empreinte unique basée sur le navigateur
         const expectedFingerprint = this.generateBrowserFingerprint();
