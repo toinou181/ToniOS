@@ -420,7 +420,11 @@ class AdminSecuritySystem {
 
     // Interface pour le dashboard admin
     openAdminDashboard() {
-        if (!this.isAdminMode) {
+        // Permettre l'accès pour le propriétaire du GitHub (toinou181) sans mot de passe
+        const currentUser = typeof getCurrentUser === 'function' ? getCurrentUser() : null;
+        const isOwner = currentUser === 'toinou181' || currentUser === '@toinou181';
+        
+        if (!this.isAdminMode && !isOwner) {
             this.showSecurityWarning('Accès non autorisé au dashboard admin');
             return false;
         }

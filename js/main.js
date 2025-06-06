@@ -340,9 +340,11 @@ function updateUserMenu() {
         if (userMenu) userMenu.style.display = 'block';
         if (userMenuText) userMenuText.textContent = `👤 ${currentSession.username}`;
         
-        // Afficher le bouton admin seulement pour les admins
+        // Afficher le bouton admin seulement pour toinou181 (propriétaire du GitHub)
         if (adminItem) {
-            adminItem.style.display = currentSession.role === 'admin' ? 'block' : 'none';
+            const isOwner = currentSession.username === 'toinou181' || currentSession.username === '@toinou181';
+            const isAdmin = currentSession.role === 'admin';
+            adminItem.style.display = (isOwner || isAdmin) ? 'block' : 'none';
         }
     } else {
         // Cacher le menu utilisateur
