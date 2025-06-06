@@ -1,4 +1,6 @@
-# ToniOS v2 - Système d'Exploitation Virtuel Web
+# ToniOS v2 - Système d'Exploitation Virtuel Web - Version Fichier Unique
+
+**🎯 Version consolidée en un seul fichier HTML pour facilité d'utilisation !**
 
 ## 🚀 Fonctionnalités
 
@@ -10,16 +12,21 @@
 ### Fonctionnalités avancées :
 - **🔐 Authentification individuelle** : Chaque utilisateur a sa propre session isolée
 - **🎨 Interface personnalisable** : Bureau avec fond d'écran et positionnement des icônes
-- **🔧 Panneau d'administration** : Accès sécurisé pour les administrateurs uniquement
+- **🔧 Panneau d'administration** : Accès sécurisé pour les administrateurs uniquement (spécialement pour toinou181)
 - **📱 Interface responsive** : Compatible avec tous types d'écrans
 
-## 🏗️ Architecture Modulaire
+## 📄 Version Fichier Unique
 
+**ToniOS est maintenant disponible en version fichier unique !**
+
+### Structure actuelle :
 ```
 ToniOS/
-├── index.html                    # Interface principale
-├── styles.css                   # Styles globaux
-├── js/                          # Modules JavaScript
+├── index.html                    # ⭐ FICHIER UNIQUE COMPLET - Tout inclus !
+│                                 # Contient HTML + CSS + JavaScript intégrés
+├── index-original.html           # Sauvegarde de l'ancien index.html
+├── styles.css                   # CSS de référence (inclus dans index.html)
+├── js/                          # Scripts de référence (inclus dans index.html)
 │   ├── auth.js                  # Système d'authentification
 │   ├── main.js                  # Fonctions principales et menu utilisateur
 │   ├── chat.js                  # Chat multi-canaux avec sessions individuelles
@@ -34,8 +41,28 @@ ToniOS/
 └── backups/                     # Sauvegardes des anciennes versions
 ```
 
+## ✨ Avantages de la Version Fichier Unique
+
+### 🎯 Simplicité :
+- **Un seul fichier** : `index.html` contient tout le système
+- **Déploiement facile** : Copiez simplement le fichier index.html
+- **Aucune dépendance** : Tous les CSS et JavaScript sont intégrés
+
+### 🚀 Performance :
+- **Chargement rapide** : Aucune requête externe pour CSS/JS
+- **Fonctionnement offline** : Fonctionne sans serveur pour les fonctionnalités de base
+- **Cache optimal** : Un seul fichier à mettre en cache
+
+### 🔧 Maintenance :
+- **Code source préservé** : Les fichiers originaux restent disponibles dans `js/` et `styles.css`
+- **Version de référence** : `index-original.html` contient l'ancienne version modulaire
+
 ## 🔧 Installation et utilisation
 
+**Option 1 - Ouverture directe** :
+   Ouvrez simplement `index.html` dans votre navigateur !
+
+**Option 2 - Serveur local** :
 1. **Démarrer le serveur local** :
    ```bash
    python3 -m http.server 8000
