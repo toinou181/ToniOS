@@ -137,7 +137,7 @@ function createNewChannel() {
             
             // Sauvegarder
             saveChannelsData();
-            saveUserData();
+            saveChannelsData();
             
             // Basculer vers le nouveau canal
             switchChannel(cleanName, 'text');
@@ -247,7 +247,7 @@ function sendChatMessage() {
     
     // Sauvegarder
     saveChannelsData();
-    saveUserData();
+    saveChannelsData();
     
     // Notification pour les autres utilisateurs (simulation)
     if (Math.random() > 0.7) {
@@ -618,22 +618,67 @@ function initializeChannels() {
     switchChannel('general', 'text');
 }
 
-// Sauvegarde et chargement des données de canaux
+// Sauvegarde et chargement des données de canaux par utilisateur
 function saveChannelsData() {
-    localStorage.setItem('tonios_channels', JSON.stringify(channels));
-    localStorage.setItem('tonios_chat_messages', JSON.stringify(chatMessages));
+    if (!currentSession) return;
+    
+    const userChatKey = `tonios_channels_${currentSession.username}`;
+    const userMessagesKey = `tonios_chat_messages_${currentSession.username}`;
+    
+    localStorage.setItem(userChatKey, JSON.stringify(channels));
+    localStorage.setItem(userMessagesKey, JSON.stringify(chatMessages));
 }
 
 function loadChannelsData() {
-    const savedChannels = localStorage.getItem('tonios_channels');
-    const savedMessages = localStorage.getItem('tonios_chat_messages');
+    if (!currentSession) return;
+    
+    const userChatKey = `tonios_channels_${currentSession.username}`;
+    const userMessagesKey = `tonios_chat_messages_${currentSession.username}`;
+    
+    const savedChannels = localStorage.getItem(userChatKey);
+    const savedMessages = localStorage.getItem(userMessagesKey);
     
     if (savedChannels) {
         channels = JSON.parse(savedChannels);
+    } else {
+        // Réinitialiser aux canaux par défaut pour les nouveaux utilisateurs
+        channels = {
+            text: {
+                general: {
+                    name: 'général',
+                    description: 'Canal principal de discussion',
+                    messages: []
+                },
+                tech: {
+                    name: 'tech',
+                    description: 'Discussions techniques',
+                    messages: []
+                },
+                random: {
+                    name: 'random',
+                    description: 'Discussions libres',
+                    messages: []
+                }
+            },
+            voice: {
+                salon1: {
+                    name: 'Salon général',
+                    description: 'Salon vocal principal',
+                    users: []
+                },
+                salon2: {
+                    name: 'Salle de réunion',
+                    description: 'Pour les réunions',
+                    users: []
+                }
+            }
+        };
     }
     
     if (savedMessages) {
         chatMessages = JSON.parse(savedMessages);
+    } else {
+        chatMessages = [];
     }
 }
 

@@ -500,6 +500,11 @@ function showDesktop() {
         if (typeof updateUserMenu === 'function') {
             updateUserMenu();
         }
+        
+        // Initialiser les données chat pour l'utilisateur
+        if (typeof initializeChannels === 'function') {
+            initializeChannels();
+        }
     }
 }
 
