@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Rapide ToniOS</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #1a1a1a;
+            color: white;
+            padding: 20px;
+        }
+        
+        .test-btn {
+            background: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            margin: 10px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        
+        .test-btn:hover {
+            background: #45a049;
+        }
+        
+        .test-result {
+            background: #333;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 5px;
+            font-family: monospace;
+        }
+        
+        .success { color: #4CAF50; }
+        .error { color: #f44336; }
+        .warning { color: #ff9800; }
+    </style>
+</head>
+<body>
+    <h1>🔧 Test Rapide ToniOS</h1>
+    
+    <div>
+        <button class="test-btn" onclick="testFunctions()">🔍 Tester les Fonctions</button>
+        <button class="test-btn" onclick="testOpenApplication()">🚀 Tester Ouverture App</button>
+        <button class="test-btn" onclick="testIconClick()">🖱️ Tester Clic Icône</button>
+        <button class="test-btn" onclick="clearResults()">🧹 Effacer</button>
+    </div>
+    
+    <div id="results" class="test-result">
+        Prêt pour les tests...
+    </div>
+
+    <!-- Charger les scripts ToniOS -->
+    <script src="js/notifications.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/windows.js"></script>
+    <script src="js/files.js"></script>
+    <script src="js/chat.js"></script>
+    <script src="js/voice.js"></script>
+    <script src="js/main.js"></script>
+
+    <script>
+        function log(message, type = 'info') {
+            const results = document.getElementById('results');
+            const timestamp = new Date().toLocaleTimeString();
+            const colors = {
+                success: '#4CAF50',
+                error: '#f44336',
+                warning: '#ff9800',
+                info: '#2196F3'
+            };
+            
+            results.innerHTML += `<div style="color: ${colors[type]};">[${timestamp}] ${message}</div>`;
+            results.scrollTop = results.scrollHeight;
+        }
+
+        function testFunctions() {
+            log('🔍 Test des fonctions ToniOS...', 'info');
+            
+            // Test de openApplication
+            if (typeof window.openApplication === 'function') {
+                log('✅ window.openApplication disponible', 'success');
+            } else {
+                log('❌ window.openApplication manquante', 'error');
+            }
+            
+            // Test de openApplicationFromDesktop
+            if (typeof window.openApplicationFromDesktop === 'function') {
+                log('✅ window.openApplicationFromDesktop disponible', 'success');
+            } else {
+                log('❌ window.openApplicationFromDesktop manquante', 'error');
+            }
+            
+            // Test de showNotification
+            if (typeof window.showNotification === 'function') {
+                log('✅ window.showNotification disponible', 'success');
+            } else {
+                log('❌ window.showNotification manquante', 'error');
+            }
+            
+            // Test des variables globales
+            if (typeof window.openWindows !== 'undefined') {
+                log('✅ window.openWindows disponible', 'success');
+            } else {
+                log('❌ window.openWindows manquante', 'error');
+            }
+            
+            log('📋 Test des fonctions terminé', 'info');
+        }
+
+        function testOpenApplication() {
+            log('🚀 Test d\'ouverture d\'application...', 'info');
+            
+            try {
+                if (typeof window.openApplicationFromDesktop === 'function') {
+                    log('📱 Tentative d\'ouverture de la calculatrice...', 'info');
+                    window.openApplicationFromDesktop('calculator');
+                    log('✅ Commande d\'ouverture envoyée', 'success');
+                    
+                    // Vérifier si une fenêtre a été créée
+                    setTimeout(() => {
+                        const windows = document.querySelectorAll('.tonios-window');
+                        if (windows.length > 0) {
+                            log(`✅ ${windows.length} fenêtre(s) créée(s)`, 'success');
+                        } else {
+                            log('⚠️ Aucune fenêtre créée', 'warning');
+                        }
+                    }, 1000);
+                } else {
+                    log('❌ Fonction openApplicationFromDesktop indisponible', 'error');
+                }
+            } catch (error) {
+                log(`❌ Erreur: ${error.message}`, 'error');
+            }
+        }
+
+        function testIconClick() {
+            log('🖱️ Test de clic sur icône simulé...', 'info');
+            
+            try {
+                // Simuler un clic sur une icône
+                const calculatorIcon = document.querySelector('[onclick*="calculator"]');
+                if (calculatorIcon) {
+                    log('📱 Icône calculatrice trouvée, simulation clic...', 'info');
+                    calculatorIcon.click();
+                    log('✅ Clic simulé', 'success');
+                } else {
+                    log('❌ Icône calculatrice non trouvée', 'error');
+                }
+            } catch (error) {
+                log(`❌ Erreur clic icône: ${error.message}`, 'error');
+            }
+        }
+
+        function clearResults() {
+            document.getElementById('results').innerHTML = 'Résultats effacés...';
+        }
+
+        // Test automatique au chargement
+        window.onload = function() {
+            setTimeout(() => {
+                log('🔄 Chargement terminé, test automatique...', 'info');
+                testFunctions();
+            }, 1000);
+        };
+    </script>
+</body>
+</html>

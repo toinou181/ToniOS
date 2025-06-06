@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Fonctions ToniOS</title>
+    <style>
+        body {
+            font-family: monospace;
+            padding: 20px;
+            background: #1a1a1a;
+            color: #00ff00;
+        }
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: #000;
+            padding: 20px;
+            border-radius: 10px;
+            border: 1px solid #00ff00;
+        }
+        h1 {
+            color: #00ff00;
+            text-align: center;
+        }
+        #console {
+            background: #000;
+            color: #00ff00;
+            padding: 15px;
+            border: 1px solid #333;
+            border-radius: 5px;
+            font-family: monospace;
+            white-space: pre-wrap;
+            min-height: 500px;
+            max-height: 600px;
+            overflow-y: auto;
+        }
+        button {
+            background: #00ff00;
+            color: #000;
+            border: none;
+            padding: 10px 20px;
+            margin: 10px 5px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        button:hover {
+            background: #00cc00;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🧪 Console de Test ToniOS</h1>
+        <button onclick="runTests()">Exécuter les tests</button>
+        <button onclick="clearConsole()">Vider console</button>
+        <button onclick="testAuth()">Test authentification</button>
+        
+        <div id="console"></div>
+    </div>
+
+    <!-- Inclure les scripts ToniOS -->
+    <script src="js/notifications.js"></script>
+    <script src="js/auth.js"></script>
+
+    <script>
+        const consoleDiv = document.getElementById('console');
+        
+        // Rediriger console.log vers notre div
+        const originalLog = console.log;
+        console.log = function(...args) {
+            originalLog.apply(console, args);
+            consoleDiv.textContent += args.join(' ') + '\n';
+            consoleDiv.scrollTop = consoleDiv.scrollHeight;
+        };
+
+        function clearConsole() {
+            consoleDiv.textContent = '';
+        }
+
+        function runTests() {
+            clearConsole();
+            console.log('🔄 Chargement du script de test...');
+            
+            // Charger et exécuter le script de test
+            fetch('test_functions.js')
+                .then(response => response.text())
+                .then(scriptContent => {
+                    console.log('📄 Script chargé, exécution...');
+                    eval(scriptContent);
+                })
+                .catch(error => {
+                    console.log('❌ Erreur lors du chargement du script:', error);
+                });
+        }
+
+        function testAuth() {
+            clearConsole();
+            console.log('🔐 Test rapide d\'authentification...\n');
+            
+            // Test session démo
+            console.log('Test 1: Session démo');
+            quickLogin('demo');
+            console.log('Session créée:', currentSession ? currentSession.username : 'Échec');
+            
+            // Test inscription
+            console.log('\nTest 2: Inscription');
+            const testUsername = 'User' + Math.floor(Math.random() * 1000);
+            const regResult = registerUser(testUsername, 'test123', false);
+            console.log('Inscription:', regResult ? 'Succès' : 'Échec');
+            
+            // Test connexion
+            console.log('\nTest 3: Connexion');
+            logout();
+            const loginResult = loginUser(testUsername, 'test123', false);
+            console.log('Connexion:', loginResult ? 'Succès' : 'Échec');
+            
+            // État final
+            console.log('\nÉtat final:');
+            console.log('Session actuelle:', currentSession ? currentSession.username : 'Aucune');
+            console.log('Utilisateurs total:', Object.keys(allUsers).length);
+        }
+
+        // Initialisation
+        window.addEventListener('load', function() {
+            console.log('🚀 Console de test ToniOS initialisée');
+            console.log('📝 Cliquez sur "Exécuter les tests" pour commencer');
+        });
+    </script>
+</body>
+</html>

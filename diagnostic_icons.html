@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Diagnostic - Icônes ToniOS</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background: #f0f0f0;
+        }
+        .diagnostic-container {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            max-width: 900px;
+            margin: 0 auto;
+        }
+        .test-section {
+            margin: 20px 0;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        .test-button {
+            background: #3498db;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        .test-button:hover {
+            background: #2980b9;
+        }
+        .test-icon {
+            display: inline-block;
+            width: 80px;
+            height: 80px;
+            background: #ecf0f1;
+            border: 2px solid #bdc3c7;
+            border-radius: 8px;
+            text-align: center;
+            cursor: pointer;
+            margin: 10px;
+            user-select: none;
+            transition: all 0.3s ease;
+        }
+        .test-icon:hover {
+            background: #d5dbdb;
+            transform: scale(1.05);
+        }
+        .test-icon-img {
+            font-size: 32px;
+            margin-top: 10px;
+        }
+        .test-icon-label {
+            font-size: 12px;
+            margin-top: 5px;
+            color: #2c3e50;
+        }
+        .success { color: #27ae60; }
+        .error { color: #e74c3c; }
+        .warning { color: #f39c12; }
+        .info { color: #3498db; }
+        #diagnosticOutput {
+            margin-top: 20px;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 5px;
+            white-space: pre-wrap;
+            font-family: monospace;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+    </style>
+</head>
+<body>
+    <div class="diagnostic-container">
+        <h1>🔧 Diagnostic des Icônes ToniOS</h1>
+        
+        <div class="test-section">
+            <h3>📋 Tests des Fonctions</h3>
+            <button class="test-button" onclick="checkGlobalFunctions()">Vérifier Fonctions Globales</button>
+            <button class="test-button" onclick="testOpenApplication()">Test openApplication Direct</button>
+            <button class="test-button" onclick="testIconEvents()">Test Événements Icônes</button>
+            <button class="test-button" onclick="clearOutput()">Effacer</button>
+        </div>
+        
+        <div class="test-section">
+            <h3>🖱️ Test des Icônes (Simulation)</h3>
+            <p>Cliquez sur ces icônes pour tester les événements :</p>
+            
+            <div class="test-icon" onclick="testIconClick('calculator')">
+                <div class="test-icon-img">🧮</div>
+                <div class="test-icon-label">Calculatrice</div>
+            </div>
+            
+            <div class="test-icon" onclick="testIconClick('notepad')">
+                <div class="test-icon-img">📝</div>
+                <div class="test-icon-label">Bloc-notes</div>
+            </div>
+            
+            <div class="test-icon" onclick="testIconClick('filemanager')">
+                <div class="test-icon-img">📁</div>
+                <div class="test-icon-label">Fichiers</div>
+            </div>
+            
+            <div class="test-icon" onclick="testIconClick('wallpaper')">
+                <div class="test-icon-img">🎨</div>
+                <div class="test-icon-label">Fond d'écran</div>
+            </div>
+            
+            <div class="test-icon" onclick="testIconClick('chat')">
+                <div class="test-icon-img">💬</div>
+                <div class="test-icon-label">Chat</div>
+            </div>
+            
+            <div class="test-icon" onclick="testIconClick('systemprops')">
+                <div class="test-icon-img">🖥️</div>
+                <div class="test-icon-label">Propriétés</div>
+            </div>
+        </div>
+        
+        <div class="test-section">
+            <h3>🚀 Actions Rapides</h3>
+            <button class="test-button" onclick="openToniOSMain()">Ouvrir ToniOS Principal</button>
+            <button class="test-button" onclick="openToniOSNoAuth()">Ouvrir ToniOS Sans Auth</button>
+            <button class="test-button" onclick="loadToniOSScripts()">Charger Scripts ToniOS</button>
+        </div>
+        
+        <div id="diagnosticOutput"></div>
+    </div>
+
+    <script>
+        let output = '';
+        
+        function log(message, type = 'info') {
+            const timestamp = new Date().toLocaleTimeString();
+            let prefix = '';
+            switch(type) {
+                case 'success': prefix = '✅'; break;
+                case 'error': prefix = '❌'; break;
+                case 'warning': prefix = '⚠️'; break;
+                default: prefix = 'ℹ️'; break;
+            }
+            output += `[${timestamp}] ${prefix} ${message}\n`;
+            document.getElementById('diagnosticOutput').textContent = output;
+            document.getElementById('diagnosticOutput').scrollTop = document.getElementById('diagnosticOutput').scrollHeight;
+        }
+        
+        function clearOutput() {
+            output = '';
+            document.getElementById('diagnosticOutput').textContent = '';
+        }
+        
+        function checkGlobalFunctions() {
+            log('🔍 Vérification des fonctions globales...');
+            
+            const requiredFunctions = [
+                'openApplication',
+                'closeWindow',
+                'minimizeWindow',
+                'maximizeWindow',
+                'bringToFront'
+            ];
+            
+            let foundCount = 0;
+            requiredFunctions.forEach(func => {
+                if (typeof window[func] === 'function') {
+                    log(`✅ ${func} disponible`, 'success');
+                    foundCount++;
+                } else {
+                    log(`❌ ${func} manquante`, 'error');
+                }
+            });
+            
+            log(`📊 Résultat : ${foundCount}/${requiredFunctions.length} fonctions trouvées`);
+            
+            if (foundCount === 0) {
+                log('⚠️ Aucune fonction ToniOS détectée. Scripts non chargés?', 'warning');
+            }
+        }
+        
+        function testOpenApplication() {
+            log('🧮 Test direct de openApplication...');
+            
+            if (typeof window.openApplication === 'function') {
+                try {
+                    log('🚀 Tentative d\'ouverture de la calculatrice...');
+                    window.openApplication('calculator');
+                    log('✅ Commande exécutée sans erreur', 'success');
+                } catch (error) {
+                    log(`❌ Erreur : ${error.message}`, 'error');
+                }
+            } else {
+                log('❌ Fonction openApplication non disponible', 'error');
+                log('💡 Suggestion : Charger les scripts ToniOS d\'abord', 'info');
+            }
+        }
+        
+        function testIconClick(appType) {
+            log(`🖱️ Test clic icône : ${appType}`);
+            
+            if (typeof window.openApplication === 'function') {
+                try {
+                    window.openApplication(appType);
+                    log(`✅ ${appType} - Commande exécutée`, 'success');
+                } catch (error) {
+                    log(`❌ ${appType} - Erreur : ${error.message}`, 'error');
+                }
+            } else {
+                log(`❌ ${appType} - openApplication non disponible`, 'error');
+                log('💡 Chargez les scripts ToniOS d\'abord', 'info');
+            }
+        }
+        
+        function testIconEvents() {
+            log('🔍 Test des événements des icônes...');
+            
+            // Simuler le chargement des scripts ToniOS si pas déjà fait
+            if (typeof window.openApplication !== 'function') {
+                log('⚠️ Scripts ToniOS non chargés, tentative de chargement...', 'warning');
+                loadToniOSScripts();
+                return;
+            }
+            
+            // Tester chaque type d'application
+            const apps = ['calculator', 'notepad', 'filemanager', 'wallpaper', 'chat', 'systemprops'];
+            
+            apps.forEach(app => {
+                try {
+                    log(`🔍 Test ${app}...`);
+                    // Ne pas ouvrir réellement, juste tester la fonction
+                    if (typeof window.openApplication === 'function') {
+                        log(`✅ ${app} - Fonction accessible`, 'success');
+                    }
+                } catch (error) {
+                    log(`❌ ${app} - Erreur : ${error.message}`, 'error');
+                }
+            });
+        }
+        
+        function loadToniOSScripts() {
+            log('📦 Chargement des scripts ToniOS...');
+            
+            const scripts = [
+                'js/notifications.js',
+                'js/windows.js',
+                'js/files.js',
+                'js/chat.js',
+                'js/voice.js'
+            ];
+            
+            let loadedCount = 0;
+            
+            scripts.forEach((scriptPath, index) => {
+                const script = document.createElement('script');
+                script.src = scriptPath;
+                script.onload = () => {
+                    loadedCount++;
+                    log(`✅ Chargé : ${scriptPath}`, 'success');
+                    
+                    if (loadedCount === scripts.length) {
+                        log('🎉 Tous les scripts chargés !', 'success');
+                        setTimeout(() => {
+                            checkGlobalFunctions();
+                        }, 500);
+                    }
+                };
+                script.onerror = () => {
+                    log(`❌ Erreur chargement : ${scriptPath}`, 'error');
+                };
+                document.head.appendChild(script);
+            });
+        }
+        
+        function openToniOSMain() {
+            log('🚀 Ouverture de ToniOS principal...');
+            window.open('index.html', '_blank');
+        }
+        
+        function openToniOSNoAuth() {
+            log('🚀 Ouverture de ToniOS sans authentification...');
+            window.open('index_without_auth.html', '_blank');
+        }
+        
+        // Initialisation
+        window.addEventListener('load', function() {
+            log('🚀 Diagnostic des icônes initialisé');
+            log('👆 Utilisez les boutons pour tester les fonctionnalités');
+            
+            // Vérification automatique des fonctions
+            setTimeout(() => {
+                checkGlobalFunctions();
+            }, 1000);
+        });
+    </script>
+</body>
+</html>

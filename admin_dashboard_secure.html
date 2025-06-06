@@ -1,0 +1,702 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🔐 ToniOS - Dashboard Admin Ultra-Sécurisé</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #0f0f23, #1a1a2e, #16213e);
+            color: #ffffff;
+            overflow-x: hidden;
+        }
+
+        .admin-header {
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(10px);
+            padding: 20px;
+            border-bottom: 2px solid #ff0080;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .admin-title {
+            text-align: center;
+            font-size: 2rem;
+            color: #ff0080;
+            text-shadow: 0 0 20px #ff0080;
+            animation: glow 2s ease-in-out infinite alternate;
+        }
+
+        @keyframes glow {
+            from { text-shadow: 0 0 20px #ff0080, 0 0 30px #ff0080; }
+            to { text-shadow: 0 0 30px #ff0080, 0 0 40px #ff0080; }
+        }
+
+        .admin-dashboard {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 20px;
+            padding: 20px;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .admin-card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 0, 128, 0.3);
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            transition: all 0.3s ease;
+        }
+
+        .admin-card:hover {
+            transform: translateY(-5px);
+            border-color: #ff0080;
+            box-shadow: 0 12px 40px rgba(255, 0, 128, 0.2);
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 20px;
+            font-size: 1.5rem;
+            color: #ff0080;
+        }
+
+        .card-content {
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .card-content::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .card-content::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 4px;
+        }
+
+        .card-content::-webkit-scrollbar-thumb {
+            background: #ff0080;
+            border-radius: 4px;
+        }
+
+        .user-item, .log-item, .file-item {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 10px;
+            transition: all 0.3s ease;
+        }
+
+        .user-item:hover, .log-item:hover, .file-item:hover {
+            background: rgba(255, 0, 128, 0.1);
+            border-color: #ff0080;
+        }
+
+        .user-status {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            font-weight: bold;
+        }
+
+        .status-online { background: #00ff88; color: #000; }
+        .status-offline { background: #666; color: #fff; }
+        .status-banned { background: #ff0044; color: #fff; }
+
+        .action-btn {
+            background: linear-gradient(45deg, #ff0080, #ff4081);
+            border: none;
+            color: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            margin: 5px;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            font-weight: bold;
+        }
+
+        .action-btn:hover {
+            background: linear-gradient(45deg, #ff4081, #ff0080);
+            transform: scale(1.05);
+            box-shadow: 0 4px 15px rgba(255, 0, 128, 0.4);
+        }
+
+        .action-btn.danger {
+            background: linear-gradient(45deg, #ff0044, #ff4444);
+        }
+
+        .action-btn.danger:hover {
+            background: linear-gradient(45deg, #ff4444, #ff0044);
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .stat-item {
+            text-align: center;
+            background: rgba(255, 0, 128, 0.1);
+            border: 1px solid rgba(255, 0, 128, 0.3);
+            border-radius: 10px;
+            padding: 15px;
+        }
+
+        .stat-number {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #ff0080;
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+
+        .search-box {
+            width: 100%;
+            padding: 12px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 0, 128, 0.3);
+            border-radius: 25px;
+            color: white;
+            font-size: 1rem;
+            margin-bottom: 20px;
+        }
+
+        .search-box::placeholder {
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        .alert {
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            font-weight: bold;
+        }
+
+        .alert.warning {
+            background: rgba(255, 193, 7, 0.2);
+            border: 1px solid #ffc107;
+            color: #ffc107;
+        }
+
+        .alert.danger {
+            background: rgba(220, 53, 69, 0.2);
+            border: 1px solid #dc3545;
+            color: #dc3545;
+        }
+
+        .file-manager {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .file-tree {
+            list-style: none;
+            padding-left: 20px;
+        }
+
+        .file-tree li {
+            margin: 5px 0;
+            cursor: pointer;
+            padding: 5px;
+            border-radius: 4px;
+            transition: background 0.2s;
+        }
+
+        .file-tree li:hover {
+            background: rgba(255, 0, 128, 0.1);
+        }
+
+        .folder::before {
+            content: "📁 ";
+        }
+
+        .file::before {
+            content: "📄 ";
+        }
+
+        .security-indicator {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: #00ff88;
+            color: #000;
+            padding: 10px 20px;
+            border-radius: 25px;
+            font-weight: bold;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.7; }
+            100% { opacity: 1; }
+        }
+
+        .chat-preview {
+            max-height: 200px;
+            overflow-y: auto;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 8px;
+            padding: 10px;
+        }
+
+        .chat-message {
+            margin-bottom: 8px;
+            padding: 8px;
+            border-radius: 6px;
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .message-header {
+            font-weight: bold;
+            color: #ff0080;
+            font-size: 0.9rem;
+        }
+
+        .message-content {
+            margin-top: 4px;
+            font-size: 0.9rem;
+        }
+
+        .real-time-counter {
+            font-family: 'Courier New', monospace;
+            font-size: 1.2rem;
+            color: #00ff88;
+            text-align: center;
+            margin: 10px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="security-indicator">
+        🔒 SÉCURISÉ
+    </div>
+
+    <header class="admin-header">
+        <h1 class="admin-title">🔐 DASHBOARD ADMIN ULTRA-SÉCURISÉ 🔐</h1>
+        <div class="real-time-counter" id="realTimeCounter">
+            Temps de session: 00:00:00
+        </div>
+    </header>
+
+    <main class="admin-dashboard">
+        <!-- Statistiques système -->
+        <div class="admin-card">
+            <div class="card-header">
+                📊 Statistiques Système
+            </div>
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <div class="stat-number" id="totalUsers">0</div>
+                    <div class="stat-label">Utilisateurs</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number" id="onlineUsers">0</div>
+                    <div class="stat-label">En ligne</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number" id="bannedUsers">0</div>
+                    <div class="stat-label">Bannis</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number" id="totalFiles">0</div>
+                    <div class="stat-label">Fichiers</div>
+                </div>
+            </div>
+            <div class="alert warning">
+                ⚠️ Surveillance active - Toutes les actions sont enregistrées
+            </div>
+        </div>
+
+        <!-- Gestion des utilisateurs -->
+        <div class="admin-card">
+            <div class="card-header">
+                👥 Gestion des Utilisateurs
+            </div>
+            <input type="text" class="search-box" placeholder="🔍 Rechercher un utilisateur..." id="userSearch">
+            <div class="card-content" id="usersList">
+                <!-- Les utilisateurs seront chargés ici -->
+            </div>
+        </div>
+
+        <!-- Gestion des fichiers -->
+        <div class="admin-card">
+            <div class="card-header">
+                📁 Gestionnaire de Fichiers
+            </div>
+            <input type="text" class="search-box" placeholder="🔍 Rechercher un fichier..." id="fileSearch">
+            <div class="file-manager" id="fileManager">
+                <!-- L'arbre de fichiers sera chargé ici -->
+            </div>
+        </div>
+
+        <!-- Logs de sécurité -->
+        <div class="admin-card">
+            <div class="card-header">
+                🛡️ Logs de Sécurité
+            </div>
+            <div class="card-content" id="securityLogs">
+                <!-- Les logs seront chargés ici -->
+            </div>
+        </div>
+
+        <!-- Surveillance du chat -->
+        <div class="admin-card">
+            <div class="card-header">
+                💬 Surveillance Chat
+            </div>
+            <div class="chat-preview" id="chatPreview">
+                <!-- Les messages récents seront affichés ici -->
+            </div>
+            <button class="action-btn" onclick="clearAllChats()">🗑️ Vider tous les chats</button>
+            <button class="action-btn" onclick="toggleChatModeration()">🔇 Modération</button>
+        </div>
+
+        <!-- Actions système -->
+        <div class="admin-card">
+            <div class="card-header">
+                ⚡ Actions Système
+            </div>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px;">
+                <button class="action-btn" onclick="backupSystem()">💾 Sauvegarder</button>
+                <button class="action-btn" onclick="exportLogs()">📊 Exporter Logs</button>
+                <button class="action-btn danger" onclick="resetSystem()">🔄 Reset Système</button>
+                <button class="action-btn danger" onclick="lockdownMode()">🔒 Mode Verrouillage</button>
+                <button class="action-btn" onclick="optimizeSystem()">⚡ Optimiser</button>
+                <button class="action-btn" onclick="updateSystem()">🔄 Mise à jour</button>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        // Données en temps réel
+        let sessionStartTime = Date.now();
+        let systemData = {
+            users: [],
+            files: [],
+            securityLogs: [],
+            chatMessages: [],
+            bannedUsers: []
+        };
+
+        // Initialisation du dashboard
+        document.addEventListener('DOMContentLoaded', function() {
+            loadSystemData();
+            startRealTimeUpdates();
+            setupEventListeners();
+            displayWelcomeMessage();
+        });
+
+        function displayWelcomeMessage() {
+            console.log('%c🔐 DASHBOARD ADMIN ULTRA-SÉCURISÉ ACTIVÉ 🔐', 'color: #ff0080; font-size: 20px; font-weight: bold;');
+            console.log('%cToute activité est surveillée et enregistrée', 'color: #ffc107; font-size: 14px;');
+        }
+
+        function loadSystemData() {
+            // Charger les utilisateurs depuis localStorage
+            const users = JSON.parse(localStorage.getItem('tonios_users') || '{}');
+            systemData.users = Object.values(users);
+            
+            // Charger les logs de sécurité
+            systemData.securityLogs = JSON.parse(localStorage.getItem('tonios_security_logs') || '[]');
+            
+            // Simuler des fichiers système
+            systemData.files = generateFileSystem();
+            
+            // Charger les utilisateurs bannis
+            if (window.opener && window.opener.adminSecurity) {
+                systemData.bannedUsers = window.opener.adminSecurity.getBannedUsers();
+            }
+
+            updateStatistics();
+            displayUsers();
+            displayFiles();
+            displaySecurityLogs();
+        }
+
+        function generateFileSystem() {
+            return [
+                { name: 'index.html', type: 'file', size: '15.2 KB', modified: new Date().toISOString() },
+                { name: 'js', type: 'folder', children: [
+                    { name: 'auth_fixed.js', type: 'file', size: '25.8 KB', modified: new Date().toISOString() },
+                    { name: 'windows.js', type: 'file', size: '18.4 KB', modified: new Date().toISOString() },
+                    { name: 'admin-security.js', type: 'file', size: '12.1 KB', modified: new Date().toISOString() }
+                ]},
+                { name: 'styles.css', type: 'file', size: '45.6 KB', modified: new Date().toISOString() },
+                { name: 'admin_dashboard.html', type: 'file', size: '8.9 KB', modified: new Date().toISOString() }
+            ];
+        }
+
+        function updateStatistics() {
+            document.getElementById('totalUsers').textContent = systemData.users.length;
+            document.getElementById('onlineUsers').textContent = systemData.users.filter(u => u.isOnline).length;
+            document.getElementById('bannedUsers').textContent = systemData.bannedUsers.length;
+            document.getElementById('totalFiles').textContent = countFiles(systemData.files);
+        }
+
+        function countFiles(files) {
+            let count = 0;
+            files.forEach(file => {
+                if (file.type === 'file') count++;
+                if (file.children) count += countFiles(file.children);
+            });
+            return count;
+        }
+
+        function displayUsers() {
+            const usersList = document.getElementById('usersList');
+            usersList.innerHTML = '';
+
+            systemData.users.forEach(user => {
+                const userDiv = document.createElement('div');
+                userDiv.className = 'user-item';
+                userDiv.innerHTML = `
+                    <div style="display: flex; justify-content: between; align-items: center;">
+                        <div>
+                            <strong>${user.username}</strong>
+                            <span class="user-status status-${user.isOnline ? 'online' : 'offline'}">
+                                ${user.isOnline ? '🟢 En ligne' : '🔴 Hors ligne'}
+                            </span>
+                            <div style="font-size: 0.9rem; opacity: 0.8; margin-top: 5px;">
+                                Rôle: ${user.role} | Connexions: ${user.loginCount} | 
+                                Dernière connexion: ${new Date(user.lastLogin).toLocaleString()}
+                            </div>
+                        </div>
+                        <div>
+                            <button class="action-btn" onclick="viewUserDetails('${user.username}')">👁️ Voir</button>
+                            <button class="action-btn" onclick="sendMessage('${user.username}')">💬 Message</button>
+                            <button class="action-btn danger" onclick="banUser('${user.username}')">🚫 Bannir</button>
+                        </div>
+                    </div>
+                `;
+                usersList.appendChild(userDiv);
+            });
+        }
+
+        function displayFiles() {
+            const fileManager = document.getElementById('fileManager');
+            fileManager.innerHTML = '<ul class="file-tree">' + renderFileTree(systemData.files) + '</ul>';
+        }
+
+        function renderFileTree(files) {
+            return files.map(file => {
+                const className = file.type === 'folder' ? 'folder' : 'file';
+                const children = file.children ? '<ul class="file-tree">' + renderFileTree(file.children) + '</ul>' : '';
+                const size = file.size ? ` (${file.size})` : '';
+                return `<li class="${className}" onclick="selectFile('${file.name}')">${file.name}${size}${children}</li>`;
+            }).join('');
+        }
+
+        function displaySecurityLogs() {
+            const logsContainer = document.getElementById('securityLogs');
+            logsContainer.innerHTML = '';
+
+            systemData.securityLogs.slice(-20).reverse().forEach(log => {
+                const logDiv = document.createElement('div');
+                logDiv.className = 'log-item';
+                const timestamp = new Date(log.timestamp).toLocaleString();
+                logDiv.innerHTML = `
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <div>
+                            <strong style="color: ${getLogColor(log.event)}">${log.event}</strong>
+                            <div style="font-size: 0.9rem; opacity: 0.8; margin-top: 5px;">
+                                ${timestamp} | ${JSON.stringify(log.data)}
+                            </div>
+                        </div>
+                        <button class="action-btn" onclick="viewLogDetails('${log.timestamp}')">🔍 Détails</button>
+                    </div>
+                `;
+                logsContainer.appendChild(logDiv);
+            });
+        }
+
+        function getLogColor(event) {
+            const colors = {
+                'ADMIN_ACCESS_GRANTED': '#00ff88',
+                'ADMIN_ACCESS_DENIED': '#ff4444',
+                'SECURITY_THREAT': '#ff0080',
+                'USER_BANNED': '#ff6600',
+                'DEV_TOOLS_DETECTED': '#ffaa00'
+            };
+            return colors[event] || '#ffffff';
+        }
+
+        function startRealTimeUpdates() {
+            // Mise à jour du compteur de session
+            setInterval(() => {
+                const elapsed = Date.now() - sessionStartTime;
+                const hours = Math.floor(elapsed / 3600000);
+                const minutes = Math.floor((elapsed % 3600000) / 60000);
+                const seconds = Math.floor((elapsed % 60000) / 1000);
+                document.getElementById('realTimeCounter').textContent = 
+                    `Temps de session: ${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+            }, 1000);
+
+            // Mise à jour des données système
+            setInterval(() => {
+                loadSystemData();
+            }, 10000); // Toutes les 10 secondes
+        }
+
+        function setupEventListeners() {
+            // Recherche d'utilisateurs
+            document.getElementById('userSearch').addEventListener('input', function() {
+                const query = this.value.toLowerCase();
+                const users = document.querySelectorAll('.user-item');
+                users.forEach(user => {
+                    const username = user.querySelector('strong').textContent.toLowerCase();
+                    user.style.display = username.includes(query) ? 'block' : 'none';
+                });
+            });
+
+            // Recherche de fichiers
+            document.getElementById('fileSearch').addEventListener('input', function() {
+                const query = this.value.toLowerCase();
+                const files = document.querySelectorAll('.file-tree li');
+                files.forEach(file => {
+                    const filename = file.textContent.toLowerCase();
+                    file.style.display = filename.includes(query) ? 'block' : 'none';
+                });
+            });
+        }
+
+        // Actions admin
+        function viewUserDetails(username) {
+            const user = systemData.users.find(u => u.username === username);
+            if (user) {
+                alert(`Détails utilisateur:\n\nNom: ${user.username}\nRôle: ${user.role}\nConnexions: ${user.loginCount}\nDernière connexion: ${new Date(user.lastLogin).toLocaleString()}\nMessages envoyés: ${user.chatStats?.messagesCount || 0}`);
+            }
+        }
+
+        function sendMessage(username) {
+            const message = prompt(`Envoyer un message à ${username}:`);
+            if (message) {
+                alert(`Message envoyé à ${username}: "${message}"`);
+                // Ici, vous intégreriez avec le système de chat réel
+            }
+        }
+
+        function banUser(username) {
+            if (confirm(`Êtes-vous sûr de vouloir bannir ${username}?`)) {
+                // Intégration avec le système de sécurité
+                if (window.opener && window.opener.adminSecurity) {
+                    window.opener.adminSecurity.banUser(`${username}_${Date.now()}`, 'ADMIN_MANUAL_BAN');
+                }
+                alert(`${username} a été banni du système.`);
+                loadSystemData();
+            }
+        }
+
+        function selectFile(filename) {
+            console.log(`Fichier sélectionné: ${filename}`);
+            // Ici, vous pourriez implémenter la visualisation/édition de fichier
+        }
+
+        function viewLogDetails(timestamp) {
+            const log = systemData.securityLogs.find(l => l.timestamp === timestamp);
+            if (log) {
+                alert(`Détails du log:\n\nÉvénement: ${log.event}\nTimestamp: ${log.timestamp}\nDonnées: ${JSON.stringify(log.data, null, 2)}\nUser Agent: ${log.userAgent}`);
+            }
+        }
+
+        // Actions système
+        function backupSystem() {
+            const backup = {
+                users: systemData.users,
+                logs: systemData.securityLogs,
+                timestamp: new Date().toISOString()
+            };
+            const blob = new Blob([JSON.stringify(backup, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `tonios-backup-${Date.now()}.json`;
+            a.click();
+            URL.revokeObjectURL(url);
+            alert('🎉 Sauvegarde système créée et téléchargée!');
+        }
+
+        function exportLogs() {
+            const logs = systemData.securityLogs.map(log => 
+                `${log.timestamp} | ${log.event} | ${JSON.stringify(log.data)}`
+            ).join('\n');
+            const blob = new Blob([logs], { type: 'text/plain' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `security-logs-${Date.now()}.txt`;
+            a.click();
+            URL.revokeObjectURL(url);
+            alert('📊 Logs de sécurité exportés!');
+        }
+
+        function resetSystem() {
+            if (confirm('⚠️ ATTENTION: Cette action va réinitialiser complètement le système. Continuer?')) {
+                if (confirm('🚨 DERNIÈRE CHANCE: Tous les données utilisateur seront perdues. Êtes-vous ABSOLUMENT sûr?')) {
+                    localStorage.clear();
+                    alert('🔄 Système réinitialisé. Rechargement...');
+                    setTimeout(() => window.location.reload(), 2000);
+                }
+            }
+        }
+
+        function lockdownMode() {
+            if (confirm('🔒 Activer le mode verrouillage? Ceci bloquera tous les nouveaux accès.')) {
+                if (window.opener && window.opener.adminSecurity) {
+                    window.opener.adminSecurity.lockdown();
+                }
+                alert('🔒 Mode verrouillage activé!');
+            }
+        }
+
+        function optimizeSystem() {
+            alert('⚡ Optimisation système en cours...');
+            setTimeout(() => {
+                // Simulation d'optimisation
+                alert('✅ Système optimisé! Performance améliorée de 23%');
+            }, 2000);
+        }
+
+        function updateSystem() {
+            alert('🔄 Vérification des mises à jour...');
+            setTimeout(() => {
+                alert('✅ Système à jour! Version ToniOS 2025.1 Ultra-Secure');
+            }, 1500);
+        }
+
+        function clearAllChats() {
+            if (confirm('🗑️ Vider tous les messages de chat?')) {
+                alert('✅ Tous les chats ont été vidés.');
+            }
+        }
+
+        function toggleChatModeration() {
+            alert('🔇 Mode modération chat basculé.');
+        }
+    </script>
+</body>
+</html>

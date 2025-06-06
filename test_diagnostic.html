@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Applications ToniOS</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            min-height: 100vh;
+        }
+        .test-container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 20px;
+            border-radius: 10px;
+            backdrop-filter: blur(10px);
+        }
+        .test-section {
+            margin: 20px 0;
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+        }
+        button {
+            background: #4CAF50;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            margin: 5px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        button:hover {
+            background: #45a049;
+        }
+        .error {
+            background: rgba(244, 67, 54, 0.3);
+            color: #f44336;
+            padding: 10px;
+            border-radius: 5px;
+            margin: 10px 0;
+        }
+        .success {
+            background: rgba(76, 175, 80, 0.3);
+            color: #4CAF50;
+            padding: 10px;
+            border-radius: 5px;
+            margin: 10px 0;
+        }
+        .info {
+            background: rgba(33, 150, 243, 0.3);
+            color: #2196F3;
+            padding: 10px;
+            border-radius: 5px;
+            margin: 10px 0;
+        }
+        #log {
+            background: #000;
+            color: #00ff00;
+            padding: 15px;
+            border-radius: 5px;
+            font-family: monospace;
+            white-space: pre-wrap;
+            max-height: 400px;
+            overflow-y: auto;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <h1>🛠️ Diagnostic ToniOS - Applications</h1>
+        
+        <div class="test-section">
+            <h2>🔍 Diagnostic Initial</h2>
+            <button onclick="checkLoadedModules()">Vérifier modules chargés</button>
+            <button onclick="checkDesktopState()">Vérifier état bureau</button>
+            <button onclick="simulateLogin()">Simuler connexion</button>
+            <div id="diagnostic-result"></div>
+        </div>
+
+        <div class="test-section">
+            <h2>🎮 Test Applications</h2>
+            <button onclick="testApplication('calculator')">Test Calculatrice</button>
+            <button onclick="testApplication('notepad')">Test Bloc-notes</button>
+            <button onclick="testApplication('filemanager')">Test Fichiers</button>
+            <button onclick="testApplication('chat')">Test Chat</button>
+            <div id="app-result"></div>
+        </div>
+
+        <div class="test-section">
+            <h2>🖱️ Test Événements</h2>
+            <button onclick="testRightClick()">Test Clic droit</button>
+            <button onclick="testDesktopInteractions()">Test Interactions bureau</button>
+            <div id="events-result"></div>
+        </div>
+
+        <div id="log"></div>
+    </div>
+
+    <!-- Inclure les scripts ToniOS dans le bon ordre -->
+    <script src="js/notifications.js"></script>
+    <script src="js/windows.js"></script>
+    <script src="js/files.js"></script>
+    <script src="js/chat.js"></script>
+    <script src="js/voice.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/main.js"></script>
+
+    <script>
+        const log = document.getElementById('log');
+        
+        function addLog(message, type = 'info') {
+            const timestamp = new Date().toLocaleTimeString();
+            log.textContent += `[${timestamp}] ${message}\n`;
+            log.scrollTop = log.scrollHeight;
+            console.log(message);
+        }
+
+        function showResult(elementId, message, type = 'info') {
+            const element = document.getElementById(elementId);
+            element.innerHTML = `<div class="${type}">${message}</div>`;
+        }
+
+        function checkLoadedModules() {
+            addLog('=== VÉRIFICATION DES MODULES ===');
+            
+            const modules = {
+                'notifications.js': typeof showNotification !== 'undefined',
+                'auth.js': typeof loginUser !== 'undefined',
+                'main.js': typeof openApplication !== 'undefined',
+                'windows.js': typeof createWindow !== 'undefined',
+                'files.js': typeof createFileManagerContent !== 'undefined',
+                'chat.js': typeof createChatContent !== 'undefined'
+            };
+
+            let allLoaded = true;
+            for (const [module, loaded] of Object.entries(modules)) {
+                const status = loaded ? '✅' : '❌';
+                addLog(`${status} ${module}: ${loaded ? 'Chargé' : 'MANQUANT'}`);
+                if (!loaded) allLoaded = false;
+            }
+
+            const result = allLoaded ? 
+                '✅ Tous les modules sont chargés correctement' : 
+                '❌ Certains modules sont manquants';
+            
+            showResult('diagnostic-result', result, allLoaded ? 'success' : 'error');
+            addLog(result);
+        }
+
+        function checkDesktopState() {
+            addLog('=== VÉRIFICATION ÉTAT BUREAU ===');
+            
+            const desktop = document.querySelector('.tonios-desktop');
+            const loginScreen = document.getElementById('loginScreen');
+            const desktopArea = document.querySelector('.tonios-desktop-area');
+            const icons = document.querySelectorAll('.tonios-desktop-icon');
+
+            addLog(`Bureau (.tonios-desktop): ${desktop ? 'Trouvé' : 'MANQUANT'}`);
+            addLog(`Écran connexion: ${loginScreen ? 'Trouvé' : 'MANQUANT'}`);
+            addLog(`Zone bureau: ${desktopArea ? 'Trouvé' : 'MANQUANT'}`);
+            addLog(`Icônes trouvées: ${icons.length}`);
+
+            if (desktop) {
+                addLog(`Bureau visible: ${desktop.style.display !== 'none'}`);
+            }
+
+            if (currentSession) {
+                addLog(`Session active: ${currentSession.username}`);
+            } else {
+                addLog('❌ Aucune session active');
+            }
+
+            let result = '📊 État du bureau vérifié - voir logs pour détails';
+            showResult('diagnostic-result', result, 'info');
+        }
+
+        function simulateLogin() {
+            addLog('=== SIMULATION CONNEXION ===');
+            
+            try {
+                // Créer une session démo
+                addLog('Création session démo...');
+                quickLogin('demo');
+                
+                if (currentSession) {
+                    addLog(`✅ Session créée: ${currentSession.username}`);
+                    
+                    // Vérifier si le bureau est visible
+                    const desktop = document.querySelector('.tonios-desktop');
+                    if (desktop && desktop.style.display !== 'none') {
+                        addLog('✅ Bureau affiché');
+                        showResult('diagnostic-result', '✅ Connexion simulée avec succès', 'success');
+                    } else {
+                        addLog('❌ Bureau non affiché');
+                        showResult('diagnostic-result', '⚠️ Session créée mais bureau non visible', 'error');
+                    }
+                } else {
+                    addLog('❌ Échec création session');
+                    showResult('diagnostic-result', '❌ Échec simulation connexion', 'error');
+                }
+            } catch (error) {
+                addLog(`❌ Erreur: ${error.message}`);
+                showResult('diagnostic-result', `❌ Erreur: ${error.message}`, 'error');
+            }
+        }
+
+        function testApplication(appName) {
+            addLog(`=== TEST APPLICATION: ${appName.toUpperCase()} ===`);
+            
+            try {
+                // Vérifier si openApplication existe
+                if (typeof openApplication !== 'function') {
+                    addLog('❌ Fonction openApplication non trouvée');
+                    showResult('app-result', '❌ Fonction openApplication manquante', 'error');
+                    return;
+                }
+
+                addLog(`Tentative ouverture ${appName}...`);
+                openApplication(appName);
+                
+                // Vérifier si une fenêtre a été créée
+                setTimeout(() => {
+                    const windows = document.querySelectorAll('.tonios-window');
+                    const newWindow = Array.from(windows).find(w => 
+                        w.querySelector('.tonios-window-title')?.textContent.toLowerCase().includes(appName)
+                    );
+                    
+                    if (newWindow) {
+                        addLog(`✅ Application ${appName} ouverte avec succès`);
+                        showResult('app-result', `✅ ${appName} fonctionne`, 'success');
+                    } else {
+                        addLog(`❌ Fenêtre ${appName} non créée`);
+                        showResult('app-result', `❌ ${appName} ne s'ouvre pas`, 'error');
+                    }
+                }, 500);
+                
+            } catch (error) {
+                addLog(`❌ Erreur ouverture ${appName}: ${error.message}`);
+                showResult('app-result', `❌ Erreur ${appName}: ${error.message}`, 'error');
+            }
+        }
+
+        function testRightClick() {
+            addLog('=== TEST CLIC DROIT ===');
+            
+            try {
+                if (typeof handleRightClick !== 'function') {
+                    addLog('❌ Fonction handleRightClick non trouvée');
+                    showResult('events-result', '❌ handleRightClick manquante', 'error');
+                    return;
+                }
+
+                // Simuler un clic droit
+                const event = new MouseEvent('contextmenu', {
+                    clientX: 100,
+                    clientY: 100,
+                    bubbles: true
+                });
+                
+                document.dispatchEvent(event);
+                
+                setTimeout(() => {
+                    const contextMenu = document.getElementById('contextMenu');
+                    if (contextMenu) {
+                        addLog('✅ Menu contextuel créé');
+                        showResult('events-result', '✅ Clic droit fonctionne', 'success');
+                    } else {
+                        addLog('❌ Menu contextuel non créé');
+                        showResult('events-result', '❌ Clic droit ne fonctionne pas', 'error');
+                    }
+                }, 100);
+                
+            } catch (error) {
+                addLog(`❌ Erreur clic droit: ${error.message}`);
+                showResult('events-result', `❌ Erreur: ${error.message}`, 'error');
+            }
+        }
+
+        function testDesktopInteractions() {
+            addLog('=== TEST INTERACTIONS BUREAU ===');
+            
+            const functions = [
+                'setupDesktopInteractions',
+                'setupEventListeners',
+                'handleDesktopClick',
+                'refreshDesktop'
+            ];
+
+            let allFound = true;
+            functions.forEach(func => {
+                const exists = typeof window[func] === 'function';
+                addLog(`${exists ? '✅' : '❌'} ${func}: ${exists ? 'Trouvée' : 'MANQUANTE'}`);
+                if (!exists) allFound = false;
+            });
+
+            showResult('events-result', 
+                allFound ? '✅ Toutes les fonctions trouvées' : '❌ Fonctions manquantes',
+                allFound ? 'success' : 'error'
+            );
+        }
+
+        // Initialisation
+        window.addEventListener('load', function() {
+            addLog('🚀 Page de diagnostic chargée');
+            addLog('Cliquez sur les boutons pour effectuer les tests');
+        });
+    </script>
+</body>
+</html>

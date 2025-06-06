@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Création de Comptes - ToniOS</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .test-container {
+            max-width: 600px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .test-section {
+            margin-bottom: 20px;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        .test-form {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .test-input {
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        .test-btn {
+            padding: 10px;
+            background: #007bff;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .test-btn:hover {
+            background: #0056b3;
+        }
+        .log {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            padding: 10px;
+            border-radius: 4px;
+            font-family: monospace;
+            font-size: 12px;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+        .error { color: red; }
+        .success { color: green; }
+        .info { color: blue; }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <h1>🧪 Test de Création de Comptes</h1>
+        
+        <div class="test-section">
+            <h3>📝 Formulaire de Test d'Inscription</h3>
+            <form class="test-form" onsubmit="testRegister(event)">
+                <input type="text" id="testUsername" class="test-input" placeholder="Nom d'utilisateur" value="TestUser123" required>
+                <input type="password" id="testPassword" class="test-input" placeholder="Mot de passe" value="password123" required>
+                <input type="password" id="testConfirmPassword" class="test-input" placeholder="Confirmer mot de passe" value="password123" required>
+                <label>
+                    <input type="checkbox" id="testRemember"> Se souvenir de moi
+                </label>
+                <button type="submit" class="test-btn">Créer le compte</button>
+            </form>
+        </div>
+
+        <div class="test-section">
+            <h3>📊 Tests Automatiques</h3>
+            <button class="test-btn" onclick="runTests()">Lancer tous les tests</button>
+            <button class="test-btn" onclick="clearStorage()">Vider le stockage</button>
+            <button class="test-btn" onclick="showStorage()">Afficher le stockage</button>
+        </div>
+
+        <div class="test-section">
+            <h3>📋 Journal des Tests</h3>
+            <div id="testLog" class="log">Prêt pour les tests...\n</div>
+        </div>
+
+        <div class="test-section">
+            <h3>💾 État du Stockage</h3>
+            <div id="storageInfo" class="log">Chargement...</div>
+        </div>
+    </div>
+
+    <!-- Scripts ToniOS -->
+    <script src="js/notifications.js"></script>
+    <script src="js/auth_fixed.js"></script>
+
+    <script>
+        let logElement = document.getElementById('testLog');
+        let storageElement = document.getElementById('storageInfo');
+
+        function log(message, type = 'info') {
+            const timestamp = new Date().toLocaleTimeString();
+            const className = type === 'error' ? 'error' : type === 'success' ? 'success' : 'info';
+            logElement.innerHTML += `<span class="${className}">[${timestamp}] ${message}</span>\n`;
+            logElement.scrollTop = logElement.scrollHeight;
+            console.log(`[${type.toUpperCase()}]`, message);
+        }
+
+        function testRegister(event) {
+            event.preventDefault();
+            log('=== DÉBUT DU TEST D\'INSCRIPTION ===');
+            
+            const username = document.getElementById('testUsername').value.trim();
+            const password = document.getElementById('testPassword').value;
+            const confirmPassword = document.getElementById('testConfirmPassword').value;
+            const remember = document.getElementById('testRemember').checked;
+
+            log(`Tentative d'inscription: ${username}`);
+            
+            // Vérifications de base
+            if (!username || !password) {
+                log('❌ Champs vides détectés', 'error');
+                return;
+            }
+
+            if (password !== confirmPassword) {
+                log('❌ Mots de passe différents', 'error');
+                return;
+            }
+
+            // Test des fonctions
+            log('🔍 Vérification des fonctions...');
+            log(`registerUser: ${typeof registerUser === 'function' ? '✅' : '❌'}`);
+            log(`UserSession: ${typeof UserSession === 'function' ? '✅' : '❌'}`);
+            log(`saveUser: ${typeof saveUser === 'function' ? '✅' : '❌'}`);
+            log(`loadUser: ${typeof loadUser === 'function' ? '✅' : '❌'}`);
+
+            // Vérifier si l'utilisateur existe
+            try {
+                const existingUser = loadUser(username);
+                if (existingUser) {
+                    log(`❌ Utilisateur ${username} existe déjà`, 'error');
+                    return;
+                }
+                log(`✅ Utilisateur ${username} n'existe pas encore`);
+            } catch (error) {
+                log(`❌ Erreur lors de la vérification: ${error.message}`, 'error');
+            }
+
+            // Tenter la création
+            try {
+                log('🔨 Création de l\'utilisateur...');
+                const result = registerUser(username, password, remember);
+                
+                if (result && result.success) {
+                    log(`✅ Inscription réussie pour ${username}!`, 'success');
+                    showStorage();
+                } else {
+                    log(`❌ Échec de l'inscription`, 'error');
+                }
+            } catch (error) {
+                log(`❌ Erreur lors de l'inscription: ${error.message}`, 'error');
+                console.error('Erreur complète:', error);
+            }
+
+            log('=== FIN DU TEST D\'INSCRIPTION ===\n');
+        }
+
+        function runTests() {
+            log('=== DÉBUT DES TESTS AUTOMATIQUES ===');
+            
+            // Test 1: Vérifier les fonctions
+            log('Test 1: Vérification des fonctions');
+            const functions = ['registerUser', 'loginUser', 'UserSession', 'saveUser', 'loadUser'];
+            functions.forEach(func => {
+                const exists = typeof window[func] === 'function' || typeof eval(func) === 'function';
+                log(`  ${func}: ${exists ? '✅' : '❌'}`);
+            });
+
+            // Test 2: Créer plusieurs utilisateurs
+            log('Test 2: Création de comptes multiples');
+            const testUsers = [
+                { username: 'Alice', password: 'alice123' },
+                { username: 'Bob', password: 'bob123' },
+                { username: 'Charlie', password: 'charlie123' }
+            ];
+
+            testUsers.forEach((user, index) => {
+                try {
+                    // Supprimer d'abord si existe
+                    localStorage.removeItem(`tonios_user_${user.username}`);
+                    
+                    const result = registerUser(user.username, user.password);
+                    if (result && result.success) {
+                        log(`  ✅ ${user.username} créé avec succès`, 'success');
+                    } else {
+                        log(`  ❌ Échec pour ${user.username}`, 'error');
+                    }
+                } catch (error) {
+                    log(`  ❌ Erreur pour ${user.username}: ${error.message}`, 'error');
+                }
+            });
+
+            // Test 3: Vérifier le stockage
+            log('Test 3: Vérification du stockage');
+            showStorage();
+
+            log('=== FIN DES TESTS AUTOMATIQUES ===\n');
+        }
+
+        function clearStorage() {
+            const keys = Object.keys(localStorage);
+            const toniosKeys = keys.filter(key => key.startsWith('tonios_'));
+            
+            toniosKeys.forEach(key => {
+                localStorage.removeItem(key);
+            });
+            
+            log(`🗑️ ${toniosKeys.length} clés ToniOS supprimées du stockage`, 'info');
+            showStorage();
+        }
+
+        function showStorage() {
+            const keys = Object.keys(localStorage);
+            const toniosKeys = keys.filter(key => key.startsWith('tonios_'));
+            
+            let info = `📊 Stockage LocalStorage (${toniosKeys.length} clés ToniOS):\n`;
+            
+            if (toniosKeys.length === 0) {
+                info += '  Aucune donnée ToniOS trouvée\n';
+            } else {
+                toniosKeys.forEach(key => {
+                    const value = localStorage.getItem(key);
+                    const size = new Blob([value]).size;
+                    info += `  ${key}: ${size} bytes\n`;
+                    
+                    if (key.startsWith('tonios_user_')) {
+                        try {
+                            const userData = JSON.parse(value);
+                            info += `    Utilisateur: ${userData.username}, Rôle: ${userData.role}\n`;
+                        } catch (e) {
+                            info += `    ❌ Données corrompues\n`;
+                        }
+                    }
+                });
+            }
+            
+            storageElement.textContent = info;
+        }
+
+        // Initialisation
+        document.addEventListener('DOMContentLoaded', () => {
+            log('🚀 Page de test chargée');
+            showStorage();
+        });
+
+        // Override showNotification pour capturer les messages
+        const originalShowNotification = window.showNotification;
+        window.showNotification = function(message, type) {
+            log(`📢 Notification: ${message}`, type);
+            if (originalShowNotification) {
+                originalShowNotification(message, type);
+            }
+        };
+    </script>
+</body>
+</html>

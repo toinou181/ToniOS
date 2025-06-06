@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Applications ToniOS</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            min-height: 100vh;
+        }
+        .test-container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 20px;
+            border-radius: 10px;
+            backdrop-filter: blur(10px);
+        }
+        .test-section {
+            margin: 20px 0;
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+        }
+        .test-button {
+            background: #4CAF50;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            margin: 5px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        .test-button:hover {
+            background: #45a049;
+        }
+        .test-result {
+            margin: 10px 0;
+            padding: 10px;
+            border-radius: 5px;
+            font-weight: bold;
+            white-space: pre-wrap;
+        }
+        .success {
+            background: rgba(76, 175, 80, 0.3);
+            color: #4CAF50;
+        }
+        .error {
+            background: rgba(244, 67, 54, 0.3);
+            color: #f44336;
+        }
+        .info {
+            background: rgba(33, 150, 243, 0.3);
+            color: #2196F3;
+        }
+        input[type="text"], input[type="password"] {
+            padding: 8px;
+            margin: 5px;
+            border: none;
+            border-radius: 4px;
+            background: rgba(255, 255, 255, 0.9);
+            color: #333;
+        }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <h1>🧪 Test Applications et Interface ToniOS</h1>
+        
+        <div class="test-section">
+            <h2>🔑 Étape 1: Connexion Test</h2>
+            <button class="test-button" onclick="createTestUser()">Créer utilisateur test</button>
+            <button class="test-button" onclick="loginTestUser()">Se connecter</button>
+            <div id="loginTestResult"></div>
+        </div>
+
+        <div class="test-section">
+            <h2>🖥️ Étape 2: Test Interface Bureau</h2>
+            <button class="test-button" onclick="testDesktopVisibility()">Vérifier visibilité bureau</button>
+            <button class="test-button" onclick="testIcons()">Tester icônes</button>
+            <div id="desktopTestResult"></div>
+        </div>
+
+        <div class="test-section">
+            <h2>🚀 Étape 3: Test Applications</h2>
+            <button class="test-button" onclick="testCalculator()">Calculatrice</button>
+            <button class="test-button" onclick="testNotepad()">Bloc-notes</button>
+            <button class="test-button" onclick="testFileManager()">Gestionnaire fichiers</button>
+            <button class="test-button" onclick="testChat()">Chat</button>
+            <div id="appsTestResult"></div>
+        </div>
+
+        <div class="test-section">
+            <h2>🖱️ Étape 4: Test Interactions</h2>
+            <button class="test-button" onclick="testRightClick()">Clic droit</button>
+            <button class="test-button" onclick="testEventListeners()">Gestionnaires événements</button>
+            <div id="interactionsTestResult"></div>
+        </div>
+
+        <div class="test-section">
+            <h2>📊 Console Debug</h2>
+            <button class="test-button" onclick="showDebugInfo()">Infos debug</button>
+            <button class="test-button" onclick="clearDebug()">Vider</button>
+            <div id="debugResult"></div>
+        </div>
+    </div>
+
+    <!-- Inclure les scripts ToniOS -->
+    <script src="js/notifications.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/windows.js"></script>
+    <script src="js/main.js"></script>
+
+    <script>
+        // Fonctions utilitaires
+        function showResult(elementId, message, type = 'info') {
+            const element = document.getElementById(elementId);
+            element.innerHTML = `<div class="test-result ${type}">${message}</div>`;
+        }
+
+        function appendResult(elementId, message, type = 'info') {
+            const element = document.getElementById(elementId);
+            element.innerHTML += `<div class="test-result ${type}">${message}</div>`;
+        }
+
+        // Tests de connexion
+        function createTestUser() {
+            console.log('🧪 Création utilisateur test...');
+            const result = registerUser('TestUser', 'password123', false);
+            
+            if (result && result.success) {
+                showResult('loginTestResult', '✅ Utilisateur test créé avec succès', 'success');
+            } else {
+                showResult('loginTestResult', '❌ Échec création utilisateur test', 'error');
+            }
+        }
+
+        function loginTestUser() {
+            console.log('🧪 Connexion utilisateur test...');
+            
+            // Créer l'utilisateur s'il n'existe pas
+            if (!loadUser('TestUser')) {
+                createTestUser();
+                setTimeout(() => {
+                    doLogin();
+                }, 500);
+            } else {
+                doLogin();
+            }
+            
+            function doLogin() {
+                const result = loginUser('TestUser', 'password123', false);
+                
+                if (result && result.success) {
+                    showResult('loginTestResult', '✅ Connexion réussie - Bureau affiché', 'success');
+                    setTimeout(() => {
+                        testDesktopVisibility();
+                    }, 1000);
+                } else {
+                    showResult('loginTestResult', '❌ Échec connexion', 'error');
+                }
+            }
+        }
+
+        // Tests interface bureau
+        function testDesktopVisibility() {
+            const loginScreen = document.getElementById('loginScreen');
+            const desktop = document.querySelector('.tonios-desktop');
+            
+            let message = 'État du bureau:\n';
+            message += `• Écran connexion: ${loginScreen ? (loginScreen.style.display === 'none' ? 'masqué ✅' : 'visible ❌') : 'introuvable ❌'}\n`;
+            message += `• Bureau: ${desktop ? (desktop.style.display === 'flex' ? 'visible ✅' : 'masqué ❌') : 'introuvable ❌'}\n`;
+            message += `• Session active: ${currentSession ? currentSession.username + ' ✅' : 'aucune ❌'}`;
+            
+            showResult('desktopTestResult', message, desktop && desktop.style.display === 'flex' ? 'success' : 'error');
+        }
+
+        function testIcons() {
+            const icons = document.querySelectorAll('.tonios-desktop-icon');
+            let message = `Icônes trouvées: ${icons.length}\n`;
+            
+            icons.forEach((icon, index) => {
+                const label = icon.querySelector('.tonios-desktop-icon-label');
+                const onclick = icon.getAttribute('onclick');
+                message += `• ${label ? label.textContent : 'Sans nom'}: ${onclick ? 'événement ✅' : 'pas d\'événement ❌'}\n`;
+            });
+            
+            showResult('desktopTestResult', message, icons.length > 0 ? 'success' : 'error');
+        }
+
+        // Tests applications
+        function testCalculator() {
+            try {
+                openApplication('calculator');
+                appendResult('appsTestResult', '✅ Calculatrice lancée', 'success');
+            } catch (error) {
+                appendResult('appsTestResult', `❌ Erreur calculatrice: ${error.message}`, 'error');
+            }
+        }
+
+        function testNotepad() {
+            try {
+                openApplication('notepad');
+                appendResult('appsTestResult', '✅ Bloc-notes lancé', 'success');
+            } catch (error) {
+                appendResult('appsTestResult', `❌ Erreur bloc-notes: ${error.message}`, 'error');
+            }
+        }
+
+        function testFileManager() {
+            try {
+                openApplication('filemanager');
+                appendResult('appsTestResult', '✅ Gestionnaire fichiers lancé', 'success');
+            } catch (error) {
+                appendResult('appsTestResult', `❌ Erreur gestionnaire: ${error.message}`, 'error');
+            }
+        }
+
+        function testChat() {
+            try {
+                openApplication('chat');
+                appendResult('appsTestResult', '✅ Chat lancé', 'success');
+            } catch (error) {
+                appendResult('appsTestResult', `❌ Erreur chat: ${error.message}`, 'error');
+            }
+        }
+
+        // Tests interactions
+        function testRightClick() {
+            let message = 'Test clic droit:\n';
+            
+            // Vérifier que la fonction existe
+            if (typeof handleRightClick === 'function') {
+                message += '• handleRightClick: existe ✅\n';
+            } else {
+                message += '• handleRightClick: manquante ❌\n';
+            }
+            
+            // Vérifier que l'événement est attaché
+            const hasRightClickListener = document.body.oncontextmenu !== null;
+            message += `• Gestionnaire événement: ${hasRightClickListener ? 'attaché ✅' : 'manquant ❌'}`;
+            
+            showResult('interactionsTestResult', message, 'info');
+        }
+
+        function testEventListeners() {
+            let message = 'Gestionnaires d\'événements:\n';
+            
+            const functions = [
+                'setupEventListeners',
+                'setupDesktopInteractions',
+                'handleRightClick',
+                'openApplication',
+                'showContextMenu'
+            ];
+            
+            functions.forEach(func => {
+                message += `• ${func}: ${typeof window[func] === 'function' ? 'existe ✅' : 'manquante ❌'}\n`;
+            });
+            
+            showResult('interactionsTestResult', message, 'info');
+        }
+
+        // Debug
+        function showDebugInfo() {
+            let info = 'Informations système:\n';
+            info += `• ToniOS initialisé: ${window.toniosStartTime ? 'oui ✅' : 'non ❌'}\n`;
+            info += `• Session courante: ${currentSession ? currentSession.username : 'aucune'}\n`;
+            info += `• Scripts chargés:\n`;
+            info += `  - auth.js: ${typeof registerUser === 'function' ? '✅' : '❌'}\n`;
+            info += `  - main.js: ${typeof openApplication === 'function' ? '✅' : '❌'}\n`;
+            info += `  - windows.js: ${typeof createWindow === 'function' ? '✅' : '❌'}\n`;
+            info += `  - notifications.js: ${typeof showNotification === 'function' ? '✅' : '❌'}\n`;
+            
+            showResult('debugResult', info, 'info');
+        }
+
+        function clearDebug() {
+            document.getElementById('debugResult').innerHTML = '';
+        }
+
+        // Initialisation
+        window.addEventListener('load', function() {
+            console.log('🧪 Page de test des applications chargée');
+            showResult('debugResult', '🔄 Page de test chargée. Commencez par créer un utilisateur test.', 'info');
+        });
+    </script>
+</body>
+</html>

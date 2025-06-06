@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test d'Authentification ToniOS</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        .test-panel {
+            position: fixed;
+            top: 10px;
+            right: 10px;
+            background: rgba(0,0,0,0.8);
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            z-index: 10000;
+            max-width: 300px;
+        }
+        .test-button {
+            display: block;
+            width: 100%;
+            margin: 5px 0;
+            padding: 8px;
+            background: #3498db;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .test-button:hover {
+            background: #2980b9;
+        }
+        .test-status {
+            font-size: 12px;
+            margin: 10px 0;
+            padding: 5px;
+            border-radius: 3px;
+        }
+        .success { background: #27ae60; }
+        .error { background: #e74c3c; }
+        .info { background: #3498db; }
+    </style>
+</head>
+<body>
+    <!-- Panel de test -->
+    <div class="test-panel">
+        <h3>🧪 Tests d'Authentification</h3>
+        <button class="test-button" onclick="testDemo()">Test Session Démo</button>
+        <button class="test-button" onclick="testGuest()">Test Compte Invité</button>
+        <button class="test-button" onclick="testRegister()">Test Inscription</button>
+        <button class="test-button" onclick="testLogin()">Test Connexion</button>
+        <button class="test-button" onclick="testLogout()">Test Déconnexion</button>
+        <button class="test-button" onclick="clearData()">Effacer Données</button>
+        <div id="testStatus" class="test-status"></div>
+    </div>
+
+    <!-- Contenu ToniOS normal -->
+    <div id="loginScreen" class="tonios-login-screen">
+        <div class="tonios-login-container">
+            <div class="tonios-login-logo">🖥️</div>
+            <h1 class="tonios-login-title">ToniOS</h1>
+            <p class="tonios-login-subtitle" id="loginSubtitle">Test d'authentification</p>
+            
+            <!-- Formulaire de connexion -->
+            <form class="tonios-login-form" id="loginForm" onsubmit="handleLogin(event)">
+                <input type="text" id="usernameInput" class="tonios-login-input" placeholder="Nom d'utilisateur" required>
+                <input type="password" id="passwordInput" class="tonios-login-input" placeholder="Mot de passe">
+                <div class="tonios-login-checkbox">
+                    <input type="checkbox" id="rememberSession" name="rememberSession">
+                    <label for="rememberSession">Se souvenir de moi</label>
+                </div>
+                <button type="submit" class="tonios-login-btn">Se connecter</button>
+            </form>
+
+            <!-- Formulaire d'inscription -->
+            <form class="tonios-login-form hidden" id="registerForm" onsubmit="handleRegister(event)">
+                <input type="text" id="regUsernameInput" class="tonios-login-input" placeholder="Nom d'utilisateur" required>
+                <input type="password" id="regPasswordInput" class="tonios-login-input" placeholder="Mot de passe" required>
+                <input type="password" id="regConfirmPasswordInput" class="tonios-login-input" placeholder="Confirmer le mot de passe" required>
+                <div class="tonios-login-checkbox">
+                    <input type="checkbox" id="regRememberSession" name="regRememberSession">
+                    <label for="regRememberSession">Se souvenir de moi</label>
+                </div>
+                <button type="submit" class="tonios-login-btn">S'inscrire</button>
+            </form>
+
+            <!-- Toggle entre connexion et inscription -->
+            <div class="tonios-login-toggle">
+                <span id="toggleToRegister" onclick="showRegisterForm()">Pas encore de compte ? S'inscrire</span>
+                <span id="toggleToLogin" onclick="showLoginForm()" class="hidden">Déjà un compte ? Se connecter</span>
+            </div>
+            
+            <div class="tonios-login-options">
+                <div class="tonios-login-option" onclick="quickLogin('demo')">🎮 Session démo</div>
+                <div class="tonios-login-option" onclick="quickLogin('guest')">👤 Invité</div>
+                <div class="tonios-login-option" onclick="showUserList()">📋 Utilisateurs existants</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="tonios-desktop" style="display: none;">
+        <div id="sessionInfo" class="tonios-session-info">
+            <span class="tonios-session-avatar" id="sessionAvatar"></span>
+            <span id="sessionUsername"></span>
+            <button class="tonios-session-logout" onclick="logout()">Déconnexion</button>
+        </div>
+        
+        <div class="tonios-desktop-area">
+            <h1>🎉 ToniOS Chargé avec succès !</h1>
+            <p>Utilisateur connecté : <span id="currentUserDisplay"></span></p>
+            <p>Rôle : <span id="currentRoleDisplay"></span></p>
+        </div>
+    </div>
+
+    <!-- Notifications -->
+    <div id="notificationContainer" class="tonios-notification-container"></div>
+
+    <!-- Scripts -->
+    <script>
+        // Variables globales pour les tests
+        let testResults = [];
+        
+        // Fonction de notification simplifiée pour les tests
+        function showNotification(message, type = 'info', duration = 3000) {
+            console.log(`[${type.toUpperCase()}] ${message}`);
+            
+            const container = document.getElementById('notificationContainer');
+            if (!container) return;
+            
+            const notification = document.createElement('div');
+            notification.className = `tonios-notification tonios-notification-${type}`;
+            notification.textContent = message;
+            notification.style.cssText = `
+                position: fixed;
+                top: 20px;
+                left: 50%;
+                transform: translateX(-50%);
+                background: ${type === 'error' ? '#e74c3c' : type === 'success' ? '#27ae60' : '#3498db'};
+                color: white;
+                padding: 10px 20px;
+                border-radius: 5px;
+                z-index: 9999;
+                margin-bottom: 10px;
+            `;
+            
+            container.appendChild(notification);
+            
+            setTimeout(() => {
+                notification.remove();
+            }, duration);
+            
+            // Mettre à jour le statut de test
+            updateTestStatus(message, type);
+        }
+        
+        function updateTestStatus(message, type) {
+            const status = document.getElementById('testStatus');
+            if (status) {
+                status.textContent = message;
+                status.className = `test-status ${type}`;
+            }
+        }
+        
+        // Fonctions de test
+        function testDemo() {
+            console.log('🧪 Test session démo...');
+            quickLogin('demo');
+        }
+        
+        function testGuest() {
+            console.log('🧪 Test compte invité...');
+            quickLogin('guest');
+        }
+        
+        function testRegister() {
+            console.log('🧪 Test inscription...');
+            showRegisterForm();
+            document.getElementById('regUsernameInput').value = 'TestUser_' + Date.now();
+            document.getElementById('regPasswordInput').value = 'test123';
+            document.getElementById('regConfirmPasswordInput').value = 'test123';
+            // Simulation de soumission
+            setTimeout(() => {
+                document.getElementById('registerForm').dispatchEvent(new Event('submit'));
+            }, 100);
+        }
+        
+        function testLogin() {
+            console.log('🧪 Test connexion...');
+            showLoginForm();
+            document.getElementById('usernameInput').value = 'TestUser';
+            document.getElementById('passwordInput').value = 'test123';
+            // Simulation de soumission
+            setTimeout(() => {
+                document.getElementById('loginForm').dispatchEvent(new Event('submit'));
+            }, 100);
+        }
+        
+        function testLogout() {
+            console.log('🧪 Test déconnexion...');
+            if (currentSession) {
+                logout();
+            } else {
+                showNotification('Aucune session active', 'error');
+            }
+        }
+        
+        function clearData() {
+            console.log('🧪 Effacement des données...');
+            localStorage.clear();
+            location.reload();
+        }
+        
+        // Fonctions utilitaires manquantes pour les tests
+        function setupEventListeners() {
+            console.log('✅ Event listeners configurés');
+        }
+        
+        function setupKeyboardShortcuts() {
+            console.log('✅ Raccourcis clavier configurés');
+        }
+        
+        function initializeChannels() {
+            console.log('✅ Canaux initialisés');
+        }
+        
+        function loadUserData() {
+            console.log('✅ Données utilisateur chargées');
+        }
+        
+        function startClock() {
+            console.log('✅ Horloge démarrée');
+        }
+        
+        function saveUserData() {
+            console.log('✅ Données utilisateur sauvegardées');
+        }
+        
+        // Mise à jour de l'affichage utilisateur
+        function updateUserDisplay() {
+            if (currentSession) {
+                const userDisplay = document.getElementById('currentUserDisplay');
+                const roleDisplay = document.getElementById('currentRoleDisplay');
+                if (userDisplay) userDisplay.textContent = currentSession.username;
+                if (roleDisplay) roleDisplay.textContent = currentSession.role;
+            }
+        }
+        
+        // Override de startSession pour inclure l'affichage
+        const originalStartSession = startSession;
+        startSession = function() {
+            originalStartSession();
+            updateUserDisplay();
+            showNotification('Session démarrée avec succès !', 'success');
+        };
+    </script>
+    
+    <!-- Chargement du système d'authentification -->
+    <script src="js/auth.js"></script>
+    
+    <script>
+        // Initialisation au chargement
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('🖥️ ToniOS Test d\'authentification initialisé');
+            updateTestStatus('Prêt pour les tests', 'info');
+            
+            // Vérifier la session automatique
+            if (!checkAutoLogin()) {
+                console.log('Aucune session automatique trouvée');
+            }
+        });
+    </script>
+</body>
+</html>

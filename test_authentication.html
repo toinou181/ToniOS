@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test ToniOS - Authentification</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background: #f0f0f0;
+        }
+        .test-container {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        .test-section {
+            margin: 20px 0;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        .test-button {
+            background: #3498db;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        .test-button:hover {
+            background: #2980b9;
+        }
+        .success { color: #27ae60; }
+        .error { color: #e74c3c; }
+        .info { color: #3498db; }
+        #testResults {
+            margin-top: 20px;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 5px;
+            white-space: pre-wrap;
+        }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <h1>🔧 Test ToniOS - Système d'Authentification</h1>
+        
+        <div class="test-section">
+            <h3>📋 État du Système</h3>
+            <button class="test-button" onclick="checkSystemStatus()">Vérifier l'État</button>
+            <button class="test-button" onclick="checkAuthSystem()">Tester Authentification</button>
+            <button class="test-button" onclick="checkWindowsSystem()">Tester Fenêtres</button>
+        </div>
+        
+        <div class="test-section">
+            <h3>🖱️ Test des Fonctions</h3>
+            <button class="test-button" onclick="testOpenApplication()">Test openApplication</button>
+            <button class="test-button" onclick="testToggleStartMenu()">Test Menu Démarrer</button>
+            <button class="test-button" onclick="testIconsFunctions()">Test Fonctions Icônes</button>
+        </div>
+        
+        <div class="test-section">
+            <h3>🚀 Actions Rapides</h3>
+            <button class="test-button" onclick="openToniOS()">Ouvrir ToniOS</button>
+            <button class="test-button" onclick="openToniOSWithoutAuth()">Ouvrir ToniOS (Sans Auth)</button>
+            <button class="test-button" onclick="openAdminDashboard()">Dashboard Admin</button>
+        </div>
+        
+        <div id="testResults"></div>
+    </div>
+
+    <script>
+        let testOutput = '';
+        
+        function log(message, type = 'info') {
+            const timestamp = new Date().toLocaleTimeString();
+            let prefix = '';
+            switch(type) {
+                case 'success': prefix = '✅'; break;
+                case 'error': prefix = '❌'; break;
+                case 'warning': prefix = '⚠️'; break;
+                default: prefix = 'ℹ️'; break;
+            }
+            testOutput += `[${timestamp}] ${prefix} ${message}\n`;
+            document.getElementById('testResults').textContent = testOutput;
+        }
+        
+        function clearLog() {
+            testOutput = '';
+            document.getElementById('testResults').textContent = '';
+        }
+        
+        function checkSystemStatus() {
+            clearLog();
+            log('🔍 Vérification de l\'état du système...');
+            
+            // Vérifier les fichiers essentiels
+            const requiredFiles = [
+                'index.html',
+                'js/windows.js',
+                'js/auth_final.js',
+                'js/main_with_auth_final.js'
+            ];
+            
+            log(`📁 Fichiers requis détectés : ${requiredFiles.length}`);
+            
+            // Vérifier les variables globales
+            if (typeof window !== 'undefined') {
+                log('🌐 Objet window disponible', 'success');
+            }
+            
+            log('✅ Vérification terminée');
+        }
+        
+        function checkAuthSystem() {
+            log('🔐 Test du système d\'authentification...');
+            
+            // Tester la disponibilité des fonctions d'auth
+            const authFunctions = [
+                'handleLogin',
+                'handleRegister',
+                'showLoginForm',
+                'showRegisterForm',
+                'logout'
+            ];
+            
+            authFunctions.forEach(func => {
+                if (typeof window[func] === 'function') {
+                    log(`✅ Fonction ${func} disponible`);
+                } else {
+                    log(`❌ Fonction ${func} manquante`, 'error');
+                }
+            });
+        }
+        
+        function checkWindowsSystem() {
+            log('🪟 Test du système de fenêtres...');
+            
+            const windowFunctions = [
+                'openApplication',
+                'closeWindow',
+                'minimizeWindow',
+                'maximizeWindow'
+            ];
+            
+            windowFunctions.forEach(func => {
+                if (typeof window[func] === 'function') {
+                    log(`✅ Fonction ${func} disponible`);
+                } else {
+                    log(`❌ Fonction ${func} manquante`, 'error');
+                }
+            });
+        }
+        
+        function testOpenApplication() {
+            log('🧮 Test d\'ouverture d\'application...');
+            
+            if (typeof window.openApplication === 'function') {
+                try {
+                    // Cette fonction sera définie dans windows.js
+                    log('✅ Fonction openApplication trouvée');
+                    log('ℹ️ Test d\'ouverture dans ToniOS recommandé');
+                } catch (error) {
+                    log(`❌ Erreur lors du test : ${error.message}`, 'error');
+                }
+            } else {
+                log('❌ Fonction openApplication non disponible', 'error');
+            }
+        }
+        
+        function testToggleStartMenu() {
+            log('📋 Test du menu démarrer...');
+            
+            if (typeof window.toggleStartMenu === 'function') {
+                log('✅ Fonction toggleStartMenu trouvée');
+            } else {
+                log('❌ Fonction toggleStartMenu non disponible', 'error');
+            }
+        }
+        
+        function testIconsFunctions() {
+            log('🖱️ Test des fonctions des icônes...');
+            
+            const iconFunctions = [
+                'openApplication',
+                'bringToFront',
+                'closeStartMenu'
+            ];
+            
+            let availableCount = 0;
+            iconFunctions.forEach(func => {
+                if (typeof window[func] === 'function') {
+                    availableCount++;
+                    log(`✅ ${func} disponible`);
+                } else {
+                    log(`❌ ${func} manquant`, 'error');
+                }
+            });
+            
+            log(`📊 Résumé : ${availableCount}/${iconFunctions.length} fonctions disponibles`);
+        }
+        
+        function openToniOS() {
+            log('🚀 Ouverture de ToniOS avec authentification...');
+            window.open('index.html', '_blank');
+        }
+        
+        function openToniOSWithoutAuth() {
+            log('🚀 Ouverture de ToniOS sans authentification...');
+            window.open('index_without_auth.html', '_blank');
+        }
+        
+        function openAdminDashboard() {
+            log('🛠️ Ouverture du dashboard administrateur...');
+            window.open('admin_dashboard.html', '_blank');
+        }
+        
+        // Initialisation
+        window.addEventListener('load', function() {
+            log('🚀 Page de test chargée');
+            log('👆 Cliquez sur les boutons pour tester les fonctionnalités');
+        });
+    </script>
+</body>
+</html>

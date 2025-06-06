@@ -41,16 +41,41 @@ function openApplication(appType, fileName = '') {
             windowHTML = createChatWindow();
             break;
             
+        case 'discord-chat':
+            windowTitle = 'ToniOS Discord Chat';
+            windowSize = { width: 1000, height: 700 };
+            windowHTML = createDiscordChatWindow();
+            break;
+            
         case 'filemanager':
             windowTitle = 'Gestionnaire de fichiers';
             windowSize = { width: 900, height: 600 };
             windowHTML = createFileManagerWindow();
             break;
             
+        case 'advanced-files':
+            windowTitle = 'Gestionnaire de fichiers avancé';
+            windowSize = { width: 1200, height: 800 };
+            windowHTML = createAdvancedFileManagerWindow();
+            break;
+            
+        case 'session-manager':
+            windowTitle = 'Gestionnaire de Sessions';
+            windowSize = { width: 1400, height: 900 };
+            windowHTML = createSessionManagerWindow();
+            break;
+            
         case 'properties':
+        case 'systemprops':
             windowTitle = 'Propriétés du système';
             windowSize = { width: 600, height: 500 };
             windowHTML = createPropertiesWindow();
+            break;
+            
+        case 'wallpaper':
+            windowTitle = 'Personnalisation du bureau';
+            windowSize = { width: 500, height: 400 };
+            windowHTML = createWallpaperWindow();
             break;
             
         default:
@@ -112,6 +137,17 @@ function openApplication(appType, fileName = '') {
     // Focus sur la nouvelle fenêtre
     bringToFront(windowId);
 
+    // Initialize specific applications after window is created
+    setTimeout(() => {
+        if (appType === 'discord-chat') {
+            initializeDiscordChat();
+        } else if (appType === 'advanced-files') {
+            initializeAdvancedFileManager();
+        } else if (appType === 'session-manager') {
+            initializeSessionManager();
+        }
+    }, 100);
+
     showNotification(`${windowTitle} ouvert`, 'info');
 }
 
@@ -120,8 +156,12 @@ function getAppIcon(appType) {
         calculator: '🧮',
         notepad: '📝',
         chat: '💬',
+        'discord-chat': '💬',
         filemanager: '📁',
-        properties: '⚙️'
+        'advanced-files': '📁',
+        'session-manager': '👥',
+        properties: '⚙️',
+        wallpaper: '🎨'
     };
     return icons[appType] || '📱';
 }
@@ -426,6 +466,30 @@ function createChatWindow() {
     `;
 }
 
+function createDiscordChatWindow() {
+    return `
+        <div id="discordChatContainer">
+            <!-- Discord chat will be initialized here -->
+            <div style="padding: 20px; text-align: center;">
+                <div class="loading-spinner"></div>
+                <p>Chargement du chat Discord...</p>
+            </div>
+        </div>
+    `;
+}
+
+function createAdvancedFileManagerWindow() {
+    return `
+        <div id="advancedFileManagerContainer">
+            <!-- Advanced file manager will be initialized here -->
+            <div style="padding: 20px; text-align: center;">
+                <div class="loading-spinner"></div>
+                <p>Chargement du gestionnaire de fichiers avancé...</p>
+            </div>
+        </div>
+    `;
+}
+
 function createPropertiesWindow() {
     const stats = getSystemStats();
     return `
@@ -496,3 +560,231 @@ function createPropertiesWindow() {
         </div>
     `;
 }
+
+function createWallpaperWindow() {
+    return `
+        <div class="tonios-wallpaper-selector">
+            <div class="tonios-wallpaper-header">
+                <h3>🎨 Personnalisation du bureau</h3>
+                <p>Choisissez un fond d'écran pour votre bureau</p>
+            </div>
+            
+            <div class="tonios-wallpaper-grid">
+                <div class="tonios-wallpaper-option" onclick="setWallpaper('gradient1')">
+                    <div style="background: linear-gradient(45deg, #667eea 0%, #764ba2 100%); width: 80px; height: 60px; border-radius: 8px; margin-bottom: 5px;"></div>
+                    <span>Dégradé Bleu</span>
+                </div>
+                <div class="tonios-wallpaper-option" onclick="setWallpaper('gradient2')">
+                    <div style="background: linear-gradient(45deg, #f093fb 0%, #f5576c 100%); width: 80px; height: 60px; border-radius: 8px; margin-bottom: 5px;"></div>
+                    <span>Dégradé Rose</span>
+                </div>
+                <div class="tonios-wallpaper-option" onclick="setWallpaper('gradient3')">
+                    <div style="background: linear-gradient(45deg, #4facfe 0%, #00f2fe 100%); width: 80px; height: 60px; border-radius: 8px; margin-bottom: 5px;"></div>
+                    <span>Dégradé Cyan</span>
+                </div>
+                <div class="tonios-wallpaper-option" onclick="setWallpaper('gradient4')">
+                    <div style="background: linear-gradient(45deg, #43e97b 0%, #38f9d7 100%); width: 80px; height: 60px; border-radius: 8px; margin-bottom: 5px;"></div>
+                    <span>Dégradé Vert</span>
+                </div>
+                <div class="tonios-wallpaper-option" onclick="setWallpaper('default')">
+                    <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%); width: 80px; height: 60px; border-radius: 8px; margin-bottom: 5px;"></div>
+                    <span>Défaut ToniOS</span>
+                </div>
+            </div>
+            
+            <div class="tonios-wallpaper-actions">
+                <button onclick="resetWallpaper()" class="tonios-btn">🔄 Réinitialiser</button>
+                <button onclick="applyRandomWallpaper()" class="tonios-btn">🎲 Aléatoire</button>
+            </div>
+        </div>
+    `;
+}
+
+// Initialization functions for new applications
+function initializeDiscordChat() {
+    const container = document.getElementById('discordChatContainer');
+    if (container && typeof window.DiscordChatAdvanced !== 'undefined') {
+        // Initialize Discord chat in the container
+        container.innerHTML = '';
+        const chatInstance = new window.DiscordChatAdvanced();
+        chatInstance.init(container);
+        console.log('Discord chat initialized successfully');
+    } else {
+        console.warn('Discord chat container or class not found');
+        // Fallback to basic chat interface
+        if (container) {
+            container.innerHTML = `
+                <div class="discord-chat-container">
+                    <div class="discord-sidebar">
+                        <div class="discord-server-info">
+                            <div class="discord-server-name">ToniOS Server</div>
+                            <div class="discord-server-members">Utilisateurs connectés</div>
+                        </div>
+                        <div class="discord-channels">
+                            <div class="discord-channel-category">CANAUX TEXTE</div>
+                            <div class="discord-channel active">
+                                <span class="discord-channel-icon">#</span>
+                                <span class="discord-channel-name">général</span>
+                            </div>
+                            <div class="discord-channel">
+                                <span class="discord-channel-icon">#</span>
+                                <span class="discord-channel-name">développement</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="discord-main-content">
+                        <div class="discord-chat-header">
+                            <div class="discord-chat-title">
+                                <span>#</span> général
+                                <span class="discord-chat-description">Canal principal de discussion</span>
+                            </div>
+                        </div>
+                        <div class="discord-messages-container" id="discordMessages">
+                            <div class="discord-message">
+                                <div class="discord-message-avatar">T</div>
+                                <div class="discord-message-content">
+                                    <div class="discord-message-header">
+                                        <span class="discord-message-author">ToniOS</span>
+                                        <span class="discord-message-timestamp">Maintenant</span>
+                                    </div>
+                                    <div class="discord-message-text">Bienvenue dans le chat Discord de ToniOS ! 🎉</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="discord-input-container">
+                            <div class="discord-voice-controls">
+                                <button class="discord-voice-btn">🎤 Micro</button>
+                                <button class="discord-voice-btn">🔊 Audio</button>
+                                <button class="discord-voice-btn">🎙️ Enregistrer</button>
+                            </div>
+                            <div class="discord-input-area">
+                                <input type="text" class="discord-message-input" placeholder="Tapez votre message dans #général..." onkeypress="handleDiscordMessage(event)">
+                                <button class="discord-send-btn" onclick="sendDiscordMessage()">📤</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+    }
+}
+
+function initializeAdvancedFileManager() {
+    const container = document.getElementById('advancedFileManagerContainer');
+    if (container && typeof window.AdvancedFileManager !== 'undefined') {
+        // Initialize advanced file manager in the container
+        container.innerHTML = '';
+        const fileManagerInstance = new window.AdvancedFileManager();
+        fileManagerInstance.init(container);
+        console.log('Advanced file manager initialized successfully');
+    } else {
+        console.warn('Advanced file manager container or class not found');
+        // Fallback to basic file manager interface
+        if (container) {
+            container.innerHTML = `
+                <div class="advanced-file-manager">
+                    <div class="file-manager-toolbar">
+                        <div class="file-manager-nav">
+                            <button class="nav-btn">◀️ Retour</button>
+                            <button class="nav-btn">▶️ Avant</button>
+                            <button class="nav-btn">⬆️ Parent</button>
+                        </div>
+                        <div class="file-manager-path">
+                            <span class="path-segment">🏠 Accueil</span>
+                            <span>/</span>
+                            <span class="path-segment">📁 Documents</span>
+                        </div>
+                        <div class="file-manager-actions">
+                            <button class="view-mode-btn active">⊞ Grille</button>
+                            <button class="view-mode-btn">☰ Liste</button>
+                            <button class="view-mode-btn">📋 Détails</button>
+                            <div class="file-manager-search">
+                                <input type="text" class="search-input" placeholder="Rechercher...">
+                                <span class="search-icon">🔍</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="file-manager-content">
+                        <div class="file-manager-sidebar">
+                            <div class="sidebar-section">
+                                <div class="sidebar-title">Raccourcis</div>
+                                <div class="sidebar-item active">🏠 Accueil</div>
+                                <div class="sidebar-item">📁 Documents</div>
+                                <div class="sidebar-item">🖼️ Images</div>
+                                <div class="sidebar-item">🎵 Musique</div>
+                                <div class="sidebar-item">🗑️ Corbeille</div>
+                            </div>
+                        </div>
+                        <div class="file-manager-main">
+                            <div class="file-list-container">
+                                <div class="file-list grid-view">
+                                    <div class="file-item grid-item">
+                                        <div class="file-icon">📁</div>
+                                        <div class="file-name">Nouveau dossier</div>
+                                        <div class="file-details">Dossier</div>
+                                    </div>
+                                    <div class="file-item grid-item">
+                                        <div class="file-icon">📄</div>
+                                        <div class="file-name">Document.txt</div>
+                                        <div class="file-details">1.2 KB</div>
+                                    </div>
+                                    <div class="file-item grid-item">
+                                        <div class="file-icon">🖼️</div>
+                                        <div class="file-name">Image.png</div>
+                                        <div class="file-details">245 KB</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="file-manager-status">
+                                <span>3 éléments</span>
+                                <span>Prêt</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+    }
+}
+
+// Discord chat helper functions
+function handleDiscordMessage(event) {
+    if (event.key === 'Enter') {
+        sendDiscordMessage();
+    }
+}
+
+function sendDiscordMessage() {
+    const input = document.querySelector('.discord-message-input');
+    if (!input || !input.value.trim()) return;
+    
+    const messagesContainer = document.getElementById('discordMessages');
+    if (!messagesContainer) return;
+    
+    const message = input.value.trim();
+    const currentUser = getCurrentUser() || 'Utilisateur';
+    
+    const messageElement = document.createElement('div');
+    messageElement.className = 'discord-message';
+    messageElement.innerHTML = `
+        <div class="discord-message-avatar">${currentUser[0].toUpperCase()}</div>
+        <div class="discord-message-content">
+            <div class="discord-message-header">
+                <span class="discord-message-author">${currentUser}</span>
+                <span class="discord-message-timestamp">${new Date().toLocaleTimeString()}</span>
+            </div>
+            <div class="discord-message-text">${message}</div>
+        </div>
+    `;
+    
+    messagesContainer.appendChild(messageElement);
+    messagesContainer.scrollTop = messagesContainer.scrollHeight;
+    input.value = '';
+}
+
+// Exposer les fonctions globalement pour qu'elles soient accessibles depuis d'autres scripts
+window.openApplication = openApplication;
+window.closeWindow = closeWindow;
+window.minimizeWindow = minimizeWindow;
+window.maximizeWindow = maximizeWindow;
+window.bringToFront = bringToFront;
