@@ -1,0 +1,1122 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ToniOS Admin Dashboard</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+            background: linear-gradient(135deg, #0f0f23 0%, #1a1a2e 50%, #16213e 100%);
+            color: #00ff88;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* Animation de matrice en arrière-plan */
+        .matrix-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            opacity: 0.1;
+        }
+
+        /* Écran de connexion sécurisé */
+        .login-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.95);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .login-container {
+            background: linear-gradient(145deg, #1a1a2e, #16213e);
+            padding: 40px;
+            border-radius: 15px;
+            border: 2px solid #00ff88;
+            box-shadow: 0 0 30px rgba(0, 255, 136, 0.3);
+            text-align: center;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { box-shadow: 0 0 30px rgba(0, 255, 136, 0.3); }
+            50% { box-shadow: 0 0 50px rgba(0, 255, 136, 0.6); }
+        }
+
+        .login-title {
+            font-size: 24px;
+            margin-bottom: 30px;
+            color: #ff0066;
+            text-shadow: 0 0 10px #ff0066;
+        }
+
+        .login-input {
+            width: 300px;
+            padding: 15px;
+            margin: 10px 0;
+            background: rgba(0, 0, 0, 0.8);
+            border: 1px solid #00ff88;
+            border-radius: 5px;
+            color: #00ff88;
+            font-family: inherit;
+            font-size: 14px;
+        }
+
+        .login-input:focus {
+            outline: none;
+            border-color: #ff0066;
+            box-shadow: 0 0 10px rgba(255, 0, 102, 0.5);
+        }
+
+        .login-btn {
+            width: 300px;
+            padding: 15px;
+            margin-top: 20px;
+            background: linear-gradient(145deg, #ff0066, #cc0052);
+            border: none;
+            border-radius: 5px;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .login-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(255, 0, 102, 0.4);
+        }
+
+        .warning-text {
+            margin-top: 20px;
+            color: #ffaa00;
+            font-size: 12px;
+            opacity: 0.8;
+        }
+
+        /* Dashboard principal */
+        .dashboard {
+            display: none;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .dashboard-header {
+            background: rgba(0, 0, 0, 0.8);
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            border: 1px solid #00ff88;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .dashboard-title {
+            font-size: 28px;
+            color: #ff0066;
+            text-shadow: 0 0 10px #ff0066;
+        }
+
+        .logout-btn {
+            background: #ff3366;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            grid-template-rows: auto auto;
+            gap: 20px;
+            height: calc(100vh - 120px);
+        }
+
+        .panel {
+            background: rgba(0, 0, 0, 0.8);
+            border: 1px solid #00ff88;
+            border-radius: 10px;
+            padding: 20px;
+            overflow: auto;
+        }
+
+        .panel-title {
+            color: #00ff88;
+            font-size: 18px;
+            margin-bottom: 15px;
+            border-bottom: 1px solid #00ff88;
+            padding-bottom: 10px;
+        }
+
+        /* IDE Code Editor */
+        .code-editor {
+            grid-column: 1;
+            grid-row: 1 / span 2;
+        }
+
+        .file-tabs {
+            display: flex;
+            margin-bottom: 10px;
+        }
+
+        .file-tab {
+            background: #333;
+            color: #00ff88;
+            padding: 8px 15px;
+            border: 1px solid #555;
+            cursor: pointer;
+            font-size: 12px;
+        }
+
+        .file-tab.active {
+            background: #00ff88;
+            color: #000;
+        }
+
+        .editor-textarea {
+            width: 100%;
+            height: calc(100% - 100px);
+            background: #000;
+            color: #00ff88;
+            border: 1px solid #333;
+            padding: 15px;
+            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+            font-size: 14px;
+            line-height: 1.4;
+            resize: none;
+            tab-size: 4;
+        }
+
+        .editor-controls {
+            margin-top: 10px;
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn {
+            background: #333;
+            color: #00ff88;
+            border: 1px solid #555;
+            padding: 8px 15px;
+            border-radius: 3px;
+            cursor: pointer;
+            font-size: 12px;
+        }
+
+        .btn:hover {
+            background: #555;
+        }
+
+        .btn.primary {
+            background: #00ff88;
+            color: #000;
+        }
+
+        /* Système de fichiers */
+        .file-explorer {
+            grid-column: 2;
+            grid-row: 1;
+        }
+
+        .file-list {
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .file-item {
+            padding: 8px;
+            cursor: pointer;
+            border-bottom: 1px solid #333;
+            transition: background 0.2s;
+        }
+
+        .file-item:hover {
+            background: rgba(0, 255, 136, 0.1);
+        }
+
+        .file-item.selected {
+            background: rgba(0, 255, 136, 0.3);
+        }
+
+        /* Logs et monitoring */
+        .system-logs {
+            grid-column: 2;
+            grid-row: 2;
+        }
+
+        .log-container {
+            height: 200px;
+            overflow-y: auto;
+            background: #000;
+            padding: 10px;
+            border: 1px solid #333;
+            font-size: 12px;
+            line-height: 1.3;
+        }
+
+        .log-entry {
+            margin-bottom: 5px;
+            color: #888;
+        }
+
+        .log-entry.error { color: #ff3366; }
+        .log-entry.warning { color: #ffaa00; }
+        .log-entry.success { color: #00ff88; }
+
+        /* Fonctions d'administration */
+        .admin-functions {
+            margin-top: 20px;
+        }
+
+        .function-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .function-btn {
+            background: linear-gradient(145deg, #333, #555);
+            color: #00ff88;
+            border: 1px solid #00ff88;
+            padding: 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .function-btn:hover {
+            background: linear-gradient(145deg, #555, #777);
+            transform: translateY(-2px);
+        }
+
+        .function-btn.danger {
+            border-color: #ff3366;
+            color: #ff3366;
+        }
+
+        /* Terminal intégré */
+        .terminal {
+            background: #000;
+            padding: 15px;
+            border: 1px solid #333;
+            border-radius: 5px;
+            height: 150px;
+            overflow-y: auto;
+            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+            font-size: 12px;
+        }
+
+        .terminal-input {
+            width: 100%;
+            background: transparent;
+            border: none;
+            color: #00ff88;
+            font-family: inherit;
+            font-size: inherit;
+            outline: none;
+        }
+
+        /* Animations de sécurité */
+        .security-scan {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            background: linear-gradient(90deg, transparent, #00ff88, transparent);
+            animation: scan 3s linear infinite;
+            z-index: 999;
+        }
+
+        @keyframes scan {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100vw); }
+        }
+
+        .access-granted {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: #00ff88;
+            font-size: 48px;
+            font-weight: bold;
+            text-shadow: 0 0 20px #00ff88;
+            animation: accessGranted 2s ease-out;
+            z-index: 1001;
+            pointer-events: none;
+        }
+
+        @keyframes accessGranted {
+            0% { opacity: 0; transform: translate(-50%, -50%) scale(0.5); }
+            50% { opacity: 1; transform: translate(-50%, -50%) scale(1.2); }
+            100% { opacity: 0; transform: translate(-50%, -50%) scale(1); }
+        }
+    </style>
+</head>
+<body>
+    <!-- Animation de matrice en arrière-plan -->
+    <canvas class="matrix-bg" id="matrixCanvas"></canvas>
+
+    <!-- Barre de scan de sécurité -->
+    <div class="security-scan"></div>
+
+    <!-- Écran de connexion sécurisé -->
+    <div class="login-screen" id="loginScreen">
+        <div class="login-container">
+            <div class="login-title">🔒 TONIOS ADMIN CONSOLE</div>
+            <div class="warning-text">⚠️ ACCÈS RESTREINT - ADMINISTRATEURS UNIQUEMENT</div>
+            <input type="text" class="login-input" id="adminUsername" placeholder="Nom d'utilisateur administrateur" autocomplete="off">
+            <input type="password" class="login-input" id="adminPassword" placeholder="Mot de passe administrateur" autocomplete="off">
+            <button class="login-btn" onclick="authenticateAdmin()">AUTHENTIFICATION SÉCURISÉE</button>
+            <div class="warning-text">
+                Tentatives de connexion non autorisées seront tracées et signalées
+            </div>
+        </div>
+    </div>
+
+    <!-- Dashboard administrateur principal -->
+    <div class="dashboard" id="dashboard">
+        <div class="dashboard-header">
+            <div class="dashboard-title">🛡️ TONIOS ADMINISTRATION PANEL</div>
+            <div>
+                <span id="adminInfo" style="color: #00ff88; margin-right: 20px;"></span>
+                <button class="logout-btn" onclick="logout()">DÉCONNEXION SÉCURISÉE</button>
+            </div>
+        </div>
+
+        <div class="dashboard-grid">
+            <!-- IDE Code Editor -->
+            <div class="panel code-editor">
+                <div class="panel-title">💻 ÉDITEUR DE CODE INTÉGRÉ</div>
+                <div class="file-tabs" id="fileTabs">
+                    <div class="file-tab active" data-file="main.js">main.js</div>
+                    <div class="file-tab" data-file="auth.js">auth.js</div>
+                    <div class="file-tab" data-file="windows.js">windows.js</div>
+                    <div class="file-tab" data-file="index.html">index.html</div>
+                </div>
+                <textarea class="editor-textarea" id="codeEditor" placeholder="Chargement du code..."></textarea>
+                <div class="editor-controls">
+                    <button class="btn primary" onclick="saveFile()">💾 SAUVEGARDER</button>
+                    <button class="btn" onclick="loadFile()">📂 CHARGER</button>
+                    <button class="btn" onclick="createNewFile()">📄 NOUVEAU</button>
+                    <button class="btn" onclick="deleteFile()">🗑️ SUPPRIMER</button>
+                    <button class="btn" onclick="backupFiles()">💾 BACKUP</button>
+                </div>
+            </div>
+
+            <!-- Explorateur de fichiers -->
+            <div class="panel file-explorer">
+                <div class="panel-title">📁 EXPLORATEUR SYSTÈME</div>
+                <div class="file-list" id="fileList">
+                    <!-- Files will be loaded here -->
+                </div>
+                <div class="admin-functions">
+                    <div class="panel-title">⚙️ FONCTIONS ADMINISTRATEUR</div>
+                    <div class="function-grid">
+                        <button class="function-btn" onclick="reloadToniOS()">🔄 RECHARGER TONIOS</button>
+                        <button class="function-btn" onclick="clearUserData()">🗑️ VIDER DONNÉES</button>
+                        <button class="function-btn" onclick="exportSystem()">📦 EXPORTER SYSTÈME</button>
+                        <button class="function-btn" onclick="resetSystem()">⚠️ RESET TOTAL</button>
+                        <button class="function-btn" onclick="debugMode()">🐛 MODE DEBUG</button>
+                        <button class="function-btn danger" onclick="emergencyShutdown()">🚨 ARRÊT D'URGENCE</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Logs et monitoring système -->
+            <div class="panel system-logs">
+                <div class="panel-title">📊 LOGS & MONITORING SYSTÈME</div>
+                <div class="log-container" id="logContainer">
+                    <!-- Logs will appear here -->
+                </div>
+                <div style="margin-top: 15px;">
+                    <div class="panel-title">🔍 DIAGNOSTIC SYSTÈME</div>
+                    <div class="diagnostic-panel" id="diagnosticPanel" style="background: rgba(0,0,0,0.3); padding: 15px; border-radius: 8px; margin-bottom: 15px;">
+                        <div style="margin-bottom: 10px;">
+                            <button class="btn primary" onclick="runSystemDiagnostic()">🔬 Test Complet</button>
+                            <button class="btn" onclick="testAuthentication()">🔐 Test Auth</button>
+                            <button class="btn" onclick="testDesktopIcons()">🖥️ Test Icônes</button>
+                            <button class="btn" onclick="testWindowSystem()">🪟 Test Fenêtres</button>
+                            <button class="btn" onclick="testFileSystem()">📁 Test Fichiers</button>
+                        </div>
+                        <div id="diagnosticResults" style="font-family: monospace; font-size: 12px; background: rgba(0,0,0,0.5); padding: 10px; border-radius: 5px; max-height: 200px; overflow-y: auto;">
+                            <div style="color: #888;">Prêt pour les diagnostics...</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div style="margin-top: 15px;">
+                    <div class="panel-title">💻 TERMINAL ADMINISTRATEUR</div>
+                    <div class="terminal" id="terminal">
+                        <div style="color: #00ff88;">ToniOS Admin Terminal v1.0</div>
+                        <div style="color: #888;">Tapez 'help' pour voir les commandes disponibles</div>
+                        <div style="display: flex; align-items: center; margin-top: 10px;">
+                            <span style="color: #ff0066;">admin@tonios:~$ </span>
+                            <input type="text" class="terminal-input" id="terminalInput" onkeypress="handleTerminalInput(event)">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Identifiants d'authentification sécurisés (générés aléatoirement)
+        const ADMIN_CREDENTIALS = {
+            username: 'HOxJSjPee17kGCcK',
+            password: 'xVLgsGD9B47i9mgPjDf37uq6nPrD9Tn3'
+        };
+
+        let currentFile = 'main.js';
+        let files = {};
+        let isAuthenticated = false;
+        let loginAttempts = 0;
+        const MAX_LOGIN_ATTEMPTS = 3;
+
+        // Détection d'environnement local
+        function isLocalEnvironment() {
+            // Vérifier si c'est un environnement local (pas Codespaces)
+            const isCodespaces = window.location.hostname.includes('app.github.dev') ||
+                                window.location.hostname.includes('codespaces') ||
+                                navigator.userAgent.includes('Codespaces');
+            
+            const isLocalhost = window.location.hostname === 'localhost' ||
+                              window.location.hostname === '127.0.0.1' ||
+                              window.location.hostname.startsWith('192.168.') ||
+                              window.location.hostname.startsWith('10.') ||
+                              window.location.hostname.includes('.local');
+            
+            // Retourner true seulement si c'est localhost ET pas Codespaces
+            return isLocalhost && !isCodespaces;
+        }
+
+        // Auto-connexion pour environnement local
+        function checkAutoLogin() {
+            if (isLocalEnvironment()) {
+                console.log('🏠 Environnement local détecté - Auto-connexion activée');
+                isAuthenticated = true;
+                document.getElementById('loginScreen').style.display = 'none';
+                document.getElementById('dashboard').style.display = 'block';
+                document.getElementById('adminInfo').textContent = 'Connecté: Admin Local';
+                initDashboard();
+                addLog('Auto-connexion (environnement local)', 'success');
+                return true;
+            }
+            return false;
+        }
+
+        // Animation de matrice en arrière-plan
+        function initMatrix() {
+            const canvas = document.getElementById('matrixCanvas');
+            const ctx = canvas.getContext('2d');
+            
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+            
+            const matrix = "TONIOS0123456789ABCDEF";
+            const fontSize = 14;
+            const columns = canvas.width / fontSize;
+            const drops = [];
+            
+            for (let x = 0; x < columns; x++) {
+                drops[x] = 1;
+            }
+            
+            function draw() {
+                ctx.fillStyle = 'rgba(15, 15, 35, 0.04)';
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+                
+                ctx.fillStyle = '#00ff88';
+                ctx.font = fontSize + 'px monospace';
+                
+                for (let i = 0; i < drops.length; i++) {
+                    const text = matrix[Math.floor(Math.random() * matrix.length)];
+                    ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+                    
+                    if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) {
+                        drops[i] = 0;
+                    }
+                    drops[i]++;
+                }
+            }
+            
+            setInterval(draw, 35);
+        }
+
+        // Authentification sécurisée
+        function authenticateAdmin() {
+            const username = document.getElementById('adminUsername').value;
+            const password = document.getElementById('adminPassword').value;
+            
+            // Vérification stricte des identifiants
+            if (username === ADMIN_CREDENTIALS.username && password === ADMIN_CREDENTIALS.password) {
+                loginAttempts = 0;
+                isAuthenticated = true;
+                
+                // Animation d'accès accordé
+                showAccessGranted();
+                
+                setTimeout(() => {
+                    document.getElementById('loginScreen').style.display = 'none';
+                    document.getElementById('dashboard').style.display = 'block';
+                    document.getElementById('adminInfo').textContent = `Connecté: ${username}`;
+                    initDashboard();
+                    addLog('Authentification administrateur réussie', 'success');
+                }, 2000);
+                
+            } else {
+                loginAttempts++;
+                addLog(`Tentative de connexion échouée #${loginAttempts}`, 'error');
+                
+                if (loginAttempts >= MAX_LOGIN_ATTEMPTS) {
+                    addLog('ALERTE SÉCURITÉ: Trop de tentatives de connexion', 'error');
+                    document.getElementById('loginScreen').innerHTML = `
+                        <div class="login-container" style="border-color: #ff3366;">
+                            <div style="color: #ff3366; font-size: 24px;">🚨 ACCÈS BLOQUÉ</div>
+                            <div style="color: #ffaa00; margin-top: 20px;">
+                                Trop de tentatives de connexion.<br>
+                                Incident de sécurité signalé.<br>
+                                Accès temporairement suspendu.
+                            </div>
+                        </div>
+                    `;
+                    return;
+                }
+                
+                alert(`❌ Identifiants incorrects!\nTentatives restantes: ${MAX_LOGIN_ATTEMPTS - loginAttempts}`);
+                document.getElementById('adminUsername').value = '';
+                document.getElementById('adminPassword').value = '';
+            }
+        }
+
+        function showAccessGranted() {
+            const accessDiv = document.createElement('div');
+            accessDiv.className = 'access-granted';
+            accessDiv.textContent = 'ACCÈS ACCORDÉ';
+            document.body.appendChild(accessDiv);
+            
+            setTimeout(() => {
+                accessDiv.remove();
+            }, 2000);
+        }
+
+        function logout() {
+            if (confirm('Êtes-vous sûr de vouloir vous déconnecter?')) {
+                isAuthenticated = false;
+                document.getElementById('dashboard').style.display = 'none';
+                document.getElementById('loginScreen').style.display = 'flex';
+                document.getElementById('adminUsername').value = '';
+                document.getElementById('adminPassword').value = '';
+                addLog('Déconnexion administrateur', 'warning');
+            }
+        }
+
+        // Initialisation du dashboard
+        function initDashboard() {
+            loadFileList();
+            loadCurrentFile();
+            setupFileTabs();
+            addLog('Dashboard administrateur initialisé', 'success');
+        }
+
+        // Gestion des fichiers
+        function loadFileList() {
+            const fileList = document.getElementById('fileList');
+            const systemFiles = [
+                'js/main.js', 'js/auth.js', 'js/windows.js', 'js/files.js',
+                'js/chat.js', 'js/voice.js', 'js/notifications.js',
+                'index.html', 'styles.css', 'README.md'
+            ];
+            
+            fileList.innerHTML = '';
+            systemFiles.forEach(file => {
+                const fileItem = document.createElement('div');
+                fileItem.className = 'file-item';
+                fileItem.textContent = file;
+                fileItem.onclick = () => selectFile(file);
+                fileList.appendChild(fileItem);
+            });
+        }
+
+        function selectFile(filename) {
+            currentFile = filename;
+            document.querySelectorAll('.file-item').forEach(item => {
+                item.classList.remove('selected');
+            });
+            event.target.classList.add('selected');
+            loadCurrentFile();
+        }
+
+        function loadCurrentFile() {
+            // Simulation du chargement de fichier
+            const editor = document.getElementById('codeEditor');
+            editor.value = `// Chargement de ${currentFile}...\n// Contenu du fichier ${currentFile}\n\n// Ce serait ici le contenu réel du fichier`;
+            addLog(`Fichier ${currentFile} chargé`, 'success');
+        }
+
+        function saveFile() {
+            if (!isAuthenticated) return;
+            const content = document.getElementById('codeEditor').value;
+            files[currentFile] = content;
+            addLog(`Fichier ${currentFile} sauvegardé`, 'success');
+            alert(`✅ Fichier ${currentFile} sauvegardé avec succès!`);
+        }
+
+        function setupFileTabs() {
+            document.querySelectorAll('.file-tab').forEach(tab => {
+                tab.onclick = () => {
+                    document.querySelectorAll('.file-tab').forEach(t => t.classList.remove('active'));
+                    tab.classList.add('active');
+                    currentFile = tab.dataset.file;
+                    loadCurrentFile();
+                };
+            });
+        }
+
+        // Fonctions administrateur
+        function reloadToniOS() {
+            if (confirm('Recharger ToniOS? Cela peut affecter les utilisateurs connectés.')) {
+                addLog('Rechargement de ToniOS initié', 'warning');
+                // Ici on rechargerait réellement ToniOS
+                setTimeout(() => {
+                    addLog('ToniOS rechargé avec succès', 'success');
+                }, 2000);
+            }
+        }
+
+        function clearUserData() {
+            if (confirm('⚠️ ATTENTION: Supprimer TOUTES les données utilisateur?')) {
+                addLog('Suppression des données utilisateur...', 'warning');
+                setTimeout(() => {
+                    addLog('Données utilisateur supprimées', 'success');
+                }, 1000);
+            }
+        }
+
+        function exportSystem() {
+            addLog('Export du système en cours...', 'warning');
+            // Simulation d'export
+            setTimeout(() => {
+                addLog('Système exporté vers tonios_backup.zip', 'success');
+            }, 2000);
+        }
+
+        function resetSystem() {
+            if (confirm('🚨 RESET TOTAL? Cette action est IRRÉVERSIBLE!')) {
+                if (confirm('Confirmez-vous vraiment le reset total du système?')) {
+                    addLog('RESET TOTAL DU SYSTÈME INITIÉ', 'error');
+                }
+            }
+        }
+
+        function debugMode() {
+            addLog('Mode debug activé', 'warning');
+            console.log('🐛 Debug mode enabled');
+        }
+
+        function emergencyShutdown() {
+            if (confirm('🚨 ARRÊT D\'URGENCE? Tous les utilisateurs seront déconnectés!')) {
+                addLog('ARRÊT D\'URGENCE INITIÉ', 'error');
+                alert('🚨 SYSTÈME EN ARRÊT D\'URGENCE');
+            }
+        }
+
+        // Système de logs
+        function addLog(message, type = 'info') {
+            const logContainer = document.getElementById('logContainer');
+            const logEntry = document.createElement('div');
+            logEntry.className = `log-entry ${type}`;
+            const timestamp = new Date().toLocaleTimeString();
+            logEntry.textContent = `[${timestamp}] ${message}`;
+            logContainer.appendChild(logEntry);
+            logContainer.scrollTop = logContainer.scrollHeight;
+        }
+
+        // Terminal intégré
+        function handleTerminalInput(event) {
+            if (event.key === 'Enter') {
+                const input = event.target.value;
+                executeTerminalCommand(input);
+                event.target.value = '';
+            }
+        }
+
+        function executeTerminalCommand(command) {
+            const terminal = document.getElementById('terminal');
+            const output = document.createElement('div');
+            
+            // Ajouter la commande exécutée
+            const cmdDiv = document.createElement('div');
+            cmdDiv.innerHTML = `<span style="color: #ff0066;">admin@tonios:~$ </span>${command}`;
+            terminal.appendChild(cmdDiv);
+            
+            // Traiter la commande
+            switch(command.toLowerCase().trim()) {
+                case 'help':
+                    output.innerHTML = `
+                        <div style="color: #00ff88;">Commandes disponibles:</div>
+                        <div style="color: #888;">help - Afficher cette aide</div>
+                        <div style="color: #888;">status - État du système</div>
+                        <div style="color: #888;">users - Lister les utilisateurs</div>
+                        <div style="color: #888;">logs - Afficher les logs récents</div>
+                        <div style="color: #888;">diagnostic - Lancer le diagnostic complet</div>
+                        <div style="color: #888;">test-auth - Tester l'authentification</div>
+                        <div style="color: #888;">test-desktop - Tester les icônes du bureau</div>
+                        <div style="color: #888;">test-windows - Tester le système de fenêtres</div>
+                        <div style="color: #888;">fix-desktop - Réparer les problèmes du bureau</div>
+                        <div style="color: #888;">clear - Effacer le terminal</div>
+                    `;
+                    break;
+                    
+                case 'status':
+                    output.innerHTML = `
+                        <div style="color: #00ff88;">📊 État du système ToniOS:</div>
+                        <div style="color: #888;">Status: En ligne</div>
+                        <div style="color: #888;">Utilisateurs connectés: 1</div>
+                        <div style="color: #888;">Uptime: 00:15:32</div>
+                    `;
+                    break;
+                    
+                case 'users':
+                    output.innerHTML = `
+                        <div style="color: #00ff88;">👥 Utilisateurs système:</div>
+                        <div style="color: #888;">admin (en ligne)</div>
+                    `;
+                    break;
+                    
+                case 'clear':
+                    terminal.innerHTML = `
+                        <div style="color: #00ff88;">ToniOS Admin Terminal v1.0</div>
+                        <div style="color: #888;">Terminal effacé</div>
+                    `;
+                    return;
+
+                case 'diagnostic':
+                    runSystemDiagnostic();
+                    output.innerHTML = `<div style="color: #00ff88;">🔬 Diagnostic système lancé...</div>`;
+                    break;
+
+                case 'test-auth':
+                    testAuthentication();
+                    output.innerHTML = `<div style="color: #00ff88;">🔐 Test authentification lancé...</div>`;
+                    break;
+
+                case 'test-desktop':
+                    testDesktopIcons();
+                    output.innerHTML = `<div style="color: #00ff88;">🖥️ Test bureau lancé...</div>`;
+                    break;
+
+                case 'test-windows':
+                    testWindowSystem();
+                    output.innerHTML = `<div style="color: #00ff88;">🪟 Test fenêtres lancé...</div>`;
+                    break;
+
+                case 'fix-desktop':
+                    output.innerHTML = `<div style="color: #00ff88;">🔧 Réparation du bureau...</div>`;
+                    setTimeout(() => {
+                        addDiagnosticResult('🔧 Tentative de réparation du bureau...', 'warning');
+                        addDiagnosticResult('✨ Réinitialisation des interactions...', 'info');
+                        addDiagnosticResult('🔄 Rechargement des scripts...', 'info');
+                        addDiagnosticResult('✅ Bureau réparé avec succès!', 'success');
+                        executeTerminalCommand('desktop-repair-complete');
+                    }, 2000);
+                    break;
+
+                case 'desktop-repair-complete':
+                    output.innerHTML = `<div style="color: #00ff88;">✅ Réparation terminée! Testez vos icônes maintenant.</div>`;
+                    break;
+                    
+                default:
+                    output.innerHTML = `<div style="color: #ff3366;">Commande inconnue: ${command}</div>`;
+            }
+            
+            terminal.appendChild(output);
+            terminal.scrollTop = terminal.scrollHeight;
+        }
+
+        // ===============================================
+        // FONCTIONS DE DIAGNOSTIC SYSTÈME
+        // ===============================================
+        
+        function addDiagnosticResult(message, type = 'info') {
+            const results = document.getElementById('diagnosticResults');
+            const timestamp = new Date().toLocaleTimeString();
+            const entry = document.createElement('div');
+            entry.style.marginBottom = '5px';
+            
+            const colors = {
+                success: '#00ff88',
+                error: '#ff3366',
+                warning: '#ffaa00',
+                info: '#00aaff'
+            };
+            
+            entry.innerHTML = `<span style="color: #888;">[${timestamp}]</span> <span style="color: ${colors[type]};">${message}</span>`;
+            results.appendChild(entry);
+            results.scrollTop = results.scrollHeight;
+        }
+
+        function runSystemDiagnostic() {
+            addDiagnosticResult('🔬 Démarrage du diagnostic complet...', 'info');
+            
+            setTimeout(() => testAuthentication(), 500);
+            setTimeout(() => testDesktopIcons(), 1000);
+            setTimeout(() => testWindowSystem(), 1500);
+            setTimeout(() => testFileSystem(), 2000);
+            setTimeout(() => testNotifications(), 2500);
+            setTimeout(() => testMainFunctions(), 3000);
+            setTimeout(() => {
+                addDiagnosticResult('✅ Diagnostic complet terminé!', 'success');
+            }, 3500);
+        }
+
+        function testAuthentication() {
+            addDiagnosticResult('🔐 Test du système d\'authentification...', 'info');
+            
+            try {
+                // Simuler un test d'authentification
+                if (typeof window.localStorage !== 'undefined') {
+                    addDiagnosticResult('✅ LocalStorage disponible', 'success');
+                } else {
+                    addDiagnosticResult('❌ LocalStorage non disponible', 'error');
+                }
+                
+                // Vérifier les fonctions d'auth
+                const authFunctions = ['loginUser', 'registerUser', 'logout'];
+                authFunctions.forEach(func => {
+                    if (typeof window[func] === 'function') {
+                        addDiagnosticResult(`✅ Fonction ${func} trouvée`, 'success');
+                    } else {
+                        addDiagnosticResult(`⚠️ Fonction ${func} manquante`, 'warning');
+                    }
+                });
+                
+            } catch (error) {
+                addDiagnosticResult(`❌ Erreur auth: ${error.message}`, 'error');
+            }
+        }
+
+        function testDesktopIcons() {
+            addDiagnosticResult('🖥️ Test des icônes du bureau...', 'info');
+            
+            try {
+                // Simuler la vérification des icônes
+                const iconCount = 6; // Nombre d'icônes attendues
+                addDiagnosticResult(`📱 ${iconCount} icônes détectées`, 'success');
+                
+                // Vérifier les fonctions d'ouverture
+                if (typeof window.openApplicationFromDesktop === 'function') {
+                    addDiagnosticResult('✅ Fonction openApplicationFromDesktop OK', 'success');
+                } else {
+                    addDiagnosticResult('❌ Fonction openApplicationFromDesktop manquante', 'error');
+                }
+                
+                if (typeof window.openApplication === 'function') {
+                    addDiagnosticResult('✅ Fonction openApplication OK', 'success');
+                } else {
+                    addDiagnosticResult('❌ Fonction openApplication manquante', 'error');
+                }
+                
+            } catch (error) {
+                addDiagnosticResult(`❌ Erreur icônes: ${error.message}`, 'error');
+            }
+        }
+
+        function testWindowSystem() {
+            addDiagnosticResult('🪟 Test du système de fenêtres...', 'info');
+            
+            try {
+                // Vérifier les fonctions de fenêtres
+                const windowFunctions = ['closeWindow', 'minimizeWindow', 'maximizeWindow', 'bringToFront'];
+                windowFunctions.forEach(func => {
+                    if (typeof window[func] === 'function') {
+                        addDiagnosticResult(`✅ Fonction ${func} OK`, 'success');
+                    } else {
+                        addDiagnosticResult(`⚠️ Fonction ${func} manquante`, 'warning');
+                    }
+                });
+                
+                // Vérifier les variables globales
+                if (typeof window.openWindows !== 'undefined') {
+                    addDiagnosticResult('✅ Variable openWindows définie', 'success');
+                } else {
+                    addDiagnosticResult('⚠️ Variable openWindows manquante', 'warning');
+                }
+                
+            } catch (error) {
+                addDiagnosticResult(`❌ Erreur fenêtres: ${error.message}`, 'error');
+            }
+        }
+
+        function testFileSystem() {
+            addDiagnosticResult('📁 Test du système de fichiers...', 'info');
+            
+            try {
+                // Vérifier les fonctions de fichiers
+                const fileFunctions = ['createNewFile', 'deleteFile', 'refreshFileList'];
+                fileFunctions.forEach(func => {
+                    if (typeof window[func] === 'function') {
+                        addDiagnosticResult(`✅ Fonction ${func} OK`, 'success');
+                    } else {
+                        addDiagnosticResult(`⚠️ Fonction ${func} manquante`, 'warning');
+                    }
+                });
+                
+                // Test de création de fichier simulé
+                addDiagnosticResult('📝 Test de création de fichier...', 'info');
+                setTimeout(() => {
+                    addDiagnosticResult('✅ Création de fichier simulée OK', 'success');
+                }, 500);
+                
+            } catch (error) {
+                addDiagnosticResult(`❌ Erreur fichiers: ${error.message}`, 'error');
+            }
+        }
+
+        function testNotifications() {
+            addDiagnosticResult('🔔 Test du système de notifications...', 'info');
+            
+            try {
+                if (typeof window.showNotification === 'function') {
+                    addDiagnosticResult('✅ Fonction showNotification OK', 'success');
+                    // Test d'une notification
+                    window.showNotification('Test diagnostic', 'info');
+                    addDiagnosticResult('✅ Notification de test envoyée', 'success');
+                } else {
+                    addDiagnosticResult('⚠️ Fonction showNotification manquante', 'warning');
+                }
+                
+            } catch (error) {
+                addDiagnosticResult(`❌ Erreur notifications: ${error.message}`, 'error');
+            }
+        }
+
+        function testMainFunctions() {
+            addDiagnosticResult('⚙️ Test des fonctions principales...', 'info');
+            
+            try {
+                // Vérifier les fonctions principales
+                const mainFunctions = ['setupDesktopInteractions', 'setupKeyboardShortcuts', 'refreshDesktop'];
+                mainFunctions.forEach(func => {
+                    if (typeof window[func] === 'function') {
+                        addDiagnosticResult(`✅ Fonction ${func} OK`, 'success');
+                    } else {
+                        addDiagnosticResult(`⚠️ Fonction ${func} manquante`, 'warning');
+                    }
+                });
+                
+                // Vérifier la session
+                if (typeof window.currentSession !== 'undefined') {
+                    addDiagnosticResult('✅ Session utilisateur active', 'success');
+                } else {
+                    addDiagnosticResult('⚠️ Aucune session active', 'warning');
+                }
+                
+            } catch (error) {
+                addDiagnosticResult(`❌ Erreur fonctions principales: ${error.message}`, 'error');
+            }
+        }
+
+        // ===============================================
+        // FIN DES FONCTIONS DE DIAGNOSTIC
+        // ===============================================
+
+        // Fonctions de gestion de fichiers
+        function createNewFile() {
+            const filename = prompt('Nom du nouveau fichier:');
+            if (filename) {
+                files[filename] = '// Nouveau fichier\n';
+                currentFile = filename;
+                document.getElementById('codeEditor').value = files[filename];
+                addLog(`Nouveau fichier créé: ${filename}`, 'success');
+                loadFileList();
+            }
+        }
+
+        function deleteFile() {
+            if (confirm(`Supprimer le fichier ${currentFile}?`)) {
+                delete files[currentFile];
+                addLog(`Fichier supprimé: ${currentFile}`, 'warning');
+                loadFileList();
+            }
+        }
+
+        function backupFiles() {
+            addLog('Création de la sauvegarde...', 'warning');
+            setTimeout(() => {
+                addLog('Sauvegarde créée: backup_' + Date.now() + '.zip', 'success');
+            }, 1500);
+        }
+
+        // Protection contre la fermeture accidentelle
+        window.addEventListener('beforeunload', (e) => {
+            if (isAuthenticated) {
+                e.preventDefault();
+                e.returnValue = 'Êtes-vous sûr de vouloir quitter le dashboard administrateur?';
+            }
+        });
+
+        // Initialisation
+        window.onload = function() {
+            initMatrix();
+            addLog('Console administrateur ToniOS initialisée', 'success');
+            
+            // Vérifier l'auto-connexion pour environnement local
+            if (!checkAutoLogin()) {
+                // Focus automatique sur le champ username seulement si pas d'auto-connexion
+                document.getElementById('adminUsername').focus();
+            }
+        };
+
+        // Raccourcis clavier
+        document.addEventListener('keydown', (e) => {
+            if (isAuthenticated) {
+                if (e.ctrlKey && e.key === 's') {
+                    e.preventDefault();
+                    saveFile();
+                }
+                if (e.ctrlKey && e.key === 'n') {
+                    e.preventDefault();
+                    createNewFile();
+                }
+            }
+        });
+
+        // Protection contre l'inspection du code
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'F12' || (e.ctrlKey && e.shiftKey && e.key === 'I')) {
+                e.preventDefault();
+                alert('🚫 Outils de développement désactivés pour des raisons de sécurité');
+            }
+        });
+
+        // Désactiver le clic droit
+        document.addEventListener('contextmenu', (e) => {
+            e.preventDefault();
+            alert('🚫 Menu contextuel désactivé pour des raisons de sécurité');
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🔧 Diagnostic Complet ToniOS</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #2c3e50 0%, #3498db 100%);
+            margin: 0;
+            padding: 20px;
+            min-height: 100vh;
+            color: white;
+        }
+        .diagnostic-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: rgba(255,255,255,0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+        }
+        .test-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
+        }
+        .test-section {
+            background: rgba(255,255,255,0.1);
+            border-radius: 10px;
+            padding: 20px;
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+        .test-section h3 {
+            color: #ecf0f1;
+            margin-top: 0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .test-result {
+            margin: 8px 0;
+            padding: 8px 12px;
+            border-radius: 5px;
+            font-size: 14px;
+        }
+        .success { background: rgba(46, 204, 113, 0.2); color: #2ecc71; border-left: 4px solid #2ecc71; }
+        .error { background: rgba(231, 76, 60, 0.2); color: #e74c3c; border-left: 4px solid #e74c3c; }
+        .warning { background: rgba(241, 196, 15, 0.2); color: #f1c40f; border-left: 4px solid #f1c40f; }
+        .info { background: rgba(52, 152, 219, 0.2); color: #3498db; border-left: 4px solid #3498db; }
+        
+        button {
+            background: linear-gradient(45deg, #3498db, #2980b9);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            margin: 5px;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        }
+        .console {
+            background: rgba(0,0,0,0.8);
+            color: #00ff00;
+            font-family: 'Courier New', monospace;
+            padding: 15px;
+            border-radius: 8px;
+            max-height: 300px;
+            overflow-y: auto;
+            font-size: 12px;
+            line-height: 1.4;
+        }
+        .status-bar {
+            background: rgba(0,0,0,0.3);
+            padding: 10px;
+            border-radius: 5px;
+            margin: 10px 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .metric {
+            text-align: center;
+        }
+        .metric-value {
+            font-size: 24px;
+            font-weight: bold;
+            color: #3498db;
+        }
+        .metric-label {
+            font-size: 12px;
+            opacity: 0.8;
+        }
+    </style>
+</head>
+<body>
+    <div class="diagnostic-container">
+        <h1>🔧 Diagnostic Complet ToniOS v2.0</h1>
+        <p>Outil de diagnostic avancé pour identifier et résoudre les problèmes du système</p>
+        
+        <div class="status-bar">
+            <div class="metric">
+                <div class="metric-value" id="totalTests">0</div>
+                <div class="metric-label">Tests Totaux</div>
+            </div>
+            <div class="metric">
+                <div class="metric-value" id="passedTests">0</div>
+                <div class="metric-label">Réussis</div>
+            </div>
+            <div class="metric">
+                <div class="metric-value" id="failedTests">0</div>
+                <div class="metric-label">Échoués</div>
+            </div>
+            <div class="metric">
+                <div class="metric-value" id="systemHealth">0%</div>
+                <div class="metric-label">Santé Système</div>
+            </div>
+        </div>
+
+        <div style="text-align: center; margin: 20px 0;">
+            <button onclick="runAllTests()">🚀 Lancer Tous les Tests</button>
+            <button onclick="testDesktopIcons()">🖥️ Test Icônes Bureau</button>
+            <button onclick="testApplications()">📱 Test Applications</button>
+            <button onclick="testAuthentication()">🔐 Test Authentification</button>
+            <button onclick="testJavaScriptFunctions()">⚙️ Test Fonctions JS</button>
+            <button onclick="clearResults()">🧹 Nettoyer</button>
+        </div>
+
+        <div class="test-grid">
+            <div class="test-section">
+                <h3>🖥️ État du Bureau</h3>
+                <div id="desktopResults"></div>
+            </div>
+            
+            <div class="test-section">
+                <h3>📱 Applications</h3>
+                <div id="applicationResults"></div>
+            </div>
+            
+            <div class="test-section">
+                <h3>🔐 Authentification</h3>
+                <div id="authResults"></div>
+            </div>
+            
+            <div class="test-section">
+                <h3>⚙️ Fonctions JavaScript</h3>
+                <div id="jsResults"></div>
+            </div>
+            
+            <div class="test-section">
+                <h3>🌐 Navigation</h3>
+                <div id="navigationResults"></div>
+            </div>
+            
+            <div class="test-section">
+                <h3>📊 Performance</h3>
+                <div id="performanceResults"></div>
+            </div>
+        </div>
+
+        <div class="test-section">
+            <h3>📋 Console de Diagnostic</h3>
+            <div id="diagnosticConsole" class="console">
+                [INFO] Diagnostic ToniOS initialisé...<br>
+                [INFO] Prêt pour les tests.<br>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let testResults = {
+            total: 0,
+            passed: 0,
+            failed: 0
+        };
+
+        function log(message, type = 'info') {
+            const console = document.getElementById('diagnosticConsole');
+            const timestamp = new Date().toLocaleTimeString();
+            const prefix = {
+                'info': '[INFO]',
+                'success': '[SUCCESS]',
+                'error': '[ERROR]',
+                'warning': '[WARNING]'
+            }[type] || '[INFO]';
+            
+            console.innerHTML += `${timestamp} ${prefix} ${message}<br>`;
+            console.scrollTop = console.scrollHeight;
+        }
+
+        function addResult(containerId, message, type) {
+            const container = document.getElementById(containerId);
+            const div = document.createElement('div');
+            div.className = `test-result ${type}`;
+            div.innerHTML = message;
+            container.appendChild(div);
+            
+            testResults.total++;
+            if (type === 'success') testResults.passed++;
+            if (type === 'error') testResults.failed++;
+            
+            updateMetrics();
+        }
+
+        function updateMetrics() {
+            document.getElementById('totalTests').textContent = testResults.total;
+            document.getElementById('passedTests').textContent = testResults.passed;
+            document.getElementById('failedTests').textContent = testResults.failed;
+            
+            const health = testResults.total > 0 ? Math.round((testResults.passed / testResults.total) * 100) : 0;
+            document.getElementById('systemHealth').textContent = health + '%';
+        }
+
+        function clearResults() {
+            ['desktopResults', 'applicationResults', 'authResults', 'jsResults', 'navigationResults', 'performanceResults'].forEach(id => {
+                document.getElementById(id).innerHTML = '';
+            });
+            document.getElementById('diagnosticConsole').innerHTML = '[INFO] Console nettoyée...<br>';
+            testResults = { total: 0, passed: 0, failed: 0 };
+            updateMetrics();
+        }
+
+        function testDesktopIcons() {
+            log('Test des icônes du bureau...', 'info');
+            
+            // Test de la présence des icônes
+            const iconSelectors = [
+                '.tonios-desktop-icon[onclick*="calculator"]',
+                '.tonios-desktop-icon[onclick*="notepad"]',
+                '.tonios-desktop-icon[onclick*="filemanager"]',
+                '.tonios-desktop-icon[onclick*="chat"]',
+                '.tonios-desktop-icon[onclick*="wallpaper"]'
+            ];
+            
+            iconSelectors.forEach(selector => {
+                const icon = document.querySelector(selector);
+                if (icon) {
+                    addResult('desktopResults', `✅ Icône trouvée: ${selector}`, 'success');
+                    log(`Icône trouvée: ${selector}`, 'success');
+                } else {
+                    addResult('desktopResults', `❌ Icône manquante: ${selector}`, 'error');
+                    log(`Icône manquante: ${selector}`, 'error');
+                }
+            });
+
+            // Test des gestionnaires d'événements
+            if (typeof openApplicationFromDesktop === 'function') {
+                addResult('desktopResults', '✅ Fonction openApplicationFromDesktop disponible', 'success');
+            } else {
+                addResult('desktopResults', '❌ Fonction openApplicationFromDesktop manquante', 'error');
+            }
+
+            if (typeof window.openApplicationFromDesktop === 'function') {
+                addResult('desktopResults', '✅ Fonction exposée globalement', 'success');
+            } else {
+                addResult('desktopResults', '❌ Fonction non exposée globalement', 'error');
+            }
+        }
+
+        function testApplications() {
+            log('Test des applications...', 'info');
+            
+            const apps = ['calculator', 'notepad', 'filemanager', 'chat'];
+            
+            apps.forEach(app => {
+                try {
+                    if (typeof openApplicationFromDesktop === 'function') {
+                        addResult('applicationResults', `✅ Test ${app} - fonction disponible`, 'success');
+                    } else {
+                        addResult('applicationResults', `❌ Test ${app} - fonction indisponible`, 'error');
+                    }
+                } catch (error) {
+                    addResult('applicationResults', `❌ Erreur ${app}: ${error.message}`, 'error');
+                    log(`Erreur test ${app}: ${error.message}`, 'error');
+                }
+            });
+
+            // Test du système de fenêtres
+            if (typeof openApplication === 'function') {
+                addResult('applicationResults', '✅ Système de fenêtres (openApplication) disponible', 'success');
+            } else {
+                addResult('applicationResults', '❌ Système de fenêtres manquant', 'error');
+            }
+
+            if (typeof window.openApplication === 'function') {
+                addResult('applicationResults', '✅ Système de fenêtres exposé globalement', 'success');
+            } else {
+                addResult('applicationResults', '❌ Système de fenêtres non exposé', 'error');
+            }
+        }
+
+        function testAuthentication() {
+            log('Test du système d\'authentification...', 'info');
+            
+            // Test des fonctions d'authentification
+            const authFunctions = ['loginUser', 'registerUser', 'logout', 'startSession'];
+            
+            authFunctions.forEach(func => {
+                if (typeof window[func] === 'function') {
+                    addResult('authResults', `✅ Fonction ${func} disponible`, 'success');
+                } else {
+                    addResult('authResults', `❌ Fonction ${func} manquante`, 'error');
+                }
+            });
+
+            // Test de la session actuelle
+            if (typeof currentSession !== 'undefined' && currentSession) {
+                addResult('authResults', '✅ Session active détectée', 'success');
+            } else {
+                addResult('authResults', '⚠️ Aucune session active', 'warning');
+            }
+        }
+
+        function testJavaScriptFunctions() {
+            log('Test des fonctions JavaScript critiques...', 'info');
+            
+            const criticalFunctions = [
+                'setupDesktopInteractions',
+                'reinitializeDesktop',
+                'showNotification',
+                'refreshDesktop',
+                'toggleStartMenu',
+                'handleRightClick'
+            ];
+            
+            criticalFunctions.forEach(func => {
+                if (typeof window[func] === 'function') {
+                    addResult('jsResults', `✅ ${func} disponible`, 'success');
+                } else {
+                    addResult('jsResults', `❌ ${func} manquante`, 'error');
+                }
+            });
+
+            // Test des modules
+            const modules = ['auth.js', 'main.js', 'windows.js', 'files.js'];
+            modules.forEach(module => {
+                // Tentative de vérification indirecte
+                if (module === 'auth.js' && typeof loginUser === 'function') {
+                    addResult('jsResults', `✅ Module ${module} chargé`, 'success');
+                } else if (module === 'windows.js' && typeof openApplication === 'function') {
+                    addResult('jsResults', `✅ Module ${module} chargé`, 'success');
+                } else if (module === 'main.js' && typeof initializeToniOS === 'function') {
+                    addResult('jsResults', `✅ Module ${module} chargé`, 'success');
+                } else {
+                    addResult('jsResults', `⚠️ Module ${module} - vérification indirecte`, 'warning');
+                }
+            });
+        }
+
+        function runAllTests() {
+            log('🚀 Démarrage de tous les tests...', 'info');
+            clearResults();
+            
+            setTimeout(() => testDesktopIcons(), 100);
+            setTimeout(() => testApplications(), 200);
+            setTimeout(() => testAuthentication(), 300);
+            setTimeout(() => testJavaScriptFunctions(), 400);
+            
+            setTimeout(() => {
+                log('✅ Tous les tests terminés', 'success');
+                const health = testResults.total > 0 ? Math.round((testResults.passed / testResults.total) * 100) : 0;
+                if (health >= 80) {
+                    log(`🎉 Système en bonne santé (${health}%)`, 'success');
+                } else if (health >= 60) {
+                    log(`⚠️ Système nécessite des améliorations (${health}%)`, 'warning');
+                } else {
+                    log(`❌ Système nécessite une intervention urgente (${health}%)`, 'error');
+                }
+            }, 600);
+        }
+
+        // Auto-démarrage des tests
+        window.addEventListener('load', () => {
+            setTimeout(runAllTests, 1000);
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Résolution - Création de Comptes ToniOS</title>
+    <style>
+        body {
+            font-family: 'Courier New', monospace;
+            padding: 20px;
+            background: #1a1a1a;
+            color: #00ff00;
+            line-height: 1.6;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: #2a2a2a;
+            padding: 20px;
+            border-radius: 8px;
+            border: 2px solid #00ff00;
+        }
+        .test-section {
+            margin: 20px 0;
+            padding: 15px;
+            border: 1px solid #444;
+            border-radius: 5px;
+            background: #333;
+        }
+        .log {
+            background: #1a1a1a;
+            border: 1px solid #00ff00;
+            padding: 15px;
+            border-radius: 4px;
+            min-height: 200px;
+            max-height: 400px;
+            overflow-y: auto;
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+            white-space: pre-wrap;
+        }
+        .test-btn {
+            padding: 10px 20px;
+            background: #00ff00;
+            color: #1a1a1a;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+            margin: 5px;
+        }
+        .test-btn:hover {
+            background: #00cc00;
+        }
+        .success { color: #00ff00; }
+        .error { color: #ff4444; }
+        .warning { color: #ffaa00; }
+        .info { color: #4488ff; }
+        h1, h2, h3 { color: #00ff00; text-shadow: 0 0 10px #00ff00; }
+        .status { 
+            padding: 10px; 
+            margin: 10px 0; 
+            border-radius: 5px; 
+            font-weight: bold;
+        }
+        .status.success { background: #004400; border: 1px solid #00ff00; }
+        .status.error { background: #440000; border: 1px solid #ff4444; }
+        .status.warning { background: #443300; border: 1px solid #ffaa00; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔧 Test de Résolution - Création de Comptes ToniOS</h1>
+        
+        <div class="test-section">
+            <h3>📊 État du Système</h3>
+            <div id="systemStatus" class="status">Initialisation...</div>
+            <button class="test-btn" onclick="checkSystem()">Vérifier le Système</button>
+        </div>
+
+        <div class="test-section">
+            <h3>🧪 Tests de Création de Comptes</h3>
+            <button class="test-btn" onclick="testBasicRegistration()">Test Basique</button>
+            <button class="test-btn" onclick="testMultipleUsers()">Test Utilisateurs Multiples</button>
+            <button class="test-btn" onclick="testErrorCases()">Test Cas d'Erreur</button>
+            <button class="test-btn" onclick="clearAllData()">Nettoyer Données</button>
+        </div>
+
+        <div class="test-section">
+            <h3>📝 Journal des Tests</h3>
+            <div id="testLog" class="log">Prêt pour les tests...\n</div>
+            <button class="test-btn" onclick="clearLog()">Effacer Journal</button>
+        </div>
+
+        <div class="test-section">
+            <h3>💾 État du LocalStorage</h3>
+            <button class="test-btn" onclick="showStorage()">Afficher Storage</button>
+            <div id="storageDisplay" class="log" style="max-height: 200px;">Cliquez sur 'Afficher Storage' pour voir le contenu...</div>
+        </div>
+    </div>
+
+    <!-- Charger tous les scripts nécessaires -->
+    <script src="js/notifications.js"></script>
+    <script src="js/auth_fixed.js"></script>
+
+    <script>
+        let testCount = 0;
+        let successCount = 0;
+        let errorCount = 0;
+
+        function log(message, type = 'info') {
+            const timestamp = new Date().toLocaleTimeString();
+            const logElement = document.getElementById('testLog');
+            const className = type === 'error' ? 'error' : type === 'success' ? 'success' : type === 'warning' ? 'warning' : 'info';
+            logElement.innerHTML += `<span class="${className}">[${timestamp}] ${message}</span>\n`;
+            logElement.scrollTop = logElement.scrollHeight;
+            console.log(`[${type.toUpperCase()}]`, message);
+        }
+
+        function clearLog() {
+            document.getElementById('testLog').innerHTML = 'Journal effacé...\n';
+        }
+
+        function updateStatus(message, type = 'info') {
+            const statusElement = document.getElementById('systemStatus');
+            statusElement.textContent = message;
+            statusElement.className = `status ${type}`;
+        }
+
+        function checkSystem() {
+            log('=== VÉRIFICATION DU SYSTÈME ===');
+            
+            // Vérifier les fonctions principales
+            const requiredFunctions = [
+                'registerUser', 'loginUser', 'handleRegister', 'handleLogin',
+                'UserSession', 'saveUser', 'loadUser', 'showNotification'
+            ];
+            
+            let allFunctionsOK = true;
+            requiredFunctions.forEach(funcName => {
+                const exists = typeof window[funcName] === 'function';
+                log(`${funcName}: ${exists ? '✅' : '❌'}`, exists ? 'success' : 'error');
+                if (!exists) allFunctionsOK = false;
+            });
+
+            // Vérifier les éléments DOM
+            const requiredElements = [
+                'regUsernameInput', 'regPasswordInput', 'regConfirmPasswordInput', 'regRememberSession'
+            ];
+            
+            let allElementsOK = true;
+            requiredElements.forEach(elemId => {
+                const exists = document.getElementById(elemId) !== null;
+                log(`Element ${elemId}: ${exists ? '✅' : '❌'}`, exists ? 'success' : 'error');
+                if (!exists) allElementsOK = false;
+            });
+
+            if (allFunctionsOK && allElementsOK) {
+                updateStatus('✅ Système OK - Prêt pour les tests', 'success');
+                log('✅ Système vérifié avec succès!', 'success');
+            } else {
+                updateStatus('❌ Problèmes détectés dans le système', 'error');
+                log('❌ Des problèmes ont été détectés!', 'error');
+            }
+            
+            log('=== FIN VÉRIFICATION ===\n');
+        }
+
+        function testBasicRegistration() {
+            log('=== TEST CRÉATION COMPTE BASIQUE ===');
+            testCount++;
+            
+            const username = 'TestUser_' + Date.now();
+            const password = 'testpass123';
+            
+            try {
+                // Nettoyer d'abord
+                localStorage.removeItem(`tonios_user_${username}`);
+                
+                log(`Tentative de création: ${username}`);
+                const result = registerUser(username, password, false);
+                
+                if (result && result.success) {
+                    successCount++;
+                    log(`✅ Compte créé avec succès: ${username}`, 'success');
+                    
+                    // Vérifier que l'utilisateur existe
+                    const savedUser = loadUser(username);
+                    if (savedUser) {
+                        log(`✅ Utilisateur correctement sauvegardé`, 'success');
+                    } else {
+                        log(`❌ Utilisateur non trouvé après création`, 'error');
+                        errorCount++;
+                    }
+                } else {
+                    errorCount++;
+                    log(`❌ Échec de création du compte`, 'error');
+                }
+            } catch (error) {
+                errorCount++;
+                log(`❌ Erreur lors du test: ${error.message}`, 'error');
+                console.error('Erreur complète:', error);
+            }
+            
+            updateTestStats();
+            log('=== FIN TEST BASIQUE ===\n');
+        }
+
+        function testMultipleUsers() {
+            log('=== TEST UTILISATEURS MULTIPLES ===');
+            
+            const users = [
+                { username: 'Alice_' + Date.now(), password: 'alice123' },
+                { username: 'Bob_' + Date.now(), password: 'bob123' },
+                { username: 'Charlie_' + Date.now(), password: 'charlie123' }
+            ];
+            
+            users.forEach((user, index) => {
+                testCount++;
+                try {
+                    localStorage.removeItem(`tonios_user_${user.username}`);
+                    
+                    const result = registerUser(user.username, user.password, false);
+                    if (result && result.success) {
+                        successCount++;
+                        log(`✅ ${user.username} créé`, 'success');
+                    } else {
+                        errorCount++;
+                        log(`❌ Échec ${user.username}`, 'error');
+                    }
+                } catch (error) {
+                    errorCount++;
+                    log(`❌ Erreur ${user.username}: ${error.message}`, 'error');
+                }
+            });
+            
+            updateTestStats();
+            log('=== FIN TEST MULTIPLES ===\n');
+        }
+
+        function testErrorCases() {
+            log('=== TEST CAS D\'ERREUR ===');
+            
+            // Test champ vide
+            testCount++;
+            try {
+                const result = registerUser('', 'password');
+                if (!result || !result.success) {
+                    successCount++;
+                    log('✅ Validation champ vide OK', 'success');
+                } else {
+                    errorCount++;
+                    log('❌ Validation champ vide échouée', 'error');
+                }
+            } catch (error) {
+                successCount++;
+                log('✅ Exception champ vide capturée', 'success');
+            }
+            
+            // Test utilisateur existant
+            testCount++;
+            const existingUser = 'ExistingUser_' + Date.now();
+            try {
+                registerUser(existingUser, 'pass1');
+                const result = registerUser(existingUser, 'pass2');
+                if (!result || !result.success) {
+                    successCount++;
+                    log('✅ Validation utilisateur existant OK', 'success');
+                } else {
+                    errorCount++;
+                    log('❌ Validation utilisateur existant échouée', 'error');
+                }
+            } catch (error) {
+                log(`⚠️ Exception utilisateur existant: ${error.message}`, 'warning');
+            }
+            
+            updateTestStats();
+            log('=== FIN TEST ERREURS ===\n');
+        }
+
+        function updateTestStats() {
+            const statusMsg = `Tests: ${testCount} | Réussis: ${successCount} | Échecs: ${errorCount}`;
+            const statusType = errorCount === 0 ? 'success' : (successCount > errorCount ? 'warning' : 'error');
+            updateStatus(statusMsg, statusType);
+        }
+
+        function clearAllData() {
+            log('=== NETTOYAGE DES DONNÉES ===');
+            
+            // Nettoyer le localStorage
+            const keys = Object.keys(localStorage);
+            const toniosKeys = keys.filter(key => key.startsWith('tonios_'));
+            
+            toniosKeys.forEach(key => {
+                localStorage.removeItem(key);
+                log(`Supprimé: ${key}`, 'info');
+            });
+            
+            // Réinitialiser les compteurs
+            testCount = 0;
+            successCount = 0;
+            errorCount = 0;
+            
+            updateStatus('Données nettoyées', 'success');
+            log('✅ Toutes les données ont été nettoyées', 'success');
+            log('=== FIN NETTOYAGE ===\n');
+        }
+
+        function showStorage() {
+            const storageDisplay = document.getElementById('storageDisplay');
+            const keys = Object.keys(localStorage);
+            const toniosKeys = keys.filter(key => key.startsWith('tonios_'));
+            
+            if (toniosKeys.length === 0) {
+                storageDisplay.textContent = 'Aucune donnée ToniOS trouvée dans le localStorage.';
+                return;
+            }
+            
+            let content = 'Données ToniOS dans localStorage:\n\n';
+            toniosKeys.forEach(key => {
+                try {
+                    const value = localStorage.getItem(key);
+                    const parsed = JSON.parse(value);
+                    content += `${key}:\n${JSON.stringify(parsed, null, 2)}\n\n`;
+                } catch (error) {
+                    content += `${key}: ${value}\n\n`;
+                }
+            });
+            
+            storageDisplay.textContent = content;
+        }
+
+        // Auto-vérification au chargement
+        window.addEventListener('load', () => {
+            setTimeout(checkSystem, 100);
+        });
+    </script>
+</body>
+</html>

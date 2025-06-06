@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Authentification ToniOS</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            min-height: 100vh;
+        }
+        .test-container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 20px;
+            border-radius: 10px;
+            backdrop-filter: blur(10px);
+        }
+        .test-section {
+            margin: 20px 0;
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+        }
+        .test-button {
+            background: #4CAF50;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            margin: 5px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        .test-button:hover {
+            background: #45a049;
+        }
+        .test-result {
+            margin: 10px 0;
+            padding: 10px;
+            border-radius: 5px;
+            font-weight: bold;
+        }
+        .success {
+            background: rgba(76, 175, 80, 0.3);
+            color: #4CAF50;
+        }
+        .error {
+            background: rgba(244, 67, 54, 0.3);
+            color: #f44336;
+        }
+        .info {
+            background: rgba(33, 150, 243, 0.3);
+            color: #2196F3;
+        }
+        input[type="text"], input[type="password"] {
+            padding: 8px;
+            margin: 5px;
+            border: none;
+            border-radius: 4px;
+            background: rgba(255, 255, 255, 0.9);
+            color: #333;
+        }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <h1>🧪 Test du Système d'Authentification ToniOS</h1>
+        
+        <div class="test-section">
+            <h2>📝 Test d'Inscription</h2>
+            <input type="text" id="testRegUsername" placeholder="Nom d'utilisateur">
+            <input type="password" id="testRegPassword" placeholder="Mot de passe">
+            <button class="test-button" onclick="testRegister()">Tester l'inscription</button>
+            <div id="registerResult"></div>
+        </div>
+
+        <div class="test-section">
+            <h2>🔑 Test de Connexion</h2>
+            <input type="text" id="testLoginUsername" placeholder="Nom d'utilisateur">
+            <input type="password" id="testLoginPassword" placeholder="Mot de passe">
+            <button class="test-button" onclick="testLogin()">Tester la connexion</button>
+            <div id="loginResult"></div>
+        </div>
+
+        <div class="test-section">
+            <h2>🎮 Test Session Démo</h2>
+            <button class="test-button" onclick="testDemo()">Créer session démo</button>
+            <div id="demoResult"></div>
+        </div>
+
+        <div class="test-section">
+            <h2>📊 État de la Session</h2>
+            <button class="test-button" onclick="checkSession()">Vérifier l'état</button>
+            <button class="test-button" onclick="testLogout()">Test déconnexion</button>
+            <div id="sessionResult"></div>
+        </div>
+
+        <div class="test-section">
+            <h2>💾 Test Stockage</h2>
+            <button class="test-button" onclick="testStorage()">Tester le stockage</button>
+            <button class="test-button" onclick="clearStorage()">Vider le stockage</button>
+            <div id="storageResult"></div>
+        </div>
+    </div>
+
+    <!-- Inclure les scripts ToniOS -->
+    <script src="js/notifications.js"></script>
+    <script src="js/auth.js"></script>
+
+    <script>
+        // Fonctions de test
+        function showResult(elementId, message, type = 'info') {
+            const element = document.getElementById(elementId);
+            element.innerHTML = `<div class="test-result ${type}">${message}</div>`;
+        }
+
+        function testRegister() {
+            const username = document.getElementById('testRegUsername').value.trim();
+            const password = document.getElementById('testRegPassword').value;
+            
+            if (!username || !password) {
+                showResult('registerResult', '❌ Veuillez remplir tous les champs', 'error');
+                return;
+            }
+
+            console.log('🧪 Test inscription...', username);
+            const result = registerUser(username, password, false);
+            
+            if (result && result.success) {
+                showResult('registerResult', `✅ Inscription réussie pour ${username}`, 'success');
+            } else {
+                showResult('registerResult', '❌ Échec de l\'inscription', 'error');
+            }
+        }
+
+        function testLogin() {
+            const username = document.getElementById('testLoginUsername').value.trim();
+            const password = document.getElementById('testLoginPassword').value;
+            
+            if (!username) {
+                showResult('loginResult', '❌ Veuillez entrer un nom d\'utilisateur', 'error');
+                return;
+            }
+
+            console.log('🧪 Test connexion...', username);
+            const result = loginUser(username, password, false);
+            
+            if (result && result.success) {
+                showResult('loginResult', `✅ Connexion réussie pour ${username}`, 'success');
+            } else {
+                showResult('loginResult', '❌ Échec de la connexion', 'error');
+            }
+        }
+
+        function testDemo() {
+            console.log('🧪 Test session démo...');
+            quickLogin('demo');
+            
+            if (currentSession && currentSession.username.startsWith('Démo_')) {
+                showResult('demoResult', `✅ Session démo créée : ${currentSession.username}`, 'success');
+            } else {
+                showResult('demoResult', '❌ Échec création session démo', 'error');
+            }
+        }
+
+        function checkSession() {
+            if (currentSession) {
+                const info = `
+                    <strong>Utilisateur:</strong> ${currentSession.username}<br>
+                    <strong>Rôle:</strong> ${currentSession.role}<br>
+                    <strong>Connexions:</strong> ${currentSession.loginCount}<br>
+                    <strong>Créé le:</strong> ${new Date(currentSession.createdAt).toLocaleString()}<br>
+                    <strong>Dernière connexion:</strong> ${new Date(currentSession.lastLogin).toLocaleString()}
+                `;
+                showResult('sessionResult', `✅ Session active:<br>${info}`, 'success');
+            } else {
+                showResult('sessionResult', '❌ Aucune session active', 'error');
+            }
+        }
+
+        function testLogout() {
+            if (currentSession) {
+                const username = currentSession.username;
+                logout();
+                showResult('sessionResult', `✅ Déconnexion réussie pour ${username}`, 'success');
+            } else {
+                showResult('sessionResult', '❌ Aucune session à déconnecter', 'error');
+            }
+        }
+
+        function testStorage() {
+            try {
+                // Tester le chargement des utilisateurs
+                loadUsersFromStorage();
+                const userCount = Object.keys(allUsers).length;
+                
+                // Tester la session persistante
+                const rememberedUser = localStorage.getItem('tonios_remember_session');
+                
+                const info = `
+                    <strong>Utilisateurs stockés:</strong> ${userCount}<br>
+                    <strong>Session mémorisée:</strong> ${rememberedUser || 'Aucune'}<br>
+                    <strong>Stockage fonctionnel:</strong> ✅
+                `;
+                showResult('storageResult', info, 'success');
+            } catch (error) {
+                showResult('storageResult', `❌ Erreur stockage: ${error.message}`, 'error');
+            }
+        }
+
+        function clearStorage() {
+            try {
+                localStorage.removeItem('tonios_users');
+                localStorage.removeItem('tonios_current_session');
+                localStorage.removeItem('tonios_remember_session');
+                allUsers = {};
+                currentSession = null;
+                showResult('storageResult', '✅ Stockage vidé avec succès', 'success');
+            } catch (error) {
+                showResult('storageResult', `❌ Erreur lors du vidage: ${error.message}`, 'error');
+            }
+        }
+
+        // Initialisation
+        window.addEventListener('load', function() {
+            console.log('🧪 Page de test chargée');
+            console.log('📦 Modules chargés:', {
+                auth: typeof registerUser !== 'undefined',
+                notifications: typeof showNotification !== 'undefined',
+                currentSession: currentSession
+            });
+        });
+    </script>
+</body>
+</html>

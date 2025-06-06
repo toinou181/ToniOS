@@ -366,6 +366,64 @@ html, body {
     grid-column: span 2;
 }
 
+/* Sélecteur de fond d'écran */
+.tonios-wallpaper-selector {
+    padding: 20px;
+    background: white;
+    border-radius: 8px;
+}
+
+.tonios-wallpaper-header {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.tonios-wallpaper-header h3 {
+    color: var(--tonios-primary);
+    margin-bottom: 5px;
+}
+
+.tonios-wallpaper-header p {
+    color: #666;
+    font-size: 14px;
+}
+
+.tonios-wallpaper-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+.tonios-wallpaper-option {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 10px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border: 2px solid transparent;
+}
+
+.tonios-wallpaper-option:hover {
+    background: #f8f9fa;
+    border-color: var(--tonios-secondary);
+    transform: translateY(-2px);
+}
+
+.tonios-wallpaper-option span {
+    font-size: 12px;
+    color: #666;
+    text-align: center;
+}
+
+.tonios-wallpaper-actions {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+}
+
 /* Bloc-notes */
 .tonios-notepad {
     width: 600px !important;
@@ -1346,6 +1404,64 @@ html, body {
     grid-column: span 2;
 }
 
+/* Sélecteur de fond d'écran */
+.tonios-wallpaper-selector {
+    padding: 20px;
+    background: white;
+    border-radius: 8px;
+}
+
+.tonios-wallpaper-header {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.tonios-wallpaper-header h3 {
+    color: var(--tonios-primary);
+    margin-bottom: 5px;
+}
+
+.tonios-wallpaper-header p {
+    color: #666;
+    font-size: 14px;
+}
+
+.tonios-wallpaper-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+.tonios-wallpaper-option {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 10px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border: 2px solid transparent;
+}
+
+.tonios-wallpaper-option:hover {
+    background: #f8f9fa;
+    border-color: var(--tonios-secondary);
+    transform: translateY(-2px);
+}
+
+.tonios-wallpaper-option span {
+    font-size: 12px;
+    color: #666;
+    text-align: center;
+}
+
+.tonios-wallpaper-actions {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+}
+
 /* Bloc-notes */
 .tonios-notepad {
     display: flex;
@@ -1579,7 +1695,7 @@ html, body {
 
 .tonios-chat-tab.active {
     background: var(--tonios-secondary);
-    color: white;
+    color: #ffffff;
 }
 
 .tonios-chat-tab:hover:not(.active) {
@@ -1718,11 +1834,6 @@ html, body {
     border: 1px solid #dee2e6;
     border-radius: 6px;
     outline: none;
-    font-size: 14px;
-}
-
-.tonios-chat-input input:focus {
-    border-color: var(--tonios-secondary);
 }
 
 .tonios-chat-send-btn {
@@ -1738,4 +1849,1064 @@ html, body {
 
 .tonios-chat-send-btn:hover {
     background: #2980b9;
+}
+
+/* Discord Chat Styles */
+.discord-chat-container {
+    display: flex;
+    height: 100%;
+    background: #36393f;
+    color: #dcddde;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.discord-sidebar {
+    width: 240px;
+    background: #2f3136;
+    display: flex;
+    flex-direction: column;
+    border-right: 1px solid #202225;
+}
+
+.discord-server-info {
+    padding: 15px;
+    border-bottom: 1px solid #202225;
+    background: #2f3136;
+}
+
+.discord-server-name {
+    font-weight: bold;
+    font-size: 16px;
+    color: #ffffff;
+    margin-bottom: 5px;
+}
+
+.discord-server-members {
+    font-size: 12px;
+    color: #b9bbbe;
+}
+
+.discord-channels {
+    flex: 1;
+    padding: 15px 0;
+    overflow-y: auto;
+}
+
+.discord-channel-category {
+    padding: 0 15px 5px;
+    font-size: 12px;
+    font-weight: bold;
+    color: #8e9297;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.discord-channel {
+    padding: 8px 15px;
+    margin: 2px 8px;
+    border-radius: 4px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    transition: background-color 0.15s ease;
+}
+
+.discord-channel:hover {
+    background: #3c3f44;
+}
+
+.discord-channel.active {
+    background: #5865f2;
+    color: #ffffff;
+}
+
+.discord-channel-icon {
+    margin-right: 8px;
+    font-size: 14px;
+}
+
+.discord-channel-name {
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.discord-channel-actions {
+    margin-left: auto;
+    opacity: 0;
+    transition: opacity 0.15s ease;
+}
+
+.discord-channel:hover .discord-channel-actions {
+    opacity: 1;
+}
+
+.discord-main-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.discord-chat-header {
+    height: 48px;
+    padding: 0 20px;
+    border-bottom: 1px solid #202225;
+    display: flex;
+    align-items: center;
+    background: #36393f;
+}
+
+.discord-chat-title {
+    font-size: 16px;
+    font-weight: bold;
+    color: #ffffff;
+    display: flex;
+    align-items: center;
+}
+
+.discord-chat-description {
+    margin-left: 10px;
+    font-size: 14px;
+    color: #b9bbbe;
+    font-weight: normal;
+}
+
+.discord-messages-container {
+    flex: 1;
+    overflow-y: auto;
+    padding: 10px 20px;
+}
+
+.discord-message {
+    margin-bottom: 15px;
+    display: flex;
+    align-items: flex-start;
+}
+
+.discord-message-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    margin-right: 15px;
+    background: #5865f2;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #ffffff;
+    font-weight: bold;
+    flex-shrink: 0;
+}
+
+.discord-message-content {
+    flex: 1;
+}
+
+.discord-message-header {
+    display: flex;
+    align-items: baseline;
+    margin-bottom: 2px;
+}
+
+.discord-message-author {
+    font-weight: bold;
+    color: #ffffff;
+    margin-right: 8px;
+}
+
+.discord-message-timestamp {
+    font-size: 12px;
+    color: #72767d;
+}
+
+.discord-message-text {
+    color: #dcddde;
+    line-height: 1.4;
+    word-wrap: break-word;
+}
+
+.discord-input-container {
+    padding: 20px;
+    background: #36393f;
+}
+
+.discord-voice-controls {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 10px;
+}
+
+.discord-voice-btn {
+    padding: 8px 12px;
+    border: none;
+    border-radius: 4px;
+    background: #4f545c;
+    color: #ffffff;
+    cursor: pointer;
+    font-size: 12px;
+    transition: background-color 0.15s ease;
+}
+
+.discord-voice-btn:hover {
+    background: #5865f2;
+}
+
+.discord-voice-btn.active {
+    background: #57f287;
+    color: #000000;
+}
+
+.discord-input-area {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+.discord-message-input {
+    flex: 1;
+    padding: 12px 15px;
+    border: none;
+    border-radius: 8px;
+    background: #40444b;
+    color: #dcddde;
+    font-size: 14px;
+}
+
+.discord-message-input::placeholder {
+    color: #72767d;
+}
+
+.discord-send-btn {
+    padding: 12px 16px;
+    border: none;
+    border-radius: 8px;
+    background: #5865f2;
+    color: #ffffff;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background-color 0.15s ease;
+}
+
+.discord-send-btn:hover {
+    background: #4752c4;
+}
+
+.discord-emoji-picker {
+    position: absolute;
+    bottom: 100%;
+    right: 0;
+    background: #36393f;
+    border: 1px solid #202225;
+    border-radius: 8px;
+    padding: 10px;
+    display: grid;
+    grid-template-columns: repeat(8, 1fr);
+    gap: 5px;
+    max-height: 200px;
+    overflow-y: auto;
+    z-index: 1000;
+}
+
+.discord-emoji {
+    padding: 5px;
+    cursor: pointer;
+    border-radius: 4px;
+    transition: background-color 0.15s ease;
+}
+
+.discord-emoji:hover {
+    background: #40444b;
+}
+
+/* Advanced File Manager Styles */
+.advanced-file-manager {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    background: #ffffff;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.file-manager-toolbar {
+    padding: 10px 15px;
+    border-bottom: 1px solid #e1e5e9;
+    background: #f8f9fa;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.file-manager-nav {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    flex: 1;
+}
+
+.nav-btn {
+    padding: 6px 10px;
+    border: 1px solid #dee2e6;
+    border-radius: 4px;
+    background: #ffffff;
+    cursor: pointer;
+    font-size: 12px;
+    transition: all 0.15s ease;
+}
+
+.nav-btn:hover {
+    background: #e9ecef;
+    border-color: #adb5bd;
+}
+
+.nav-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.file-manager-path {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    margin: 0 10px;
+    font-size: 13px;
+}
+
+.path-segment {
+    padding: 4px 8px;
+    background: #e9ecef;
+    border-radius: 3px;
+    cursor: pointer;
+    transition: background-color 0.15s ease;
+}
+
+.path-segment:hover {
+    background: #dee2e6;
+}
+
+.file-manager-actions {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+.view-mode-btn {
+    padding: 6px 10px;
+    border: 1px solid #dee2e6;
+    border-radius: 4px;
+    background: #ffffff;
+    cursor: pointer;
+    font-size: 12px;
+    transition: all 0.15s ease;
+}
+
+.view-mode-btn.active {
+    background: #007bff;
+    color: #ffffff;
+    border-color: #007bff;
+}
+
+.file-manager-search {
+    position: relative;
+    flex: 1;
+    max-width: 300px;
+}
+
+.search-input {
+    width: 100%;
+    padding: 6px 30px 6px 10px;
+    border: 1px solid #dee2e6;
+    border-radius: 4px;
+    font-size: 13px;
+}
+
+.search-icon {
+    position: absolute;
+    right: 8px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #6c757d;
+}
+
+.file-manager-content {
+    flex: 1;
+    display: flex;
+    overflow: hidden;
+}
+
+.file-manager-sidebar {
+    width: 200px;
+    background: #f8f9fa;
+    border-right: 1px solid #e1e5e9;
+    padding: 15px;
+    overflow-y: auto;
+}
+
+.sidebar-section {
+    margin-bottom: 20px;
+}
+
+.sidebar-title {
+    font-size: 12px;
+    font-weight: bold;
+    color: #6c757d;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+}
+
+.sidebar-item {
+    padding: 6px 10px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 13px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: background-color 0.15s ease;
+}
+
+.sidebar-item:hover {
+    background: #e9ecef;
+}
+
+.sidebar-item.active {
+    background: #007bff;
+    color: #ffffff;
+}
+
+.file-manager-main {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.file-list-header {
+    padding: 10px 15px;
+    border-bottom: 1px solid #e1e5e9;
+    background: #f8f9fa;
+    display: grid;
+    grid-template-columns: 1fr auto auto auto;
+    gap: 15px;
+    font-size: 12px;
+    font-weight: bold;
+    color: #6c757d;
+}
+
+.file-list-container {
+    flex: 1;
+    overflow-y: auto;
+    padding: 10px 15px;
+}
+
+.file-list {
+    display: grid;
+    gap: 5px;
+}
+
+.file-list.grid-view {
+    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+    gap: 15px;
+}
+
+.file-list.list-view {
+    grid-template-columns: 1fr;
+}
+
+.file-list.details-view {
+    grid-template-columns: 1fr;
+}
+
+.file-item {
+    padding: 8px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.15s ease;
+    user-select: none;
+}
+
+.file-item:hover {
+    background: #f8f9fa;
+}
+
+.file-item.selected {
+    background: #e3f2fd;
+    border: 1px solid #2196f3;
+}
+
+.file-item.grid-item {
+    text-align: center;
+    padding: 15px 10px;
+}
+
+.file-item.list-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 6px 8px;
+}
+
+.file-item.details-item {
+    display: grid;
+    grid-template-columns: 1fr auto auto auto;
+    gap: 15px;
+    align-items: center;
+    padding: 6px 8px;
+}
+
+.file-icon {
+    font-size: 24px;
+    margin-bottom: 5px;
+}
+
+.file-item.list-item .file-icon,
+.file-item.details-item .file-icon {
+    font-size: 16px;
+    margin-bottom: 0;
+}
+
+.file-name {
+    font-size: 13px;
+    word-break: break-word;
+    line-height: 1.3;
+}
+
+.file-details {
+    font-size: 11px;
+    color: #6c757d;
+    margin-top: 2px;
+}
+
+.file-manager-status {
+    padding: 8px 15px;
+    border-top: 1px solid #e1e5e9;
+    background: #f8f9fa;
+    font-size: 12px;
+    color: #6c757d;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.context-menu {
+    position: fixed;
+    background: #ffffff;
+    border: 1px solid #dee2e6;
+    border-radius: 4px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    z-index: 1000;
+    min-width: 150px;
+}
+
+.context-menu-item {
+    padding: 8px 15px;
+    cursor: pointer;
+    font-size: 13px;
+    transition: background-color 0.15s ease;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.context-menu-item:hover {
+    background: #f8f9fa;
+}
+
+.context-menu-item.disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.context-menu-separator {
+    height: 1px;
+    background: #e1e5e9;
+    margin: 5px 0;
+}
+
+/* Loading spinner */
+.loading-spinner {
+    width: 20px;
+    height: 20px;
+    border: 2px solid #f3f3f3;
+    border-top: 2px solid #3498db;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin: 0 auto 10px;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* Session Manager Styles */
+.session-manager {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    background: #ffffff;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.session-manager-header {
+    padding: 15px 20px;
+    border-bottom: 1px solid #e1e5e9;
+    background: #f8f9fa;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.session-manager-header h2 {
+    margin: 0;
+    color: #2c3e50;
+    font-size: 18px;
+}
+
+.session-controls {
+    display: flex;
+    gap: 10px;
+}
+
+.session-btn {
+    padding: 6px 12px;
+    border: 1px solid #dee2e6;
+    border-radius: 4px;
+    background: #ffffff;
+    cursor: pointer;
+    font-size: 12px;
+    transition: all 0.15s ease;
+}
+
+.session-btn:hover {
+    background: #e9ecef;
+    border-color: #adb5bd;
+}
+
+.session-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.session-btn.disabled {
+    background: #dc3545;
+    color: #ffffff;
+    border-color: #dc3545;
+}
+
+.session-content {
+    flex: 1;
+    display: flex;
+    overflow: hidden;
+}
+
+.session-sidebar {
+    width: 280px;
+    background: #f8f9fa;
+    border-right: 1px solid #e1e5e9;
+    padding: 20px;
+    overflow-y: auto;
+}
+
+.session-section {
+    margin-bottom: 25px;
+}
+
+.session-section h3 {
+    font-size: 14px;
+    font-weight: bold;
+    color: #6c757d;
+    text-transform: uppercase;
+    margin-bottom: 12px;
+    letter-spacing: 0.5px;
+}
+
+.sessions-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.session-item {
+    display: flex;
+    align-items: center;
+    padding: 12px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    border: 1px solid transparent;
+}
+
+.session-item:hover {
+    background: #e9ecef;
+    border-color: #dee2e6;
+}
+
+.session-item.selected {
+    background: #e3f2fd;
+    border-color: #2196f3;
+}
+
+.session-avatar {
+    position: relative;
+    margin-right: 12px;
+}
+
+.avatar-img {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: #007bff;
+    color: #ffffff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    font-size: 16px;
+}
+
+.status-indicator {
+    position: absolute;
+    bottom: -2px;
+    right: -2px;
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    border: 2px solid #ffffff;
+}
+
+.status-indicator.online {
+    background: #28a745;
+}
+
+.status-indicator.offline {
+    background: #6c757d;
+}
+
+.session-details {
+    flex: 1;
+    min-width: 0;
+}
+
+.session-username {
+    font-weight: bold;
+    color: #2c3e50;
+    font-size: 14px;
+    margin-bottom: 2px;
+}
+
+.session-activity {
+    font-size: 12px;
+    color: #6c757d;
+    margin-bottom: 2px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.session-time {
+    font-size: 11px;
+    color: #adb5bd;
+}
+
+.session-stats {
+    text-align: right;
+}
+
+.window-count {
+    font-size: 11px;
+    color: #6c757d;
+    background: #e9ecef;
+    padding: 2px 6px;
+    border-radius: 10px;
+}
+
+.my-session-info {
+    background: #ffffff;
+    border: 1px solid #dee2e6;
+    border-radius: 8px;
+    padding: 15px;
+}
+
+.session-stat {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 8px;
+    font-size: 13px;
+}
+
+.session-stat:last-child {
+    margin-bottom: 0;
+}
+
+.session-main {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.session-viewer-header {
+    padding: 15px 20px;
+    border-bottom: 1px solid #e1e5e9;
+    background: #ffffff;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.session-viewer-header h3 {
+    margin: 0;
+    color: #2c3e50;
+    font-size: 16px;
+}
+
+.viewer-controls {
+    display: flex;
+    gap: 10px;
+}
+
+.session-viewer {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #f8f9fa;
+    overflow: hidden;
+}
+
+.no-session-selected {
+    text-align: center;
+    color: #6c757d;
+}
+
+.no-session-icon {
+    font-size: 48px;
+    margin-bottom: 15px;
+}
+
+.no-session-selected h3 {
+    margin-bottom: 10px;
+    color: #495057;
+}
+
+.session-interaction {
+    border-top: 1px solid #e1e5e9;
+    background: #ffffff;
+}
+
+.interaction-tabs {
+    display: flex;
+    border-bottom: 1px solid #e1e5e9;
+}
+
+.tab-btn {
+    padding: 12px 20px;
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    font-size: 13px;
+    color: #6c757d;
+    transition: all 0.15s ease;
+    border-bottom: 2px solid transparent;
+}
+
+.tab-btn:hover {
+    background: #f8f9fa;
+    color: #495057;
+}
+
+.tab-btn.active {
+    color: #007bff;
+    border-bottom-color: #007bff;
+    background: #ffffff;
+}
+
+.tab-content {
+    height: 200px;
+    overflow-y: auto;
+}
+
+.tab-pane {
+    padding: 20px;
+    display: none;
+}
+
+.tab-pane.active {
+    display: block;
+}
+
+.session-detail-item {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 10px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid #f1f3f4;
+    font-size: 13px;
+}
+
+.session-detail-item:last-child {
+    border-bottom: none;
+    margin-bottom: 0;
+}
+
+.window-item {
+    display: flex;
+    align-items: center;
+    padding: 8px 12px;
+    margin-bottom: 6px;
+    background: #f8f9fa;
+    border-radius: 6px;
+    font-size: 13px;
+}
+
+.window-icon {
+    margin-right: 10px;
+    font-size: 16px;
+}
+
+.window-title {
+    flex: 1;
+    font-weight: 500;
+}
+
+.window-status {
+    color: #6c757d;
+    font-size: 12px;
+}
+
+.activity-current h4 {
+    margin-bottom: 10px;
+    color: #495057;
+    font-size: 14px;
+}
+
+.activity-item {
+    display: flex;
+    align-items: center;
+    padding: 10px;
+    background: #f8f9fa;
+    border-radius: 6px;
+}
+
+.activity-icon {
+    margin-right: 10px;
+    font-size: 18px;
+}
+
+.activity-text {
+    font-weight: 500;
+    color: #2c3e50;
+}
+
+.session-chat {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.chat-messages {
+    flex: 1;
+    overflow-y: auto;
+    padding: 0 0 10px 0;
+    max-height: 120px;
+}
+
+.chat-message {
+    margin-bottom: 10px;
+    padding: 8px;
+    border-radius: 8px;
+    font-size: 13px;
+}
+
+.chat-message.sent {
+    background: #e3f2fd;
+    margin-left: 20px;
+}
+
+.chat-message.received {
+    background: #f8f9fa;
+    margin-right: 20px;
+}
+
+.message-sender {
+    font-weight: bold;
+    color: #2c3e50;
+    margin-bottom: 2px;
+    font-size: 12px;
+}
+
+.message-text {
+    color: #495057;
+    line-height: 1.4;
+    margin-bottom: 4px;
+}
+
+.message-time {
+    font-size: 11px;
+    color: #6c757d;
+    text-align: right;
+}
+
+.chat-input-area {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    padding-top: 10px;
+    border-top: 1px solid #e1e5e9;
+}
+
+.chat-input-area input {
+    flex: 1;
+    padding: 8px 12px;
+    border: 1px solid #dee2e6;
+    border-radius: 4px;
+    font-size: 13px;
+}
+
+.chat-input-area input:focus {
+    outline: none;
+    border-color: #007bff;
+    box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25);
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+    .discord-sidebar {
+        width: 200px;
+    }
+    
+    .file-manager-sidebar {
+        width: 150px;
+    }
+    
+    .file-manager-toolbar {
+        flex-wrap: wrap;
+        gap: 5px;
+    }
+    
+    .file-list.grid-view {
+        grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+    }
+    
+    .session-sidebar {
+        width: 250px;
+    }
+    
+    .session-controls {
+        flex-wrap: wrap;
+        gap: 5px;
+    }
+    
+    .viewer-controls {
+        flex-wrap: wrap;
+        gap: 5px;
+    }
+    
+    .interaction-tabs {
+        flex-wrap: wrap;
+    }
+    
+    .tab-btn {
+        padding: 8px 12px;
+        font-size: 12px;
+    }
 }

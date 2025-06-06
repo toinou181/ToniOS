@@ -3,20 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>                    <div class="tonios-start-menu-app" onclick="openApplication('session-manager')">
-                        <div class="tonios-start-menu-app-icon">👥</div>
-                        <div class="tonios-start-menu-app-info">
-                            <h4>Sessions Utilisateurs</h4>
-                            <p>Voir et interagir avec les sessions</p>
-                        </div>
-                    </div>
-                    <div class="tonios-start-menu-app" onclick="openApplication('properties')">
-                        <div class="tonios-start-menu-app-icon">🖥️</div>
-                        <div class="tonios-start-menu-app-info">
-                            <h4>Propriétés système</h4>
-                            <p>Informations système</p>
-                        </div>
-                    </div>- Système d'Exploitation Virtuel Web</title>
+    <title>ToniOS - Système d'Exploitation Virtuel Web</title>
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
@@ -105,17 +92,29 @@
         <div class="tonios-desktop-area" onclick="closeStartMenu()">
             <!-- Icônes du bureau -->
             <div class="tonios-desktop-icons">
+                <div class="tonios-desktop-icon" onclick="openApplication('calculator')">
+                    <div class="tonios-desktop-icon-img">🧮</div>
+                    <div class="tonios-desktop-icon-label">Calculatrice</div>
+                </div>
+                <div class="tonios-desktop-icon" onclick="openApplication('notepad')">
+                    <div class="tonios-desktop-icon-img">📝</div>
+                    <div class="tonios-desktop-icon-label">Bloc-notes</div>
+                </div>
                 <div class="tonios-desktop-icon" onclick="openApplication('filemanager')">
                     <div class="tonios-desktop-icon-img">📁</div>
-                    <div class="tonios-desktop-icon-label">Gestionnaire de fichiers</div>
+                    <div class="tonios-desktop-icon-label">Fichiers</div>
                 </div>
-                <div class="tonios-desktop-icon" onclick="openApplication('discord-chat')">
+                <div class="tonios-desktop-icon" onclick="openApplication('wallpaper')">
+                    <div class="tonios-desktop-icon-img">🎨</div>
+                    <div class="tonios-desktop-icon-label">Fond d'écran</div>
+                </div>
+                <div class="tonios-desktop-icon" onclick="openApplication('chat')">
                     <div class="tonios-desktop-icon-img">💬</div>
-                    <div class="tonios-desktop-icon-label">ToniOS Chat</div>
+                    <div class="tonios-desktop-icon-label">Chat</div>
                 </div>
-                <div class="tonios-desktop-icon" onclick="openApplication('session-manager')">
-                    <div class="tonios-desktop-icon-img">👥</div>
-                    <div class="tonios-desktop-icon-label">Sessions Utilisateurs</div>
+                <div class="tonios-desktop-icon" onclick="openApplication('systemprops')">
+                    <div class="tonios-desktop-icon-img">🖥️</div>
+                    <div class="tonios-desktop-icon-label">Propriétés</div>
                 </div>
             </div>
 
@@ -201,16 +200,12 @@
     <div id="notificationContainer" class="tonios-notification-container"></div>
 
     <!-- Scripts JavaScript -->
-    <script src="js/admin-security-ultra.js"></script>
     <script src="js/notifications.js"></script>
     <script src="js/windows.js"></script>
     <script src="js/files.js"></script>
     <script src="js/chat.js"></script>
-    <script src="js/discord-chat-advanced.js"></script>
-    <script src="js/advanced-files.js"></script>
-    <script src="js/session-manager.js"></script>
     <script src="js/voice.js"></script>
-    <script src="js/auth_fixed.js"></script>
+    <script src="js/auth_final.js"></script>
     <script src="js/main_with_auth_final.js"></script>
 </body>
 </html>

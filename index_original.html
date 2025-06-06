@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ToniOS - Système d'Exploitation Virtuel Web</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="tonios-desktop">
+        <!-- Zone du bureau -->
+        <div class="tonios-desktop-area" onclick="closeStartMenu()">
+            <!-- Icônes du bureau -->
+            <div class="tonios-desktop-icons">
+                <div class="tonios-desktop-icon" onclick="openApplication('calculator')">
+                    <div class="tonios-desktop-icon-img">🧮</div>
+                    <div class="tonios-desktop-icon-label">Calculatrice</div>
+                </div>
+                <div class="tonios-desktop-icon" onclick="openApplication('notepad')">
+                    <div class="tonios-desktop-icon-img">📝</div>
+                    <div class="tonios-desktop-icon-label">Bloc-notes</div>
+                </div>
+                <div class="tonios-desktop-icon" onclick="openApplication('filemanager')">
+                    <div class="tonios-desktop-icon-img">📁</div>
+                    <div class="tonios-desktop-icon-label">Fichiers</div>
+                </div>
+                <div class="tonios-desktop-icon" onclick="openApplication('wallpaper')">
+                    <div class="tonios-desktop-icon-img">🎨</div>
+                    <div class="tonios-desktop-icon-label">Fond d'écran</div>
+                </div>
+                <div class="tonios-desktop-icon" onclick="openApplication('chat')">
+                    <div class="tonios-desktop-icon-img">💬</div>
+                    <div class="tonios-desktop-icon-label">Chat</div>
+                </div>
+                <div class="tonios-desktop-icon" onclick="openApplication('systemprops')">
+                    <div class="tonios-desktop-icon-img">🖥️</div>
+                    <div class="tonios-desktop-icon-label">Propriétés</div>
+                </div>
+            </div>
+
+            <!-- Menu Démarrer -->
+            <div id="startMenu" class="tonios-start-menu">
+                <div class="tonios-start-menu-header">
+                    <strong>ToniOS</strong>
+                </div>
+                <div class="tonios-start-menu-apps">
+                    <div class="tonios-start-menu-app" onclick="openApplication('calculator')">
+                        <div class="tonios-start-menu-app-icon">🧮</div>
+                        <div class="tonios-start-menu-app-info">
+                            <h4>Calculatrice</h4>
+                            <p>Effectuer des calculs</p>
+                        </div>
+                    </div>
+                    <div class="tonios-start-menu-app" onclick="openApplication('notepad')">
+                        <div class="tonios-start-menu-app-icon">📝</div>
+                        <div class="tonios-start-menu-app-info">
+                            <h4>Bloc-notes</h4>
+                            <p>Éditer du texte</p>
+                        </div>
+                    </div>
+                    <div class="tonios-start-menu-app" onclick="openApplication('filemanager')">
+                        <div class="tonios-start-menu-app-icon">📁</div>
+                        <div class="tonios-start-menu-app-info">
+                            <h4>Gestionnaire de fichiers</h4>
+                            <p>Explorer et gérer les fichiers</p>
+                        </div>
+                    </div>
+                    <div class="tonios-start-menu-app" onclick="openApplication('wallpaper')">
+                        <div class="tonios-start-menu-app-icon">🎨</div>
+                        <div class="tonios-start-menu-app-info">
+                            <h4>Fond d'écran</h4>
+                            <p>Personnaliser le bureau</p>
+                        </div>
+                    </div>
+                    <div class="tonios-start-menu-app" onclick="openApplication('chat')">
+                        <div class="tonios-start-menu-app-icon">💬</div>
+                        <div class="tonios-start-menu-app-info">
+                            <h4>Chat ToniOS</h4>
+                            <p>Discuter avec d'autres utilisateurs</p>
+                        </div>
+                    </div>
+                    <div class="tonios-start-menu-app" onclick="openApplication('systemprops')">
+                        <div class="tonios-start-menu-app-icon">🖥️</div>
+                        <div class="tonios-start-menu-app-info">
+                            <h4>Propriétés système</h4>
+                            <p>Informations système</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Barre des tâches -->
+        <div class="tonios-taskbar">
+            <button class="tonios-start-button" onclick="toggleStartMenu()">
+                <span class="tonios-start-icon">🖥️</span>
+                ToniOS
+            </button>
+            
+            <div class="tonios-taskbar-center" id="taskbarApps">
+                <!-- Applications ouvertes apparaîtront ici -->
+            </div>
+            
+            <div class="tonios-taskbar-right">
+                <div class="tonios-taskbar-clock" id="taskbarClock">
+                    12:00
+                </div>
+                <div class="tonios-taskbar-info">
+                    <span>ToniOS v1.0</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Notifications -->
+    <div id="notificationContainer" class="tonios-notification-container"></div>
+
+    <!-- Scripts JavaScript -->
+    <script src="js/notifications.js"></script>
+    <script src="js/windows.js"></script>
+    <script src="js/files.js"></script>
+    <script src="js/chat.js"></script>
+    <script src="js/voice.js"></script>
+    <script src="js/main.js"></script>
+</body>
+</html>

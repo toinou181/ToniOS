@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Simple - Création de Compte ToniOS</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            background: #f0f0f0;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        input[type="text"], input[type="password"] {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+        button {
+            background: #007bff;
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 5px;
+        }
+        button:hover { background: #0056b3; }
+        .success { color: green; }
+        .error { color: red; }
+        .log {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 5px;
+            margin-top: 20px;
+            max-height: 300px;
+            overflow-y: auto;
+            font-family: monospace;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🧪 Test Simple - Création de Compte ToniOS</h1>
+        
+        <form id="testForm">
+            <div class="form-group">
+                <label for="username">Nom d'utilisateur :</label>
+                <input type="text" id="username" value="TestUser123" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="password">Mot de passe :</label>
+                <input type="password" id="password" value="password123" required>
+            </div>
+            
+            <div class="form-group">
+                <label>
+                    <input type="checkbox" id="remember"> Se souvenir de moi
+                </label>
+            </div>
+            
+            <button type="button" onclick="testRegistration()">Créer le compte</button>
+            <button type="button" onclick="clearStorage()">Vider le stockage</button>
+            <button type="button" onclick="showStorageContent()">Voir le stockage</button>
+        </form>
+        
+        <div id="log" class="log">Prêt pour le test...\n</div>
+    </div>
+
+    <!-- Charger uniquement les scripts nécessaires -->
+    <script src="js/notifications.js"></script>
+    <script src="js/auth_fixed.js"></script>
+
+    <script>
+        function log(message, type = 'info') {
+            const timestamp = new Date().toLocaleTimeString();
+            const logElement = document.getElementById('log');
+            const className = type === 'error' ? 'error' : type === 'success' ? 'success' : '';
+            logElement.innerHTML += `<span class="${className}">[${timestamp}] ${message}</span>\n`;
+            logElement.scrollTop = logElement.scrollHeight;
+            console.log(`[${type.toUpperCase()}]`, message);
+        }
+
+        function testRegistration() {
+            log('=== DÉBUT DU TEST ===');
+            
+            const username = document.getElementById('username').value.trim();
+            const password = document.getElementById('password').value;
+            const remember = document.getElementById('remember').checked;
+            
+            log(`Tentative de création: ${username}`);
+            
+            // Vérifier que les fonctions existent
+            if (typeof registerUser !== 'function') {
+                log('❌ Fonction registerUser non trouvée', 'error');
+                return;
+            }
+            
+            if (typeof UserSession !== 'function') {
+                log('❌ Classe UserSession non trouvée', 'error');
+                return;
+            }
+            
+            // Supprimer l'utilisateur s'il existe déjà
+            localStorage.removeItem(`tonios_user_${username}`);
+            log('🧹 Storage nettoyé pour cet utilisateur');
+            
+            try {
+                log('🔨 Appel de registerUser...');
+                const result = registerUser(username, password, remember);
+                
+                if (result && result.success) {
+                    log('✅ Inscription réussie!', 'success');
+                    
+                    // Vérifier que l'utilisateur est sauvegardé
+                    const savedData = localStorage.getItem(`tonios_user_${username}`);
+                    if (savedData) {
+                        log('✅ Utilisateur sauvegardé dans localStorage', 'success');
+                        try {
+                            const userData = JSON.parse(savedData);
+                            log(`📊 Données utilisateur: ${JSON.stringify(userData, null, 2)}`);
+                        } catch (e) {
+                            log('⚠️ Erreur parsing données utilisateur', 'error');
+                        }
+                    } else {
+                        log('❌ Utilisateur non trouvé dans localStorage', 'error');
+                    }
+                    
+                    // Vérifier la session courante
+                    if (window.currentSession) {
+                        log('✅ Session courante créée', 'success');
+                        log(`👤 Utilisateur: ${window.currentSession.username}`);
+                        log(`🔑 Rôle: ${window.currentSession.role}`);
+                    } else {
+                        log('❌ Aucune session courante', 'error');
+                    }
+                    
+                } else {
+                    log('❌ Échec de l\'inscription', 'error');
+                    if (result) {
+                        log(`Raison: ${JSON.stringify(result)}`);
+                    }
+                }
+            } catch (error) {
+                log(`❌ Erreur lors de l'inscription: ${error.message}`, 'error');
+                console.error('Erreur complète:', error);
+            }
+            
+            log('=== FIN DU TEST ===\n');
+        }
+
+        function clearStorage() {
+            const keys = Object.keys(localStorage);
+            const toniosKeys = keys.filter(key => key.startsWith('tonios_'));
+            
+            toniosKeys.forEach(key => {
+                localStorage.removeItem(key);
+                log(`🗑️ Supprimé: ${key}`);
+            });
+            
+            log('✅ Stockage nettoyé');
+        }
+
+        function showStorageContent() {
+            log('=== CONTENU DU STOCKAGE ===');
+            const keys = Object.keys(localStorage);
+            const toniosKeys = keys.filter(key => key.startsWith('tonios_'));
+            
+            if (toniosKeys.length === 0) {
+                log('📂 Aucune donnée ToniOS trouvée');
+            } else {
+                toniosKeys.forEach(key => {
+                    const value = localStorage.getItem(key);
+                    log(`📄 ${key}: ${value}`);
+                });
+            }
+            log('=== FIN STOCKAGE ===\n');
+        }
+
+        // Log initial des fonctions disponibles
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                log('🔍 Vérification des fonctions...');
+                log(`registerUser: ${typeof registerUser === 'function' ? '✅' : '❌'}`);
+                log(`UserSession: ${typeof UserSession === 'function' ? '✅' : '❌'}`);
+                log(`saveUser: ${typeof saveUser === 'function' ? '✅' : '❌'}`);
+                log(`loadUser: ${typeof loadUser === 'function' ? '✅' : '❌'}`);
+                log(`showNotification: ${typeof showNotification === 'function' ? '✅' : '❌'}`);
+                log('✅ Vérification terminée\n');
+            }, 100);
+        });
+    </script>
+</body>
+</html>

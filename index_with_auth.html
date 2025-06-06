@@ -3,20 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>                    <div class="tonios-start-menu-app" onclick="openApplication('session-manager')">
-                        <div class="tonios-start-menu-app-icon">👥</div>
-                        <div class="tonios-start-menu-app-info">
-                            <h4>Sessions Utilisateurs</h4>
-                            <p>Voir et interagir avec les sessions</p>
-                        </div>
-                    </div>
-                    <div class="tonios-start-menu-app" onclick="openApplication('properties')">
-                        <div class="tonios-start-menu-app-icon">🖥️</div>
-                        <div class="tonios-start-menu-app-info">
-                            <h4>Propriétés système</h4>
-                            <p>Informations système</p>
-                        </div>
-                    </div>- Système d'Exploitation Virtuel Web</title>
+    <title>ToniOS - Système d'Exploitation Virtuel Web</title>
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
@@ -71,51 +58,92 @@
                     type="password" 
                     id="regPasswordInput" 
                     class="tonios-login-input" 
-                    placeholder="Mot de passe (4-50 caractères)" 
-                    required 
-                    minlength="4" 
-                    maxlength="50"
+                    placeholder="Mot de passe (minimum 4 caractères)" 
+                    required
+                    minlength="4"
                 >
                 <input 
                     type="password" 
                     id="regConfirmPasswordInput" 
                     class="tonios-login-input" 
                     placeholder="Confirmer le mot de passe" 
-                    required 
-                    minlength="4" 
-                    maxlength="50"
+                    required
+                    minlength="4"
                 >
+                <div class="tonios-login-checkbox">
+                    <input type="checkbox" id="regRememberSession" name="regRememberSession">
+                    <label for="regRememberSession">Se souvenir de moi</label>
+                </div>
                 <button type="submit" class="tonios-login-btn" id="registerBtn">S'inscrire</button>
             </form>
 
-            <!-- Liens de navigation -->
-            <div class="tonios-login-links">
-                <a href="javascript:void(0)" id="showRegisterLink" onclick="showRegisterForm()">Créer un compte</a>
-                <a href="javascript:void(0)" id="showLoginLink" onclick="showLoginForm()" class="hidden">Se connecter</a>
+            <!-- Toggle entre connexion et inscription -->
+            <div class="tonios-login-toggle">
+                <span id="toggleToRegister" onclick="showRegisterForm()">Pas encore de compte ? S'inscrire</span>
+                <span id="toggleToLogin" onclick="showLoginForm()" class="hidden">Déjà un compte ? Se connecter</span>
             </div>
-
-            <!-- Messages d'erreur/succès -->
-            <div id="authMessage" class="tonios-auth-message"></div>
+            
+            <div class="tonios-login-options">
+                <div class="tonios-login-option" onclick="quickLogin('demo')">
+                    🎮 Session démo
+                </div>
+                <div class="tonios-login-option" onclick="showUserList()">
+                    📋 Utilisateurs existants
+                </div>
+            </div>
         </div>
     </div>
 
-    <!-- Interface principale (cachée au démarrage) -->
-    <div id="mainDesktop" class="tonios-desktop" style="display: none;">
+    <!-- Panneau de modération -->
+    <div id="moderationPanel" class="tonios-moderation-panel">
+        <div class="tonios-moderation-header">
+            <h3>🛡️ Panneau de modération</h3>
+            <button onclick="closeModerationPanel()" style="background: none; border: none; color: white; cursor: pointer; font-size: 18px;">×</button>
+        </div>
+        <div class="tonios-moderation-content">
+            <div id="moderationUsersList">
+                <!-- Les utilisateurs seront listés ici -->
+            </div>
+        </div>
+    </div>
+
+    <div class="tonios-desktop" style="display: none;">
+        <!-- Informations de session -->
+        <div id="sessionInfo" class="tonios-session-info">
+            <span class="tonios-session-avatar" id="sessionAvatar"></span>
+            <span id="sessionUsername"></span>
+            <span style="opacity: 0.7; margin-left: 10px;">•</span>
+            <span style="opacity: 0.7;" id="sessionTime"></span>
+            <button class="tonios-session-logout" onclick="logout()">Déconnexion</button>
+        </div>
+        
         <!-- Zone du bureau -->
         <div class="tonios-desktop-area" onclick="closeStartMenu()">
             <!-- Icônes du bureau -->
             <div class="tonios-desktop-icons">
-                <div class="tonios-desktop-icon" onclick="openApplication('filemanager')">
+                <div class="tonios-desktop-icon" onclick="openApplicationFromDesktop('calculator')">
+                    <div class="tonios-desktop-icon-img">🧮</div>
+                    <div class="tonios-desktop-icon-label">Calculatrice</div>
+                </div>
+                <div class="tonios-desktop-icon" onclick="openApplicationFromDesktop('notepad')">
+                    <div class="tonios-desktop-icon-img">📝</div>
+                    <div class="tonios-desktop-icon-label">Bloc-notes</div>
+                </div>
+                <div class="tonios-desktop-icon" onclick="openApplicationFromDesktop('filemanager')">
                     <div class="tonios-desktop-icon-img">📁</div>
-                    <div class="tonios-desktop-icon-label">Gestionnaire de fichiers</div>
+                    <div class="tonios-desktop-icon-label">Fichiers</div>
                 </div>
-                <div class="tonios-desktop-icon" onclick="openApplication('discord-chat')">
+                <div class="tonios-desktop-icon" onclick="openApplicationFromDesktop('wallpaper')">
+                    <div class="tonios-desktop-icon-img">🎨</div>
+                    <div class="tonios-desktop-icon-label">Fond d'écran</div>
+                </div>
+                <div class="tonios-desktop-icon" onclick="openApplicationFromDesktop('chat')">
                     <div class="tonios-desktop-icon-img">💬</div>
-                    <div class="tonios-desktop-icon-label">ToniOS Chat</div>
+                    <div class="tonios-desktop-icon-label">Chat</div>
                 </div>
-                <div class="tonios-desktop-icon" onclick="openApplication('session-manager')">
-                    <div class="tonios-desktop-icon-img">👥</div>
-                    <div class="tonios-desktop-icon-label">Sessions Utilisateurs</div>
+                <div class="tonios-desktop-icon" onclick="openApplicationFromDesktop('systemprops')">
+                    <div class="tonios-desktop-icon-img">🖥️</div>
+                    <div class="tonios-desktop-icon-label">Propriétés</div>
                 </div>
             </div>
 
@@ -123,48 +151,44 @@
             <div id="startMenu" class="tonios-start-menu">
                 <div class="tonios-start-menu-header">
                     <strong>ToniOS</strong>
-                    <div class="tonios-user-info">
-                        <span id="currentUserDisplay">Utilisateur</span>
-                        <button onclick="logout()" class="tonios-logout-btn">🚪</button>
-                    </div>
                 </div>
                 <div class="tonios-start-menu-apps">
-                    <div class="tonios-start-menu-app" onclick="openApplication('calculator')">
+                    <div class="tonios-start-menu-app" onclick="openApplicationFromDesktop('calculator')">
                         <div class="tonios-start-menu-app-icon">🧮</div>
                         <div class="tonios-start-menu-app-info">
                             <h4>Calculatrice</h4>
                             <p>Effectuer des calculs</p>
                         </div>
                     </div>
-                    <div class="tonios-start-menu-app" onclick="openApplication('notepad')">
+                    <div class="tonios-start-menu-app" onclick="openApplicationFromDesktop('notepad')">
                         <div class="tonios-start-menu-app-icon">📝</div>
                         <div class="tonios-start-menu-app-info">
                             <h4>Bloc-notes</h4>
                             <p>Éditer du texte</p>
                         </div>
                     </div>
-                    <div class="tonios-start-menu-app" onclick="openApplication('filemanager')">
+                    <div class="tonios-start-menu-app" onclick="openApplicationFromDesktop('filemanager')">
                         <div class="tonios-start-menu-app-icon">📁</div>
                         <div class="tonios-start-menu-app-info">
                             <h4>Gestionnaire de fichiers</h4>
                             <p>Explorer et gérer les fichiers</p>
                         </div>
                     </div>
-                    <div class="tonios-start-menu-app" onclick="openApplication('wallpaper')">
+                    <div class="tonios-start-menu-app" onclick="openApplicationFromDesktop('wallpaper')">
                         <div class="tonios-start-menu-app-icon">🎨</div>
                         <div class="tonios-start-menu-app-info">
                             <h4>Fond d'écran</h4>
                             <p>Personnaliser le bureau</p>
                         </div>
                     </div>
-                    <div class="tonios-start-menu-app" onclick="openApplication('chat')">
+                    <div class="tonios-start-menu-app" onclick="openApplicationFromDesktop('chat')">
                         <div class="tonios-start-menu-app-icon">💬</div>
                         <div class="tonios-start-menu-app-info">
                             <h4>Chat ToniOS</h4>
                             <p>Discuter avec d'autres utilisateurs</p>
                         </div>
                     </div>
-                    <div class="tonios-start-menu-app" onclick="openApplication('systemprops')">
+                    <div class="tonios-start-menu-app" onclick="openApplicationFromDesktop('systemprops')">
                         <div class="tonios-start-menu-app-icon">🖥️</div>
                         <div class="tonios-start-menu-app-info">
                             <h4>Propriétés système</h4>
@@ -191,7 +215,8 @@
                     12:00
                 </div>
                 <div class="tonios-taskbar-info">
-                    <span>ToniOS v1.0</span>
+                    <span id="currentUser">Utilisateur</span>
+                    <span id="userRole" class="tonios-user-role">user</span>
                 </div>
             </div>
         </div>
@@ -201,16 +226,13 @@
     <div id="notificationContainer" class="tonios-notification-container"></div>
 
     <!-- Scripts JavaScript -->
-    <script src="js/admin-security-ultra.js"></script>
     <script src="js/notifications.js"></script>
+    <script src="js/auth.js"></script>
     <script src="js/windows.js"></script>
     <script src="js/files.js"></script>
     <script src="js/chat.js"></script>
-    <script src="js/discord-chat-advanced.js"></script>
-    <script src="js/advanced-files.js"></script>
-    <script src="js/session-manager.js"></script>
     <script src="js/voice.js"></script>
-    <script src="js/auth_fixed.js"></script>
-    <script src="js/main_with_auth_final.js"></script>
+    <script src="js/main.js"></script>
 </body>
 </html>
+
