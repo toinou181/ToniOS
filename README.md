@@ -1,159 +1,117 @@
-# ToniOS - Système d'Exploitation Virtuel Web
+# ToniOS v2 - Système d'Exploitation Virtuel Web - Version Fichier Unique
 
-## 📋 Description
-
-ToniOS est un système d'exploitation virtuel développé en HTML, CSS et JavaScript, offrant une expérience bureau complète dans le navigateur web.
-
-## 🏗️ Architecture Modulaire
-
-Le projet a été refactorisé pour une architecture modulaire claire :
-
-### Structure des fichiers :
-```
-ToniOS/
-├── index_clean.html          # Interface utilisateur principale (HTML pur)
-├── styles.css               # Tous les styles CSS
-├── js/                      # Modules JavaScript
-│   ├── auth.js             # Système d'authentification
-│   ├── notifications.js    # Système de notifications
-│   ├── windows.js          # Gestion des fenêtres
-│   ├── chat.js            # Chat textuel
-│   ├── voice.js           # Chat vocal
-│   ├── files.js           # Gestionnaire de fichiers
-│   └── main.js            # Initialisation et fonctions principales
-└── README.md              # Documentation
-```
-
-### 📁 Description des modules :
-
-#### **auth.js** - Authentification
-- Gestion des sessions utilisateur (`UserSession`)
-- Système de connexion/déconnexion
-- Gestion des rôles (user, moderator, admin)
-- Permissions et modération
-- Stockage local des utilisateurs
-
-#### **notifications.js** - Notifications
-- Système de notifications visuelles
-- Support des sons de notification
-- Types : info, success, error, warning
-- Animations et auto-masquage
-
-#### **windows.js** - Gestion des fenêtres
-- Ouverture/fermeture des applications
-- Système de drag & drop des fenêtres
-- Maximisation/minimisation
-- Gestion du Z-index
-- Barre des tâches dynamique
-
-#### **chat.js** - Chat textuel
-- Canaux de discussion multiples
-- Messages en temps réel (simulation)
-- Commandes de modération
-- Interface utilisateur intuitive
-- Gestion des utilisateurs en ligne
-
-#### **voice.js** - Chat vocal
-- Reconnaissance vocale (Web Speech API)
-- Synthèse vocale (Text-to-Speech)
-- Visualisation audio en temps réel
-- Contrôles d'enregistrement
-- Transcription automatique
-
-#### **files.js** - Gestionnaire de fichiers
-- CRUD complet des fichiers
-- Import/Export de fichiers
-- Drag & drop depuis l'OS
-- Visualiseurs intégrés (texte, images)
-- Menu contextuel avancé
-
-#### **main.js** - Système principal
-- Initialisation de ToniOS
-- Raccourcis clavier globaux
-- Horloge en temps réel
-- Fonctions utilitaires
-- Menu démarrer
+**🎯 Version consolidée en un seul fichier HTML pour facilité d'utilisation !**
 
 ## 🚀 Fonctionnalités
 
 ### Applications intégrées :
-- 🧮 **Calculatrice** - Calculs de base avec interface moderne
-- 📝 **Bloc-notes** - Éditeur de texte avec sauvegarde
-- 📁 **Gestionnaire de fichiers** - Navigation et gestion complète
-- 🎨 **Personnalisation** - Changement de fond d'écran
-- 💬 **Chat** - Communication textuelle et vocale
-- 🖥️ **Propriétés système** - Informations du système
+- **📁 Gestionnaire de fichiers** : Gestion complète des fichiers utilisateur avec interface drag & drop
+- **💬 ToniOS Chat** : Système de chat multi-canaux avec support vocal et textuel
+- **👥 Gestionnaire de sessions** : Visualisation et interaction avec les sessions d'autres utilisateurs
 
 ### Fonctionnalités avancées :
-- ✅ Système d'authentification avec rôles
-- ✅ Glisser-déposer des fenêtres
-- ✅ Menu contextuel du bureau
-- ✅ Sélection multiple d'icônes
-- ✅ Import de fichiers par drag & drop
-- ✅ Chat vocal avec reconnaissance
-- ✅ Notifications système
-- ✅ Raccourcis clavier
-- ✅ Modération utilisateurs
-- ✅ Sauvegarde automatique
+- **🔐 Authentification individuelle** : Chaque utilisateur a sa propre session isolée
+- **🎨 Interface personnalisable** : Bureau avec fond d'écran et positionnement des icônes
+- **🔧 Panneau d'administration** : Accès sécurisé pour les administrateurs uniquement (spécialement pour toinou181)
+- **📱 Interface responsive** : Compatible avec tous types d'écrans
+
+## 📄 Version Fichier Unique
+
+**ToniOS est maintenant disponible en version fichier unique !**
+
+### Structure actuelle :
+```
+ToniOS/
+├── index.html                    # ⭐ FICHIER UNIQUE COMPLET - Tout inclus !
+│                                 # Contient HTML + CSS + JavaScript intégrés
+├── index-original.html           # Sauvegarde de l'ancien index.html
+├── styles.css                   # CSS de référence (inclus dans index.html)
+├── js/                          # Scripts de référence (inclus dans index.html)
+│   ├── auth.js                  # Système d'authentification
+│   ├── main.js                  # Fonctions principales et menu utilisateur
+│   ├── chat.js                  # Chat multi-canaux avec sessions individuelles
+│   ├── files.js                 # Gestionnaire de fichiers
+│   ├── session-manager.js       # Gestionnaire de sessions utilisateurs
+│   ├── admin-security.js        # Système de sécurité admin
+│   ├── windows.js               # Gestion des fenêtres
+│   ├── voice.js                 # Chat vocal
+│   └── notifications.js         # Système de notifications
+├── docs/                        # Documentation
+├── tests/                       # Fichiers de test
+└── backups/                     # Sauvegardes des anciennes versions
+```
+
+## ✨ Avantages de la Version Fichier Unique
+
+### 🎯 Simplicité :
+- **Un seul fichier** : `index.html` contient tout le système
+- **Déploiement facile** : Copiez simplement le fichier index.html
+- **Aucune dépendance** : Tous les CSS et JavaScript sont intégrés
+
+### 🚀 Performance :
+- **Chargement rapide** : Aucune requête externe pour CSS/JS
+- **Fonctionnement offline** : Fonctionne sans serveur pour les fonctionnalités de base
+- **Cache optimal** : Un seul fichier à mettre en cache
+
+### 🔧 Maintenance :
+- **Code source préservé** : Les fichiers originaux restent disponibles dans `js/` et `styles.css`
+- **Version de référence** : `index-original.html` contient l'ancienne version modulaire
 
 ## 🔧 Installation et utilisation
 
-1. **Cloner ou télécharger** le projet
-2. **Ouvrir** `index_clean.html` dans un navigateur moderne
-3. **Se connecter** avec un nom d'utilisateur ou utiliser la session démo
-4. **Explorer** les applications et fonctionnalités
+**Option 1 - Ouverture directe** :
+   Ouvrez simplement `index.html` dans votre navigateur !
 
-## 📱 Compatibilité
+**Option 2 - Serveur local** :
+1. **Démarrer le serveur local** :
+   ```bash
+   python3 -m http.server 8000
+   ```
 
-- ✅ Chrome / Chromium (recommandé)
-- ✅ Firefox
-- ✅ Safari
-- ✅ Edge
-- ⚠️ Fonctionnalités vocales nécessitent HTTPS en production
+2. **Accéder à ToniOS** :
+   Ouvrir `http://localhost:8000` dans votre navigateur
 
-## 🎯 Technologies utilisées
+3. **Créer un compte** :
+   - Premier utilisateur = automatiquement administrateur
+   - Chaque utilisateur a sa propre session isolée
 
-- **HTML5** - Structure sémantique
-- **CSS3** - Styles modernes avec variables CSS
-- **JavaScript ES6+** - Logique modulaire
-- **Web Speech API** - Reconnaissance et synthèse vocale
-- **LocalStorage** - Persistance des données
-- **FileReader API** - Gestion des fichiers
+## 👤 Accès administrateur
 
-## 🔄 Améliorations apportées
+1. **Connexion normale** : Connectez-vous avec votre compte utilisateur
+2. **Menu utilisateur** : Cliquez sur votre nom dans la barre des tâches
+3. **Dashboard admin** : Le bouton n'apparaît que pour les administrateurs
+4. **Accès sécurisé** : Utilisation de codes d'accès et empreinte navigateur
 
-### Avant (version monolithique) :
-- ❌ 4537 lignes dans un seul fichier
-- ❌ Code difficile à maintenir
-- ❌ Pas de séparation des responsabilités
-- ❌ Difficile à déboguer
+## 📱 Fonctionnalités par utilisateur
 
-### Après (version modulaire) :
-- ✅ Code séparé en 8 fichiers logiques
-- ✅ Architecture claire et maintenable
-- ✅ Responsabilités bien définies
-- ✅ Facilite le débogage et les tests
-- ✅ Réutilisabilité des modules
-- ✅ Chargement optimisé
+### Sessions individuelles :
+- **Chat personnel** : Chaque utilisateur a ses propres canaux et messages
+- **Fichiers privés** : Système de fichiers isolé par utilisateur
+- **Préférences** : Configuration personnalisée du bureau
+- **Historique** : Historique des actions et statistiques personnelles
 
-## 🛠️ Développement
+### Chat amélioré :
+- **Canaux texte** : `#général`, `#tech`, `#random`
+- **Canaux vocaux** : Support reconnaissance vocale
+- **Commandes** : `/help`, `/clear`, `/me`, etc.
+- **Modération** : Fonctions admin pour gérer les utilisateurs
 
-### Pour contribuer :
-1. Modifier les modules dans `/js/`
-2. Tester avec `index_clean.html`
-3. S'assurer de la compatibilité entre modules
-4. Documenter les changements
+## 🛠️ Technologies utilisées
 
-### Variables globales partagées :
-- `currentSession` - Session utilisateur actuelle
-- `openWindows` - Fenêtres ouvertes
-- `nextZIndex` - Gestion de l'ordre des fenêtres
-- `allUsers` - Base de données utilisateurs locale
+- **Frontend** : HTML5, CSS3, JavaScript ES6+
+- **APIs** : Web Speech API, File API, WebRTC
+- **Stockage** : LocalStorage avec isolation par utilisateur
+- **Sécurité** : Système d'empreinte navigateur, chiffrement
+
+## 🔄 Améliorations v2
+
+- ✅ **Organisation des fichiers** : Structure modulaire claire
+- ✅ **Sessions individuelles** : Isolation complète des données utilisateur
+- ✅ **Chat amélioré** : Messages et canaux personnalisés par utilisateur
+- ✅ **Accès admin** : Contrôle d'accès sécurisé au dashboard
+- ✅ **Interface utilisateur** : Menu utilisateur avec profil et préférences
+- ✅ **Nettoyage du code** : Suppression des doublons et fichiers obsolètes
 
 ## 📄 Licence
 
-Projet éducatif et démonstratif.
-
----
-
-**ToniOS v2.0** - Architecture modulaire | Développé avec ❤️
+Projet open source - Utilisation libre pour des fins éducatives et personnelles.

@@ -51,6 +51,8 @@ function openApplication(appType, fileName = '') {
             windowTitle = 'Gestionnaire de fichiers';
             windowSize = { width: 900, height: 600 };
             windowHTML = createFileManagerWindow();
+            // Initialize file manager after window creation
+            setTimeout(() => initializeFileManager(), 100);
             break;
             
         case 'advanced-files':
@@ -780,6 +782,23 @@ function sendDiscordMessage() {
     messagesContainer.appendChild(messageElement);
     messagesContainer.scrollTop = messagesContainer.scrollHeight;
     input.value = '';
+}
+
+// Initialize basic file manager
+function initializeFileManager() {
+    console.log('Initializing file manager...');
+    
+    // Load user data if not already loaded
+    if (typeof loadUserData === 'function') {
+        loadUserData();
+    }
+    
+    // Refresh file list
+    if (typeof refreshFileList === 'function') {
+        refreshFileList();
+    }
+    
+    console.log('File manager initialized successfully');
 }
 
 // Exposer les fonctions globalement pour qu'elles soient accessibles depuis d'autres scripts

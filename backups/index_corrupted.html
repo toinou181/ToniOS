@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>                    <div class="tonios-start-menu-app" onclick="openApplication('session-manager')">
+                        <div class="tonios-start-menu-app-icon">👥</div>
+                        <div class="tonios-start-menu-app-info">
+                            <h4>Sessions Utilisateurs</h4>
+                            <p>Voir et interagir avec les sessions</p>
+                        </div>
+                    </div>
+                    <div class="tonios-start-menu-app" onclick="openApplication('properties')">
+                        <div class="tonios-start-menu-app-icon">🖥️</div>
+                        <div class="tonios-start-menu-app-info">
+                            <h4>Propriétés système</h4>
+                            <p>Informations système</p>
+                        </div>
+                    </div>- Système d'Exploitation Virtuel Web</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Écran de connexion -->
+    <div id="loginScreen" class="tonios-login-screen">
+        <div class="tonios-login-container">
+            <div class="tonios-login-logo">🖥️</div>
+            <h1 class="tonios-login-title">ToniOS</h1>
+            <p class="tonios-login-subtitle" id="loginSubtitle">Système d'exploitation virtuel - Connexion</p>
+            
+            <!-- Formulaire de connexion -->
+            <form class="tonios-login-form" id="loginForm" onsubmit="handleLogin(event)">
+                <input 
+                    type="text" 
+                    id="usernameInput" 
+                    class="tonios-login-input" 
+                    placeholder="Nom d'utilisateur (3-20 caractères)" 
+                    required 
+                    minlength="3" 
+                    maxlength="20"
+                    pattern="[a-zA-Z0-9_-]+"
+                    title="Lettres, chiffres, tirets et underscores uniquement"
+                >
+                <input 
+                    type="password" 
+                    id="passwordInput" 
+                    class="tonios-login-input" 
+                    placeholder="Mot de passe (optionnel pour session locale)" 
+                    minlength="4"
+                >
+                <div class="tonios-login-checkbox">
+                    <input type="checkbox" id="rememberSession" name="rememberSession">
+                    <label for="rememberSession">Se souvenir de moi</label>
+                </div>
+                <button type="submit" class="tonios-login-btn" id="loginBtn">Se connecter</button>
+            </form>
+
+            <!-- Formulaire d'inscription -->
+            <form class="tonios-login-form hidden" id="registerForm" onsubmit="handleRegister(event)">
+                <input 
+                    type="text" 
+                    id="regUsernameInput" 
+                    class="tonios-login-input" 
+                    placeholder="Nom d'utilisateur (3-20 caractères)" 
+                    required 
+                    minlength="3" 
+                    maxlength="20"
+                    pattern="[a-zA-Z0-9_-]+"
+                    title="Lettres, chiffres, tirets et underscores uniquement"
+                >
+                <input 
+                    type="password" 
+                    id="regPasswordInput" 
+                    class="tonios-login-input" 
+                    placeholder="Mot de passe (4-50 caractères)" 
+                    required 
+                    minlength="4" 
+                    maxlength="50"
+                >
+                <input 
+                    type="password" 
+                    id="regConfirmPasswordInput" 
+                    class="tonios-login-input" 
+                    placeholder="Confirmer le mot de passe" 
+                    required 
+                    minlength="4" 
+                    maxlength="50"
+                >
+                <button type="submit" class="tonios-login-btn" id="registerBtn">S'inscrire</button>
+            </form>
+
+            <!-- Liens de navigation -->
+            <div class="tonios-login-links">
+                <a href="javascript:void(0)" id="showRegisterLink" onclick="showRegisterForm()">Créer un compte</a>
+                <a href="javascript:void(0)" id="showLoginLink" onclick="showLoginForm()" class="hidden">Se connecter</a>
+            </div>
+
+            <!-- Messages d'erreur/succès -->
+            <div id="authMessage" class="tonios-auth-message"></div>
+        </div>
+    </div>
+
+    <!-- Interface principale (cachée au démarrage) -->
+    <div id="mainDesktop" class="tonios-desktop" style="display: none;">
+        <!-- Zone du bureau -->
+        <div class="tonios-desktop-area" onclick="closeStartMenu()">
+            <!-- Icônes du bureau -->
+            <div class="tonios-desktop-icons">
+                <div class="tonios-desktop-icon" onclick="openApplication('filemanager')">
+                    <div class="tonios-desktop-icon-img">📁</div>
+                    <div class="tonios-desktop-icon-label">Gestionnaire de fichiers</div>
+                </div>
+                <div class="tonios-desktop-icon" onclick="openApplication('discord-chat')">
+                    <div class="tonios-desktop-icon-img">💬</div>
+                    <div class="tonios-desktop-icon-label">ToniOS Chat</div>
+                </div>
+                <div class="tonios-desktop-icon" onclick="openApplication('session-manager')">
+                    <div class="tonios-desktop-icon-img">👥</div>
+                    <div class="tonios-desktop-icon-label">Sessions Utilisateurs</div>
+                </div>
+            </div>
+
+            <!-- Menu Démarrer -->
+            <div id="startMenu" class="tonios-start-menu">
+                <div class="tonios-start-menu-header">
+                    <strong>ToniOS</strong>
+                    <div class="tonios-user-info">
+                        <span id="currentUserDisplay">Utilisateur</span>
+                        <button onclick="logout()" class="tonios-logout-btn">🚪</button>
+                    </div>
+                </div>
+                <div class="tonios-start-menu-apps">
+                    <div class="tonios-start-menu-app" onclick="openApplication('calculator')">
+                        <div class="tonios-start-menu-app-icon">🧮</div>
+                        <div class="tonios-start-menu-app-info">
+                            <h4>Calculatrice</h4>
+                            <p>Effectuer des calculs</p>
+                        </div>
+                    </div>
+                    <div class="tonios-start-menu-app" onclick="openApplication('notepad')">
+                        <div class="tonios-start-menu-app-icon">📝</div>
+                        <div class="tonios-start-menu-app-info">
+                            <h4>Bloc-notes</h4>
+                            <p>Éditer du texte</p>
+                        </div>
+                    </div>
+                    <div class="tonios-start-menu-app" onclick="openApplication('filemanager')">
+                        <div class="tonios-start-menu-app-icon">📁</div>
+                        <div class="tonios-start-menu-app-info">
+                            <h4>Gestionnaire de fichiers</h4>
+                            <p>Explorer et gérer les fichiers</p>
+                        </div>
+                    </div>
+                    <div class="tonios-start-menu-app" onclick="openApplication('wallpaper')">
+                        <div class="tonios-start-menu-app-icon">🎨</div>
+                        <div class="tonios-start-menu-app-info">
+                            <h4>Fond d'écran</h4>
+                            <p>Personnaliser le bureau</p>
+                        </div>
+                    </div>
+                    <div class="tonios-start-menu-app" onclick="openApplication('chat')">
+                        <div class="tonios-start-menu-app-icon">💬</div>
+                        <div class="tonios-start-menu-app-info">
+                            <h4>Chat ToniOS</h4>
+                            <p>Discuter avec d'autres utilisateurs</p>
+                        </div>
+                    </div>
+                    <div class="tonios-start-menu-app" onclick="openApplication('systemprops')">
+                        <div class="tonios-start-menu-app-icon">🖥️</div>
+                        <div class="tonios-start-menu-app-info">
+                            <h4>Propriétés système</h4>
+                            <p>Informations système</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Barre des tâches -->
+        <div class="tonios-taskbar">
+            <button class="tonios-start-button" onclick="toggleStartMenu()">
+                <span class="tonios-start-icon">🖥️</span>
+                ToniOS
+            </button>
+            
+            <div class="tonios-taskbar-center" id="taskbarApps">
+                <!-- Applications ouvertes apparaîtront ici -->
+            </div>
+            
+            <div class="tonios-taskbar-right">
+                <div class="tonios-taskbar-clock" id="taskbarClock">
+                    12:00
+                </div>
+                <div class="tonios-taskbar-info">
+                    <span>ToniOS v1.0</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Notifications -->
+    <div id="notificationContainer" class="tonios-notification-container"></div>
+
+    <!-- Scripts JavaScript -->
+    <script src="js/admin-security-ultra.js"></script>
+    <script src="js/notifications.js"></script>
+    <script src="js/windows.js"></script>
+    <script src="js/files.js"></script>
+    <script src="js/chat.js"></script>
+    <script src="js/discord-chat-advanced.js"></script>
+    <script src="js/advanced-files.js"></script>
+    <script src="js/session-manager.js"></script>
+    <script src="js/voice.js"></script>
+    <script src="js/auth_fixed.js"></script>
+    <script src="js/main_with_auth_final.js"></script>
+</body>
+</html>
